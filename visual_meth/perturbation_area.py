@@ -1,6 +1,7 @@
 import math
 import matplotlib.pyplot as plt
 import numpy as np
+import time
 
 import torch
 import torch.nn.functional as F
@@ -206,25 +207,6 @@ class Perturbation:
             f"- pyramid shape: {list(self.pyramid.shape)}"
         )
 
-# Control smoothness
-# masks: AxNx1xTx S_out x S_out
-def diff_loss(masks, num_diff=3):
-    narea = masks.shape[0]
-    bs = masks.shape[1]
-    diffs = [masks[:, :, :, 1:, ...] - masks[:, :, :, :-1, ...]]
-    for _ in range(num_diff - 1):
-        diffs.append(diffs[-1][:, :, :, 1:, ...] - diffs[-1][:, :, :, :-1, ...])
-    diffs_mean = torch.stack([(item.view(narea, bs, -1) ** 2).mean(dim=2) for item in diffs], dim=0)
-    return diffs_mean.mean(dim=0)   # A x N
-
-# masks: AxNx1xTx S_out x S_out
-# total_ones: A
-def sum_loss(masks, total_ones):
-    narea = masks.shape[0]
-    bs = masks.shape[1]
-    return (masks.view(narea, bs, -1).sum(dim=2) / total_ones.unsqueeze(-1) - 1) ** 2
-
-
 class Perturbation:
     def __init__(self, input, num_levels=8, max_blur=20, type=BLUR_PERTURBATION):
         self.type = type
@@ -290,6 +272,24 @@ class Perturbation:
             f"- pyramid shape: {list(self.pyramid.shape)}"
         )
 
+# Control smoothness
+# masks: AxNx1xTx S_out x S_out
+def diff_loss(masks, num_diff=3):
+    narea = masks.shape[0]
+    bs = masks.shape[1]
+    diffs = [masks[:, :, :, 1:, ...] - masks[:, :, :, :-1, ...]]
+    for _ in range(num_diff - 1):
+        diffs.append(diffs[-1][:, :, :, 1:, ...] - diffs[-1][:, :, :, :-1, ...])
+    diffs_mean = torch.stack([(item.view(narea, bs, -1) ** 2).mean(dim=2) for item in diffs], dim=0)
+    return diffs_mean.mean(dim=0)   # A x N
+
+# masks: AxNx1xTx S_out x S_out
+# total_ones: A
+def sum_loss(masks, total_ones):
+    narea = masks.shape[0]
+    bs = masks.shape[1]
+    return (masks.view(narea, bs, -1).sum(dim=2) / total_ones.unsqueeze(-1) - 1) ** 2
+
 def video_perturbation(model,
                           input,
                           target,
@@ -307,7 +307,8 @@ def video_perturbation(model,
                           resize=False,
                           resize_mode='bilinear',
                           smooth=0,
-                          gpu_id=0):
+                          gpu_id=0,
+                          amp=False):
     
     if isinstance(areas, float):
         areas = [areas]
@@ -356,8 +357,7 @@ def video_perturbation(model,
 
     # Prepare the mask generator (generating mask(134x134) from pmask(16x16)).
     shape = perturbation.pyramid.shape[3:]  # 112x112
-    if tsigma == 0:
-        mask_generator = MaskGenerator(shape, step, sigma, pooling_method='softmax').to(device)
+    mask_generator = MaskGenerator(shape, step, sigma, pooling_method='softmax').to(device)
     h, w = mask_generator.shape_in  # h=112/step, w=112/step, 16x16
     pmasks = torch.ones(num_area*batch_size*num_frame, 1, h, w).to(device)  #A*N*T x 1x16x16
 
@@ -456,9 +456,6 @@ def video_perturbation(model,
 
         pmasks.data = pmasks.data.clamp(0, 1)
 
-        if not with_sum:
-            regul_weight *= 1.0008668     #1.00069^800=2
-
         sum_time += time.time() - end_time
         # Print iteration information
         if (print_iter != None) and (t % print_iter == 0):
@@ -490,7 +487,7 @@ def video_perturbation(model,
             area_mask.append(mask)
         area_mask = torch.stack(area_mask, dim=2)   # NxCxTxHxW
         list_mask.append(area_mask)
-    masks = torch.stack(list_mask, dim=0)   # AxNxCxTxHxW
+    masks = torch.stack(list_mask, dim=0).cpu()   # AxNxCxTxHxW
 
     # masks: AxNxCxTxHxW; hist: AxNx2xmax_iter; perturb_x: 2*A*N x CxTxHxW
     return masks, hist

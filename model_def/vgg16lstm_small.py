@@ -62,17 +62,17 @@ class vgg16lstm_pytorch (nn.Module):
         self.conv4_2 = nn.Conv2d(512, 512, kernel_size=3, stride=1, padding=1)
         self.conv4_3 = nn.Conv2d(512, 512, kernel_size=3, stride=1, padding=1)
 
-        self.conv5_1 = nn.Conv2d(512, 512, kernel_size=3, stride=1, padding=1)
-        self.conv5_2 = nn.Conv2d(512, 512, kernel_size=3, stride=1, padding=1)
-        self.conv5_3 = nn.Conv2d(512, 512, kernel_size=3, stride=1, padding=1)
+        # self.conv5_1 = nn.Conv2d(512, 512, kernel_size=3, stride=1, padding=1)
+        # self.conv5_2 = nn.Conv2d(512, 512, kernel_size=3, stride=1, padding=1)
+        # self.conv5_3 = nn.Conv2d(512, 512, kernel_size=3, stride=1, padding=1)
 
         self.fc6 = nn.Linear(512*7*7, 4096, bias=True)
-        self.fc7 = nn.Linear(4096, 4096, bias=True)
-        self.lstm1 = ReluLSTMCell(4096, 256, bias=True)
+        self.fc7 = nn.Linear(4096, 2048, bias=True)
+        self.lstm1 = ReluLSTMCell(2048, 256, bias=True)
         self.fc8_final = nn.Linear(256, self.num_classes, bias=True)
 
         self.pool = nn.MaxPool2d(kernel_size=2, stride=2)
-        self.pool5 = nn.MaxPool2d(kernel_size=2, stride=2)
+        self.pool4 = nn.MaxPool2d(kernel_size=2, stride=2)
         self.dropout = nn.Dropout(p=0.5)
         self.relu = nn.ReLU(True)
         self.softmax = nn.Softmax(dim=1)
@@ -82,7 +82,7 @@ class vgg16lstm_pytorch (nn.Module):
         batch_size = video_tensor.shape[0]
         seq_len = video_tensor.shape[2]
 
-        probs = []
+        logits = []
         # preds = []
         h_top = torch.zeros(batch_size, 256).to(video_tensor.device)
         c_top = torch.zeros(batch_size, 256).to(video_tensor.device)
@@ -104,12 +104,12 @@ class vgg16lstm_pytorch (nn.Module):
             y = self.relu(self.conv4_1(y))
             y = self.relu(self.conv4_2(y))
             y = self.relu(self.conv4_3(y))
-            y = self.pool(y)
+            y = self.pool4(y)
 
-            y = self.relu(self.conv5_1(y))
-            y = self.relu(self.conv5_2(y))
-            y = self.relu(self.conv5_3(y))
-            y = self.pool5(y)
+            # y = self.relu(self.conv5_1(y))
+            # y = self.relu(self.conv5_2(y))
+            # y = self.relu(self.conv5_3(y))
+            # y = self.pool5(y)
             y = y.view(batch_size, -1)
 
             y = self.dropout(self.relu(self.fc6(y)))
@@ -118,14 +118,17 @@ class vgg16lstm_pytorch (nn.Module):
             y = self.dropout(h_top)
             y = self.fc8_final(y)
 
-            prob = self.softmax(y)
-            probs.append(prob)
-        probs = torch.stack(probs, dim=1)   # bs x numf x num_cls
-        probs = torch.mean(probs, dim=1)    # bs x num_cls
-        return probs
+        #     prob = self.softmax(y)
+        #     probs.append(prob)
+        # probs = torch.stack(probs, dim=1)   # bs x numf x num_cls
+        # probs = torch.mean(probs, dim=1)    # bs x num_cls
+            logits.append(y)
+        logits = torch.mean(torch.stack(logits, dim=1), dim=1)
+        # probs = self.softmax(logits)
+        return logits
 
 class vgg16lstm (nn.Module):
-    def __init__ (self, num_classes, pretrained=True):
+    def __init__ (self, num_classes, with_softmax=False, pretrained=True):
         super(vgg16lstm, self).__init__()
         self.num_classes = num_classes
 
@@ -137,8 +140,16 @@ class vgg16lstm (nn.Module):
         num_ftrs = self.model.fc8_final.in_features
         self.model.fc8_final = nn.Linear(num_ftrs, num_classes)
 
+        self.with_softmax = with_softmax
+        self.softmax = nn.Softmax(dim=1)
+
     def forward (self, inp_tensor):
-        return self.model(inp_tensor)
+        pred = self.model(inp_tensor)
+        if not self.with_softmax:
+            return pred
+        else:
+            prob = self.softmax(pred)
+            return prob
 
     def load_weights(self, weights_dir):
         model_wts = torch.load(weights_dir, map_location=torch.device('cpu'))
@@ -147,7 +158,15 @@ class vgg16lstm (nn.Module):
             model_wts = {"module."+name: model_wts[name] for name in model_wts.keys()}
         if self.parallel!=True and parallel_wts==True:
             model_wts = {name[7:]: model_wts[name] for name in model_wts.keys()}
-        self.model.load_state_dict(model_wts)
+        
+        # model_wts = {k:v for k,v in model_wts.items() if k in self.model.state_dict()}
+        # self.model.load_state_dict(model_wts)
+        ori_wts = self.model.state_dict()
+        for k, v in model_wts.items():
+            if k in ori_wts and ori_wts[k].shape == v.shape:
+                # print(k, ori_wts[k].shape, v.shape)
+                ori_wts[k] = v
+        self.model.load_state_dict(ori_wts)
 
     def to_device(self, device):
         self.device = device
@@ -266,6 +285,8 @@ class vgg16lstm (nn.Module):
         best_model_wts = copy.deepcopy(self.model.state_dict())
         best_acc = 0.0
 
+        scheduler = torch.optim.lr_scheduler.StepLR(optimizer, 10, gamma=0.1)
+
         for epoch in range(num_epochs):
             print('Epoch {}/{}'.format(epoch, num_epochs - 1))
             print('-' * 10)
@@ -281,8 +302,8 @@ class vgg16lstm (nn.Module):
                 running_corrects = 0
 
                 # Iterate over data.
-                # for samples in tqdm(dataloaders[phase]):
-                for samples in dataloaders[phase]:
+                for samples in tqdm(dataloaders[phase]):
+                # for samples in dataloaders[phase]:
                     inputs = samples[0].to(self.device)
                     labels = samples[1].to(self.device)
 
@@ -294,7 +315,10 @@ class vgg16lstm (nn.Module):
                     with torch.set_grad_enabled(phase == 'train'):
                         # Get model outputs and calculate loss
                         outputs = self.forward(inputs)    # assume outputs are softmax activations
-                        loss = criterion(torch.log(outputs), labels)    # Using NLLLoss
+                        if self.with_softmax:
+                            loss = criterion(torch.log(outputs), labels)    # Using NLLLoss
+                        else:
+                            loss = criterion(outputs, labels)
 
                         _, preds = torch.max(outputs, 1)
 
@@ -320,6 +344,7 @@ class vgg16lstm (nn.Module):
                     val_acc_history.append(epoch_acc)
 
             print()
+            scheduler.step()
 
         time_elapsed = time.time() - since
         print('Training complete in {:.0f}m {:.0f}s'.format(time_elapsed // 60, time_elapsed % 60))
@@ -347,9 +372,9 @@ class vgg16lstm (nn.Module):
         top5 = AverageMeter('Acc@5', ':6.2f')
 
         # Iterate over data.
-        # for samples in tqdm(dataloader):
         video_pred_dict = {}
-        for samples in dataloader:
+        # for samples in dataloader:
+        for samples in tqdm(dataloader):
             inputs = samples[0].to(self.device)
             labels = samples[1].to(self.device)
             labels = labels.to(dtype=torch.long)
@@ -370,7 +395,7 @@ class vgg16lstm (nn.Module):
             top5.update(acc5[0], inputs.size(0))
 
             bs = inputs.shape[0]
-            probs = process_activations(outputs, labels, softmaxed=True)[0]
+            probs = process_activations(outputs, labels, softmaxed=False)[0]
             for bidx in range(bs):
                 video_name = samples[2][bidx].split("/")[-1]
                 label = labels.data[bidx]

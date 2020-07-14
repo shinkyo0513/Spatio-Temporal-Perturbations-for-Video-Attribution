@@ -1,6 +1,7 @@
 import torch
 import torch.nn.functional as F
 import numpy as np
+import gc
 
 def grad_cam_3d (inputs, labels, model, device, layer_name, norm_vis=True):
     model.eval()   # Set model to evaluate mode
@@ -75,9 +76,9 @@ def grad_cam_rnn (inputs, labels, model, device, layer_name, norm_vis=True):
         observ_layer = dict(observ_layer.named_children())[name]
 
     observ_grad_ = []
-    observ_layer.register_backward_hook(backward_hook(observ_grad_))
+    bh = observ_layer.register_backward_hook(backward_hook(observ_grad_))
     observ_actv_ = []
-    observ_layer.register_forward_hook(forward_hook(observ_actv_))
+    fh = observ_layer.register_forward_hook(forward_hook(observ_actv_))
 
     inputs = inputs.to(device)
     labels = labels.to(dtype=torch.long)
@@ -99,6 +100,15 @@ def grad_cam_rnn (inputs, labels, model, device, layer_name, norm_vis=True):
     observ_grad_w = observ_grad.mean(dim=4, keepdim=True).mean(dim=3, keepdim=True) # N x 512 x num_f x1x1
     out_masks = F.relu( (observ_grad_w*observ_actv).sum(dim=1, keepdim=True) ) # N x 1 x num_f x14x14
     out_masks = out_masks.detach().cpu()
+
+    # del observ_grad_
+    # del observ_actv_
+    # observ_grad = observ_grad.detach().cpu()
+    # del observ_grad
+    # observ_actv = observ_actv.detach().cpu()
+    # del observ_actv
+    fh.remove()
+    bh.remove()
 
     if norm_vis:
         normed_masks = out_masks.view(bs, -1)

@@ -157,8 +157,8 @@ class UCF101_24_Dataset (Dataset):
         self.sltd_list = sorted(self.sltd_list)
         
         self.transform = transforms.Compose([
-            transforms.Resize((240, 320)),
-            transforms.CenterCrop((224, 224)),
+            transforms.Resize((120, 160)),
+            transforms.CenterCrop((112, 112)),
             transforms.ToTensor(),
             transforms.Normalize([0.50463, 0.45796, 0.4076], [1.0, 1.0, 1.0]),
             # transforms.RandomErasing(p=1.0, scale=(0.8, 0.8), ratio=(1.0, 1.0), value=0),
@@ -201,9 +201,9 @@ class UCF101_24_Dataset (Dataset):
 
     def set_video_grounds_dict (self):
         video_grounds_dict = {}
-        delta_x = (320 - 224) / 2
-        delta_y = (240 - 224) / 2
-        max_x = max_y = 223
+        delta_x = (160 - 112) / 2
+        delta_y = (120 - 112) / 2
+        max_x = max_y = 111
         for video_name in self.sltd_list:
             video_annots = self.video_annot_dict[video_name]['annotations']
             video_numf = self.video_annot_dict[video_name]['numf']
