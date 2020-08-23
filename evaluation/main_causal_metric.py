@@ -47,7 +47,6 @@ if args.dataset == "ucf101":
     elif args.model == "r2p1d":
         from model_def.r2plus1d import r2plus1d as model
         from datasets.ucf101_24_dataset_new import UCF101_24_Dataset as dataset
-        # model_wgts_path = f"{proj_root}/model_param/ucf101_24_r2plus1d_18_16_Full_LongRange.pt"
         model_wgts_path = f"{proj_root}/model_param/ucf101_24_r2p1d_16_Full_LongRange.pt"
     elif args.model == "r50l":
         from model_def.r50lstm import r50lstm as model
