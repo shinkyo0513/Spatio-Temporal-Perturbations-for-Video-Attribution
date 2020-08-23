@@ -65,7 +65,7 @@ def load_model_and_dataset (args):
             model_wgts_dir = f"{proj_root}/model_param/ucf101_24_vgg16lstm_16_Full_LongRange.pt"
     elif args.dataset == "epic":
         num_classes = 20
-        ds_path = f'{ds_root}/epic'
+        ds_path = os.path.join(ds_root, path_dict.epic_rltv_dir)
         if args.model == "r2p1d":
             from datasets.epic_kitchens_dataset_new import EPIC_Kitchens_Dataset as dataset
             from model_def.r2plus1d import r2plus1d as model
