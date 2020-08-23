@@ -27,7 +27,7 @@ def integrated_grad_show (grads, polarity):
     return normed_grads, grad_show
 
 def integrated_grad (inputs, labels, model, device, steps, 
-                        polarity='both', show_gray=True):
+                        polarity='both'):
     model.eval()   # Set model to evaluate mode
 
     bs, ch, nt, h, w = inputs.shape

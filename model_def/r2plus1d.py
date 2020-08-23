@@ -96,16 +96,13 @@ class r2plus1d (nn.Module):
                     print("\t",name)
         return params_to_update
 
-    def train_model(self, dataloaders, criterion, optimizer, checkpoint_name, num_epochs, use_amp=False):
+    def train_model(self, dataloaders, criterion, optimizer, checkpoint_name, num_epochs, scheduler=None):
         since = time.time()
 
         val_acc_history = []
 
         best_model_wts = copy.deepcopy(self.model.state_dict())
         best_acc = 0.0
-        
-        if use_amp:
-            scaler = amp.GradScaler()
 
         for epoch in range(num_epochs):
             print('Epoch {}/{}'.format(epoch, num_epochs - 1))
@@ -133,26 +130,21 @@ class r2plus1d (nn.Module):
                     # forward
                     # track history if only in train
                     with torch.set_grad_enabled(phase == 'train'):
-                        with amp.autocast(enabled=use_amp):
-                            # Get model outputs and calculate loss
-                            # outputs = self.model(inputs)    # assume outputs are softmax activations
-                            outputs = self.forward(inputs)    # assume outputs are softmax activations
-                            if self.with_softmax:
-                                loss = criterion(torch.log(outputs), labels)    # Using NLLLoss
-                            else:
-                                loss = criterion(outputs, labels)
+                        # with amp.autocast(enabled=use_amp):
+                        # Get model outputs and calculate loss
+                        # outputs = self.model(inputs)    # assume outputs are softmax activations
+                        outputs = self.forward(inputs)    # assume outputs are softmax activations
+                        if self.with_softmax:
+                            loss = criterion(torch.log(outputs), labels)    # Using NLLLoss
+                        else:
+                            loss = criterion(outputs, labels)
 
                         _, preds = torch.max(outputs, 1)
 
                         # backward + optimize only if in training phase
                         if phase == 'train':
-                            if use_amp:
-                                scaler.scale(loss).backward()
-                                scaler.step(optimizer)
-                                scaler.update()
-                            else:
-                                loss.backward()
-                                optimizer.step()
+                            loss.backward()
+                            optimizer.step()
 
                     # statistics
                     running_loss += loss.item() * inputs.size(0)
@@ -170,6 +162,8 @@ class r2plus1d (nn.Module):
                 if phase == 'val':
                     val_acc_history.append(epoch_acc)
 
+            if scheduler != None:
+                scheduler.step()
             print()
 
         time_elapsed = time.time() - since
@@ -229,8 +223,8 @@ class r2plus1d (nn.Module):
                 # print(f"{video_name}: {video_pred_dict[video_name]}")
 
         video_pred_dict = {name: pred for name, pred in sorted(video_pred_dict.items(), key=lambda item: item[1], reverse=True)}
-        for video_name, pred in video_pred_dict.items():
-            print(f"{video_name}: {pred:.3f}")
+        # for video_name, pred in video_pred_dict.items():
+        #     print(f"{video_name}: {pred:.3f}")
 
         # top100_dict = {}
         # for video_name in list(video_pred_dict.keys())[:100]:

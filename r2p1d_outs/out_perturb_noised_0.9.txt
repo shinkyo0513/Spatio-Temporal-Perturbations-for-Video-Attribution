@@ -1,0 +1,108 @@
+{'train': 'Num of clips:2284', 'val': 'Num of clips:910'}
+Epoch 0/19
+----------
+train Loss: 3.0145 Acc: 0.1493
+val Loss: 2.7695 Acc: 0.2330
+
+Epoch 1/19
+----------
+train Loss: 2.4010 Acc: 0.4019
+val Loss: 2.4081 Acc: 0.3670
+
+Epoch 2/19
+----------
+train Loss: 1.9635 Acc: 0.5105
+val Loss: 2.1630 Acc: 0.4264
+
+Epoch 3/19
+----------
+train Loss: 1.6384 Acc: 0.5880
+val Loss: 1.9979 Acc: 0.4516
+
+Epoch 4/19
+----------
+train Loss: 1.3783 Acc: 0.6563
+val Loss: 1.8955 Acc: 0.4769
+
+Epoch 5/19
+----------
+train Loss: 1.1789 Acc: 0.7176
+val Loss: 1.8335 Acc: 0.4758
+
+Epoch 6/19
+----------
+train Loss: 1.0045 Acc: 0.7566
+val Loss: 1.7840 Acc: 0.4747
+
+Epoch 7/19
+----------
+train Loss: 0.8596 Acc: 0.7951
+val Loss: 1.6838 Acc: 0.5033
+
+Epoch 8/19
+----------
+train Loss: 0.7275 Acc: 0.8398
+val Loss: 1.6683 Acc: 0.5033
+
+Epoch 9/19
+----------
+train Loss: 0.6126 Acc: 0.8581
+val Loss: 1.6493 Acc: 0.5165
+
+Epoch 10/19
+----------
+train Loss: 0.5271 Acc: 0.8853
+val Loss: 1.6132 Acc: 0.5176
+
+Epoch 11/19
+----------
+train Loss: 0.4549 Acc: 0.9041
+val Loss: 1.6749 Acc: 0.5110
+
+Epoch 12/19
+----------
+train Loss: 0.3933 Acc: 0.9151
+val Loss: 1.6141 Acc: 0.5363
+
+Epoch 13/19
+----------
+train Loss: 0.3295 Acc: 0.9479
+val Loss: 1.5926 Acc: 0.5297
+
+Epoch 14/19
+----------
+train Loss: 0.2909 Acc: 0.9492
+val Loss: 1.5631 Acc: 0.5308
+
+Epoch 15/19
+----------
+train Loss: 0.2475 Acc: 0.9610
+val Loss: 1.5835 Acc: 0.5396
+
+Epoch 16/19
+----------
+train Loss: 0.2100 Acc: 0.9698
+val Loss: 1.5599 Acc: 0.5516
+
+Epoch 17/19
+----------
+train Loss: 0.1859 Acc: 0.9812
+val Loss: 1.5739 Acc: 0.5527
+
+Epoch 18/19
+----------
+train Loss: 0.1573 Acc: 0.9820
+val Loss: 1.5519 Acc: 0.5604
+
+Epoch 19/19
+----------
+train Loss: 0.1432 Acc: 0.9829
+val Loss: 1.5433 Acc: 0.5604
+
+Training complete in 53m 38s
+Best val Acc: 0.560440
+Saved the weights of the best epoch in /home/lzq/ExpEval/model_param/ucf101_24_r2p1d_16_Full_perturb_0.9_LongRange.pt
+Num of clips:910
+ Val: Acc@1 55.934 Acc@5 84.396
+
+Normalized confusion matrix

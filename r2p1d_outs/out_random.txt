@@ -1,0 +1,648 @@
+{'train': 'Num of clips:2284', 'val': 'Num of clips:910'}
+Epoch 0/19
+----------
+train Loss: 2.6460 Acc: 0.3919
+val Loss: 1.8438 Acc: 0.7912
+
+Epoch 1/19
+----------
+train Loss: 1.1796 Acc: 0.9321
+val Loss: 0.8134 Acc: 0.9319
+
+Epoch 2/19
+----------
+train Loss: 0.4835 Acc: 0.9816
+val Loss: 0.4826 Acc: 0.9385
+
+Epoch 3/19
+----------
+train Loss: 0.2532 Acc: 0.9882
+val Loss: 0.3651 Acc: 0.9484
+
+Epoch 4/19
+----------
+train Loss: 0.1633 Acc: 0.9956
+val Loss: 0.2999 Acc: 0.9549
+
+Epoch 5/19
+----------
+train Loss: 0.1163 Acc: 0.9978
+val Loss: 0.2572 Acc: 0.9615
+
+Epoch 6/19
+----------
+train Loss: 0.0868 Acc: 0.9982
+val Loss: 0.2394 Acc: 0.9615
+
+Epoch 7/19
+----------
+train Loss: 0.0682 Acc: 0.9978
+val Loss: 0.2166 Acc: 0.9615
+
+Epoch 8/19
+----------
+train Loss: 0.0613 Acc: 0.9982
+val Loss: 0.2066 Acc: 0.9626
+
+Epoch 9/19
+----------
+train Loss: 0.0445 Acc: 0.9996
+val Loss: 0.1885 Acc: 0.9637
+
+Epoch 10/19
+----------
+train Loss: 0.0384 Acc: 1.0000
+val Loss: 0.1838 Acc: 0.9637
+
+Epoch 11/19
+----------
+train Loss: 0.0339 Acc: 0.9996
+val Loss: 0.1795 Acc: 0.9659
+
+Epoch 12/19
+----------
+train Loss: 0.0313 Acc: 1.0000
+val Loss: 0.1705 Acc: 0.9637
+
+Epoch 13/19
+----------
+train Loss: 0.0280 Acc: 1.0000
+val Loss: 0.1675 Acc: 0.9670
+
+Epoch 14/19
+----------
+train Loss: 0.0249 Acc: 1.0000
+val Loss: 0.1649 Acc: 0.9659
+
+Epoch 15/19
+----------
+train Loss: 0.0221 Acc: 1.0000
+val Loss: 0.1583 Acc: 0.9670
+
+Epoch 16/19
+----------
+train Loss: 0.0214 Acc: 1.0000
+val Loss: 0.1574 Acc: 0.9626
+
+Epoch 17/19
+----------
+train Loss: 0.0186 Acc: 1.0000
+val Loss: 0.1528 Acc: 0.9659
+
+Epoch 18/19
+----------
+train Loss: 0.0179 Acc: 1.0000
+val Loss: 0.1515 Acc: 0.9681
+
+Epoch 19/19
+----------
+train Loss: 0.0169 Acc: 1.0000
+val Loss: 0.1513 Acc: 0.9659
+
+Training complete in 47m 47s
+Best val Acc: 0.968132
+Saved the weights of the best epoch in /home/lzq/ExpEval/model_param/ucf101_24_r2p1d_16_Full_LongRange.pt
+Num of clips:910
+ Val: Acc@1 96.813 Acc@5 100.000
+
+Normalized confusion matrix
+{'train': 'Num of clips:2284', 'val': 'Num of clips:910'}
+Epoch 0/19
+----------
+train Loss: 2.9210 Acc: 0.2285
+val Loss: 2.5010 Acc: 0.4429
+
+Epoch 1/19
+----------
+train Loss: 1.9344 Acc: 0.7185
+val Loss: 1.7209 Acc: 0.6725
+
+Epoch 2/19
+----------
+train Loss: 1.1862 Acc: 0.8533
+val Loss: 1.2255 Acc: 0.7582
+
+Epoch 3/19
+----------
+train Loss: 0.7147 Acc: 0.9278
+val Loss: 0.9190 Acc: 0.8000
+
+Epoch 4/19
+----------
+train Loss: 0.4568 Acc: 0.9553
+val Loss: 0.7709 Acc: 0.8242
+
+Epoch 5/19
+----------
+train Loss: 0.3187 Acc: 0.9759
+val Loss: 0.6501 Acc: 0.8363
+
+Epoch 6/19
+----------
+train Loss: 0.2177 Acc: 0.9825
+val Loss: 0.5849 Acc: 0.8473
+
+Epoch 7/19
+----------
+train Loss: 0.1647 Acc: 0.9882
+val Loss: 0.5454 Acc: 0.8484
+
+Epoch 8/19
+----------
+train Loss: 0.1297 Acc: 0.9930
+val Loss: 0.5011 Acc: 0.8703
+
+Epoch 9/19
+----------
+train Loss: 0.1062 Acc: 0.9952
+val Loss: 0.4764 Acc: 0.8659
+
+Epoch 10/19
+----------
+train Loss: 0.0861 Acc: 0.9974
+val Loss: 0.4642 Acc: 0.8703
+
+Epoch 11/19
+----------
+train Loss: 0.0739 Acc: 0.9974
+val Loss: 0.4383 Acc: 0.8791
+
+Epoch 12/19
+----------
+train Loss: 0.0578 Acc: 0.9996
+val Loss: 0.4240 Acc: 0.8780
+
+Epoch 13/19
+----------
+train Loss: 0.0525 Acc: 0.9991
+val Loss: 0.4140 Acc: 0.8846
+
+Epoch 14/19
+----------
+train Loss: 0.0469 Acc: 0.9991
+val Loss: 0.4032 Acc: 0.8835
+
+Epoch 15/19
+----------
+train Loss: 0.0441 Acc: 0.9982
+val Loss: 0.3989 Acc: 0.8857
+
+Epoch 16/19
+----------
+train Loss: 0.0360 Acc: 1.0000
+val Loss: 0.3854 Acc: 0.8923
+
+Epoch 17/19
+----------
+train Loss: 0.0324 Acc: 0.9996
+val Loss: 0.3786 Acc: 0.8934
+
+Epoch 18/19
+----------
+train Loss: 0.0293 Acc: 0.9996
+val Loss: 0.3735 Acc: 0.8923
+
+Epoch 19/19
+----------
+train Loss: 0.0284 Acc: 0.9996
+val Loss: 0.3733 Acc: 0.8835
+
+Training complete in 47m 10s
+Best val Acc: 0.893407
+Saved the weights of the best epoch in /home/lzq/ExpEval/model_param/ucf101_24_r2p1d_16_Full_LongRange.pt
+Num of clips:910
+ Val: Acc@1 89.011 Acc@5 99.341
+
+Normalized confusion matrix
+{'train': 'Num of clips:2284', 'val': 'Num of clips:910'}
+Epoch 0/19
+----------
+train Loss: 2.9320 Acc: 0.2102
+val Loss: 2.6463 Acc: 0.3418
+
+Epoch 1/19
+----------
+train Loss: 2.1189 Acc: 0.5722
+val Loss: 2.0278 Acc: 0.5099
+
+Epoch 2/19
+----------
+train Loss: 1.4662 Acc: 0.7474
+val Loss: 1.6546 Acc: 0.6000
+
+Epoch 3/19
+----------
+train Loss: 1.0379 Acc: 0.8279
+val Loss: 1.3874 Acc: 0.6549
+
+Epoch 4/19
+----------
+train Loss: 0.7561 Acc: 0.8774
+val Loss: 1.2246 Acc: 0.6857
+
+Epoch 5/19
+----------
+train Loss: 0.5501 Acc: 0.9146
+val Loss: 1.1018 Acc: 0.6923
+
+Epoch 6/19
+----------
+train Loss: 0.4208 Acc: 0.9418
+val Loss: 1.0133 Acc: 0.7297
+
+Epoch 7/19
+----------
+train Loss: 0.3219 Acc: 0.9527
+val Loss: 0.9466 Acc: 0.7418
+
+Epoch 8/19
+----------
+train Loss: 0.2495 Acc: 0.9698
+val Loss: 0.8777 Acc: 0.7505
+
+Epoch 9/19
+----------
+train Loss: 0.1945 Acc: 0.9816
+val Loss: 0.8447 Acc: 0.7527
+
+Epoch 10/19
+----------
+train Loss: 0.1638 Acc: 0.9864
+val Loss: 0.8020 Acc: 0.7692
+
+Epoch 11/19
+----------
+train Loss: 0.1360 Acc: 0.9882
+val Loss: 0.7723 Acc: 0.7791
+
+Epoch 12/19
+----------
+train Loss: 0.1081 Acc: 0.9934
+val Loss: 0.7486 Acc: 0.7780
+
+Epoch 13/19
+----------
+train Loss: 0.0920 Acc: 0.9921
+val Loss: 0.7372 Acc: 0.7813
+
+Epoch 14/19
+----------
+train Loss: 0.0791 Acc: 0.9969
+val Loss: 0.7376 Acc: 0.7791
+
+Epoch 15/19
+----------
+train Loss: 0.0694 Acc: 0.9982
+val Loss: 0.7013 Acc: 0.7813
+
+Epoch 16/19
+----------
+train Loss: 0.0577 Acc: 0.9982
+val Loss: 0.6960 Acc: 0.7846
+
+Epoch 17/19
+----------
+train Loss: 0.0540 Acc: 0.9978
+val Loss: 0.6825 Acc: 0.7934
+
+Epoch 18/19
+----------
+train Loss: 0.0450 Acc: 0.9991
+val Loss: 0.6774 Acc: 0.8011
+
+Epoch 19/19
+----------
+train Loss: 0.0448 Acc: 0.9982
+val Loss: 0.6622 Acc: 0.8033
+
+Training complete in 47m 55s
+Best val Acc: 0.803297
+Saved the weights of the best epoch in /home/lzq/ExpEval/model_param/ucf101_24_r2p1d_16_Full_LongRange.pt
+Num of clips:910
+ Val: Acc@1 79.341 Acc@5 96.923
+
+Normalized confusion matrix
+{'train': 'Num of clips:2284', 'val': 'Num of clips:910'}
+Epoch 0/19
+----------
+train Loss: 2.9042 Acc: 0.2032
+val Loss: 2.6176 Acc: 0.3418
+
+Epoch 1/19
+----------
+train Loss: 2.1465 Acc: 0.5359
+val Loss: 2.0683 Acc: 0.4868
+
+Epoch 2/19
+----------
+train Loss: 1.5586 Acc: 0.6909
+val Loss: 1.7428 Acc: 0.5802
+
+Epoch 3/19
+----------
+train Loss: 1.1622 Acc: 0.7693
+val Loss: 1.5447 Acc: 0.5967
+
+Epoch 4/19
+----------
+train Loss: 0.8742 Acc: 0.8363
+val Loss: 1.4231 Acc: 0.6176
+
+Epoch 5/19
+----------
+train Loss: 0.6767 Acc: 0.8713
+val Loss: 1.3102 Acc: 0.6374
+
+Epoch 6/19
+----------
+train Loss: 0.5368 Acc: 0.9006
+val Loss: 1.2143 Acc: 0.6681
+
+Epoch 7/19
+----------
+train Loss: 0.4128 Acc: 0.9374
+val Loss: 1.1475 Acc: 0.6912
+
+Epoch 8/19
+----------
+train Loss: 0.3278 Acc: 0.9514
+val Loss: 1.1097 Acc: 0.6758
+
+Epoch 9/19
+----------
+train Loss: 0.2659 Acc: 0.9672
+val Loss: 1.0629 Acc: 0.6912
+
+Epoch 10/19
+----------
+train Loss: 0.2225 Acc: 0.9750
+val Loss: 1.0282 Acc: 0.7022
+
+Epoch 11/19
+----------
+train Loss: 0.1832 Acc: 0.9812
+val Loss: 0.9863 Acc: 0.7165
+
+Epoch 12/19
+----------
+train Loss: 0.1536 Acc: 0.9860
+val Loss: 0.9699 Acc: 0.7165
+
+Epoch 13/19
+----------
+train Loss: 0.1290 Acc: 0.9886
+val Loss: 0.9649 Acc: 0.7165
+
+Epoch 14/19
+----------
+train Loss: 0.1123 Acc: 0.9926
+val Loss: 0.9401 Acc: 0.7143
+
+Epoch 15/19
+----------
+train Loss: 0.0917 Acc: 0.9947
+val Loss: 0.9295 Acc: 0.7176
+
+Epoch 16/19
+----------
+train Loss: 0.0830 Acc: 0.9965
+val Loss: 0.8991 Acc: 0.7352
+
+Epoch 17/19
+----------
+train Loss: 0.0771 Acc: 0.9961
+val Loss: 0.9060 Acc: 0.7264
+
+Epoch 18/19
+----------
+train Loss: 0.0620 Acc: 0.9978
+val Loss: 0.8823 Acc: 0.7495
+
+Epoch 19/19
+----------
+train Loss: 0.0539 Acc: 0.9982
+val Loss: 0.9041 Acc: 0.7253
+
+Training complete in 48m 5s
+Best val Acc: 0.749451
+Saved the weights of the best epoch in /home/lzq/ExpEval/model_param/ucf101_24_r2p1d_16_Full_LongRange.pt
+Num of clips:910
+ Val: Acc@1 74.725 Acc@5 94.506
+
+Normalized confusion matrix
+{'train': 'Num of clips:2284', 'val': 'Num of clips:910'}
+Epoch 0/19
+----------
+train Loss: 2.9964 Acc: 0.1585
+val Loss: 2.7377 Acc: 0.2868
+
+Epoch 1/19
+----------
+train Loss: 2.2778 Acc: 0.4742
+val Loss: 2.2693 Acc: 0.4297
+
+Epoch 2/19
+----------
+train Loss: 1.7167 Acc: 0.6278
+val Loss: 1.9336 Acc: 0.5132
+
+Epoch 3/19
+----------
+train Loss: 1.3211 Acc: 0.7215
+val Loss: 1.7454 Acc: 0.5209
+
+Epoch 4/19
+----------
+train Loss: 1.0272 Acc: 0.7890
+val Loss: 1.6229 Acc: 0.5462
+
+Epoch 5/19
+----------
+train Loss: 0.8140 Acc: 0.8415
+val Loss: 1.5343 Acc: 0.5747
+
+Epoch 6/19
+----------
+train Loss: 0.6529 Acc: 0.8761
+val Loss: 1.4594 Acc: 0.5703
+
+Epoch 7/19
+----------
+train Loss: 0.5116 Acc: 0.9146
+val Loss: 1.4097 Acc: 0.5791
+
+Epoch 8/19
+----------
+train Loss: 0.4134 Acc: 0.9278
+val Loss: 1.3742 Acc: 0.6011
+
+Epoch 9/19
+----------
+train Loss: 0.3363 Acc: 0.9461
+val Loss: 1.3227 Acc: 0.6165
+
+Epoch 10/19
+----------
+train Loss: 0.2757 Acc: 0.9553
+val Loss: 1.2906 Acc: 0.6110
+
+Epoch 11/19
+----------
+train Loss: 0.2225 Acc: 0.9715
+val Loss: 1.2947 Acc: 0.6209
+
+Epoch 12/19
+----------
+train Loss: 0.1934 Acc: 0.9803
+val Loss: 1.2680 Acc: 0.6308
+
+Epoch 13/19
+----------
+train Loss: 0.1566 Acc: 0.9834
+val Loss: 1.2429 Acc: 0.6341
+
+Epoch 14/19
+----------
+train Loss: 0.1309 Acc: 0.9877
+val Loss: 1.2345 Acc: 0.6429
+
+Epoch 15/19
+----------
+train Loss: 0.1163 Acc: 0.9891
+val Loss: 1.2064 Acc: 0.6549
+
+Epoch 16/19
+----------
+train Loss: 0.0944 Acc: 0.9952
+val Loss: 1.2046 Acc: 0.6604
+
+Epoch 17/19
+----------
+train Loss: 0.0843 Acc: 0.9943
+val Loss: 1.1982 Acc: 0.6637
+
+Epoch 18/19
+----------
+train Loss: 0.0736 Acc: 0.9978
+val Loss: 1.2212 Acc: 0.6418
+
+Epoch 19/19
+----------
+train Loss: 0.0697 Acc: 0.9965
+val Loss: 1.1895 Acc: 0.6473
+
+Training complete in 48m 17s
+Best val Acc: 0.663736
+Saved the weights of the best epoch in /home/lzq/ExpEval/model_param/ucf101_24_r2p1d_16_Full_LongRange.pt
+Num of clips:910
+ Val: Acc@1 64.066 Acc@5 89.121
+
+Normalized confusion matrix
+{'train': 'Num of clips:2284', 'val': 'Num of clips:910'}
+Epoch 0/19
+----------
+train Loss: 2.9826 Acc: 0.1743
+val Loss: 2.7562 Acc: 0.2868
+
+Epoch 1/19
+----------
+train Loss: 2.3112 Acc: 0.4391
+val Loss: 2.3039 Acc: 0.3780
+
+Epoch 2/19
+----------
+train Loss: 1.8016 Acc: 0.5639
+val Loss: 2.0784 Acc: 0.4341
+
+Epoch 3/19
+----------
+train Loss: 1.4540 Acc: 0.6497
+val Loss: 1.9509 Acc: 0.4692
+
+Epoch 4/19
+----------
+train Loss: 1.1888 Acc: 0.7145
+val Loss: 1.8757 Acc: 0.4780
+
+Epoch 5/19
+----------
+train Loss: 0.9852 Acc: 0.7719
+val Loss: 1.8111 Acc: 0.4846
+
+Epoch 6/19
+----------
+train Loss: 0.8226 Acc: 0.8196
+val Loss: 1.7808 Acc: 0.4890
+
+Epoch 7/19
+----------
+train Loss: 0.6702 Acc: 0.8603
+val Loss: 1.7145 Acc: 0.5132
+
+Epoch 8/19
+----------
+train Loss: 0.5590 Acc: 0.8849
+val Loss: 1.7011 Acc: 0.4967
+
+Epoch 9/19
+----------
+train Loss: 0.4618 Acc: 0.9063
+val Loss: 1.7133 Acc: 0.5011
+
+Epoch 10/19
+----------
+train Loss: 0.3782 Acc: 0.9326
+val Loss: 1.6441 Acc: 0.5330
+
+Epoch 11/19
+----------
+train Loss: 0.3236 Acc: 0.9422
+val Loss: 1.6244 Acc: 0.5297
+
+Epoch 12/19
+----------
+train Loss: 0.2663 Acc: 0.9553
+val Loss: 1.6586 Acc: 0.5198
+
+Epoch 13/19
+----------
+train Loss: 0.2282 Acc: 0.9632
+val Loss: 1.6138 Acc: 0.5352
+
+Epoch 14/19
+----------
+train Loss: 0.1850 Acc: 0.9781
+val Loss: 1.6152 Acc: 0.5385
+
+Epoch 15/19
+----------
+train Loss: 0.1604 Acc: 0.9820
+val Loss: 1.5946 Acc: 0.5396
+
+Epoch 16/19
+----------
+train Loss: 0.1379 Acc: 0.9886
+val Loss: 1.5975 Acc: 0.5516
+
+Epoch 17/19
+----------
+train Loss: 0.1149 Acc: 0.9908
+val Loss: 1.6160 Acc: 0.5396
+
+Epoch 18/19
+----------
+train Loss: 0.1041 Acc: 0.9917
+val Loss: 1.5737 Acc: 0.5692
+
+Epoch 19/19
+----------
+train Loss: 0.0882 Acc: 0.9947
+val Loss: 1.5615 Acc: 0.5670
+
+Training complete in 48m 27s
+Best val Acc: 0.569231
+Saved the weights of the best epoch in /home/lzq/ExpEval/model_param/ucf101_24_r2p1d_16_Full_LongRange.pt
+Num of clips:910
+ Val: Acc@1 57.363 Acc@5 83.297
+
+Normalized confusion matrix

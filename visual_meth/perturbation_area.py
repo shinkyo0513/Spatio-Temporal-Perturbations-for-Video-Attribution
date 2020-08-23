@@ -207,70 +207,63 @@ class Perturbation:
             f"- pyramid shape: {list(self.pyramid.shape)}"
         )
 
-class Perturbation:
-    def __init__(self, input, num_levels=8, max_blur=20, type=BLUR_PERTURBATION):
-        self.type = type
-        self.num_levels = num_levels
-        self.pyramid = []
-        assert num_levels >= 2
-        assert max_blur > 0
-        with torch.no_grad():
-            for sigma in torch.linspace(0, 1, self.num_levels):
-                if type == BLUR_PERTURBATION:
-                    # input could be a batched tensor with size of NxCxHxW
-                    y = imsmooth(input, sigma=(1 - sigma) * max_blur)
-                    # ouput y has size of NxCxHxW
-                elif type == FADE_PERTURBATION:
-                    y = input * sigma
-                else:
-                    assert False
-                self.pyramid.append(y)
-            # self.pyramid = torch.cat(self.pyramid, dim=0)
-            self.pyramid = torch.stack(self.pyramid, dim=1) # NxLxCxHxW, L=num_levels
+class CoreLossCalulator:
+    def __init__ (self, bs, nt, nrow, ncol, areas, device, 
+                  num_key_frames=7, spatial_range=(11, 11)):
+        self.bs = bs
+        self.nt = nt
+        self.nrow = nrow
+        self.ncol = ncol
+        self.areas = areas
+        self.narea = len(areas)
+        self.device = device
 
-    def apply(self, mask):
-        # mask: A*N*T x1xHxW
-        n = mask.shape[0]           # n = A*N*T
-        inp_n = self.pyramid.shape[0]    # inp_n = N*T
-        num_area = int(n / inp_n)   # A
-        # starred expression: unpack a list to separated numbers
-        w = mask.reshape(n, 1, *mask.shape[1:]) # A*N*T x1x1xHxW, mask.unsqueeze(1)
-        w = w * (self.num_levels - 1)   # w = 7*w
-        k = w.floor()   # Integral part of w
-        w = w - k       # Fractional part of w
-        k = k.long()    # Transfer k to long int
+        self.new_nrow = nrow
+        self.new_ncol = ncol
 
-        # y = self.pyramid[None, :] #1xLxCxHxW
-        # y = y.expand(n, *y.shape[1:]) #nxLxCxHxW
-        # k = k.expand(n, 1, *y.shape[2:])  #nx1xCxHxW
+        self.num_key_frames = num_key_frames
+        self.spatial_range = spatial_range
+        self.conv_stride = spatial_range[0]
+        self.core_kernel_ones = int(num_key_frames * spatial_range[0] * spatial_range[1] * 0.5236)
+        self.core_kernels = []
+        self.core_topks = []
 
-        y = self.pyramid.repeat(num_area, 1, 1, 1, 1)    # A*N*T xLxCxHxW
-        k = k.expand(n, 1, *y.shape[2:])    # A*N*T x1xCxHxW, channel dim: 1-->3
+        for a_idx, area in enumerate(areas):
+            core_kernel = self.get_ellipsoid_kernel([num_key_frames, spatial_range[0], spatial_range[1]]).to(device)
+            # core_kernel /= core_kernel.sum()
+            self.core_kernels.append(core_kernel)
+            self.core_topks.append(math.ceil((area*self.nt*self.new_nrow*self.new_ncol) / self.core_kernel_ones))
 
-        y0 = torch.gather(y, 1, k)  # select low level, Nx1xCxHxW
-        y1 = torch.gather(y, 1, torch.clamp(k + 1, max=self.num_levels - 1)) # select high level, Nx1xCxHxW
+    # mask: AxNx1xTx S_out x S_out
+    def calculate (self, masks):
+        losses = []
+        small_masks = masks
 
-        # return ((1 - w) * y0 + w * y1).squeeze(dim=1)
-        perturb_x = ((1 - w) * y0 + w * y1)    #Nx1xCxHxW 
-        return perturb_x
+        losses = []
+        for a_idx, area in enumerate(self.areas):
+            core_kernel = self.core_kernels[a_idx]
+            core_kernel_sum = core_kernel.sum()
+            mask_conv = F.conv3d(small_masks[a_idx], core_kernel, bias=None, 
+                                stride=(1, self.conv_stride, self.conv_stride), 
+                                padding=0, dilation=1, groups=1)
+            # mask_conv_sorted = mask_conv.view(self.bs, -1).sort(dim=1, descending=True)[0]
+            mask_conv_sorted = mask_conv.view(self.bs, -1)
+            shuffled_inds = torch.randperm(mask_conv_sorted.shape[1], device=mask_conv_sorted.device)
+            mask_conv_sorted = mask_conv_sorted[:, shuffled_inds].sort(dim=1, descending=True)[0]
+            # loss = ((mask_conv_sorted[:, :self.core_topks[a_idx]] - 1) ** 2).mean(dim=1) \
+            #         + ((mask_conv_sorted[:, self.core_topks[a_idx]:] - 0) ** 2).mean(dim=1)
+            loss = ((mask_conv_sorted[:, :self.core_topks[a_idx]]/core_kernel_sum - 1) ** 2).mean(dim=1) \
+                    + ((mask_conv_sorted[:, self.core_topks[a_idx]:]/core_kernel_sum - 0) ** 2).mean(dim=1)
+            losses.append(loss)
+        losses = torch.stack(losses, dim=0)   # A x N
+        return losses
 
-    def to(self, dev):
-        """Switch to another device.
-        Args:
-            dev: PyTorch device.
-        Returns:
-            Perturbation: self.
-        """
-        self.pyramid.to(dev)
-        return self
-
-    def __str__(self):
-        return (
-            f"Perturbation:\n"
-            f"- type: {self.type}\n"
-            f"- num_levels: {self.num_levels}\n"
-            f"- pyramid shape: {list(self.pyramid.shape)}"
-        )
+    def get_ellipsoid_kernel(self, dims):
+        assert(len(dims) == 3)
+        d1, d2, d3 = dims
+        v1, v2, v3 = np.meshgrid(np.linspace(-1, 1, d1), np.linspace(-1, 1, d2), np.linspace(-1, 1, d3), indexing='ij')
+        dist = np.sqrt(v1 ** 2 + v2 ** 2 + v3 ** 2)
+        return torch.from_numpy((dist <= 1)[np.newaxis, np.newaxis, ...]).float()
 
 # Control smoothness
 # masks: AxNx1xTx S_out x S_out
@@ -299,7 +292,9 @@ def video_perturbation(model,
                           num_levels=8,
                           step=7,
                           sigma=11,
+                          tsigma=0,
                           with_diff=False,
+                          with_core=False,
                           variant=PRESERVE_VARIANT,
                           print_iter=None,
                           debug=False,
@@ -308,15 +303,16 @@ def video_perturbation(model,
                           resize_mode='bilinear',
                           smooth=0,
                           gpu_id=0,
-                          amp=False):
+                          core_num_keyframe=5,
+                          core_spatial_size=11):
     
     if isinstance(areas, float):
         areas = [areas]
     momentum = 0.9
     learning_rate = 0.05
-
     regul_weight = 300
     reward_weight = 1
+    core_weight = 0
     
     device = input.device
     torch.cuda.set_device(gpu_id)
@@ -346,6 +342,10 @@ def video_perturbation(model,
         p.requires_grad_(False)
     model.eval()
 
+    # y = model(input)
+    # ymin, ymin_idx = torch.min(y, dim=1)
+    # print(f'Min index: {ymin_idx[0].item()}, Min: {ymin[0].item()}')
+
     # NxCxTxHxW --> N*T x CxHxW
     pmt_inp = input.transpose(1,2).contiguous() # NxTxCxHxW
     pmt_inp = pmt_inp.view(batch_size*num_frame, *pmt_inp.shape[2:])  # N*T x CxHxW
@@ -361,13 +361,19 @@ def video_perturbation(model,
     h, w = mask_generator.shape_in  # h=112/step, w=112/step, 16x16
     pmasks = torch.ones(num_area*batch_size*num_frame, 1, h, w).to(device)  #A*N*T x 1x16x16
 
+    if with_core:
+        mask_core = CoreLossCalulator(batch_size, num_frame, 
+                            mask_generator.shape_out[0], mask_generator.shape_out[1], 
+                            areas, device, num_key_frames=core_num_keyframe,
+                            spatial_range=(core_spatial_size, core_spatial_size))
+
     max_area = np.prod(mask_generator.shape_out)
     max_volume = np.prod(mask_generator.shape_out) * num_frame
     total_ones = torch.zeros(num_area).to(device)
     # Prepare reference area vector.
     vref = torch.ones(num_area, batch_size, max_volume).to(device)
     for a_idx, area in enumerate(areas):
-        total_ones[a_idx] = int(area * num_frame * max_area)
+        total_ones[a_idx] = int(area * max_volume)
         vref[a_idx, :, :int(max_volume * (1 - area))] = 0
 
     # Initialize optimizer.
@@ -376,9 +382,6 @@ def video_perturbation(model,
                           momentum=momentum,
                           dampening=momentum)
     hist = torch.zeros((num_area, batch_size, 2, 0))
-
-    if amp:
-        scaler = amp.GradScaler()
 
     sum_time = 0
     for t in range(max_iter):
@@ -425,15 +428,17 @@ def video_perturbation(model,
 
         # Area regularization.
         # padded_masks: A x N x 1 x T x S_out x S_out
-        mask_sorted = padded_masks.squeeze(2).reshape(num_area, batch_size, -1).sort(dim=2)[0]  # A x N x T*S_out*S_out
-        # mask_sorted = padded_masks.squeeze(2).reshape(num_area, batch_size, -1)  # A x N x T*S_out*S_out
-        # shuffled_inds = torch.randperm(mask_sorted.shape[2], device=mask_sorted.device)
-        # mask_sorted = mask_sorted[:,:,shuffled_inds]
-        # mask_sorted = mask_sorted.sort(dim=2)[0]
+        # mask_sorted = padded_masks.squeeze(2).reshape(num_area, batch_size, -1).sort(dim=2)[0]  # A x N x T*S_out*S_out
+        mask_sorted = padded_masks.squeeze(2).reshape(num_area, batch_size, -1)  # A x N x T*S_out*S_out
+        shuffled_inds = torch.randperm(mask_sorted.shape[2], device=mask_sorted.device)
+        mask_sorted = mask_sorted[:,:,shuffled_inds]
+        mask_sorted = mask_sorted.sort(dim=2)[0]
 
         regul = ((mask_sorted - vref)**2).mean(dim=2) * regul_weight # A x N
         if with_diff:
             regul += diff_loss(padded_masks) * regul_weight
+        if with_core:
+            regul += mask_core.calculate(padded_masks.contiguous()) * core_weight
 
         # Energy summary
         energy = (reward + regul).sum() 
@@ -446,15 +451,15 @@ def video_perturbation(model,
 
         # Gradient step.
         optimizer.zero_grad()
-        if amp:
-            scaler.scale(energy).backward()
-            scaler.step(optimizer)
-            scaler.update()
-        else:
-            energy.backward()
-            optimizer.step()
+        energy.backward()
+        optimizer.step()
 
         pmasks.data = pmasks.data.clamp(0, 1)
+
+        regul_weight *= 1.0008668     #1.00069^800=2
+        # regul_weight *= 1.001734
+        if t == 100:
+            core_weight = 300
 
         sum_time += time.time() - end_time
         # Print iteration information
@@ -487,7 +492,7 @@ def video_perturbation(model,
             area_mask.append(mask)
         area_mask = torch.stack(area_mask, dim=2)   # NxCxTxHxW
         list_mask.append(area_mask)
-    masks = torch.stack(list_mask, dim=0).cpu()   # AxNxCxTxHxW
+    masks = torch.stack(list_mask, dim=1).cpu()   # NxAxCxTxHxW
 
     # masks: AxNxCxTxHxW; hist: AxNx2xmax_iter; perturb_x: 2*A*N x CxTxHxW
     return masks, hist

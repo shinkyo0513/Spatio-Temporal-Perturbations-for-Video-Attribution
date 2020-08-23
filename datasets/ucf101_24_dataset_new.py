@@ -143,6 +143,7 @@ class UCF101_24_Dataset (Dataset):
 
         all_list = list(self.video_annot_dict.keys())
         test_list = open(self.split_file, 'r').read().splitlines()
+        # print(len(all_list), len(test_list))
         self.sltd_list = [video_name for video_name in all_list 
                             if video_name not in test_list] if train else test_list
         self.sltd_list = sorted(self.sltd_list)
@@ -157,7 +158,8 @@ class UCF101_24_Dataset (Dataset):
         self.video_clips = SampledVideoClips(self.sltd_list, self.rgb_file, frames_per_clip, 
                                                 frame_rate, num_clips, sample_mode)
 
-        self.video_grounds_dict = self.set_video_grounds_dict()
+        if bbox_gt:
+            self.video_grounds_dict = self.set_video_grounds_dict()
         # if perturb:
         #     self.video_grounds_dict = self.set_video_grounds_dict()
             # ave_ratio = self.cal_ground_area()

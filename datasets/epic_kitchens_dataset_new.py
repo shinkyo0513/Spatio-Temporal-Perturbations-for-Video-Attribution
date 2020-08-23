@@ -127,7 +127,7 @@ class EPIC_Kitchens_Dataset (Dataset):
                     bbox_gt = False, testlist_idx=2, 
                     perturb=None, fade_type='gaussian'):
         self.root_dir = root_dir
-        self.rgb_file = join(root_dir, "frames_rgb_flow/rgb/seg_train")
+        self.rgb_file = join(root_dir, "seg_train")
         if train:
             self.annot_file = crt_dir.replace("datasets", "my_epic_annot/Valid_seg_top20_train.csv")
         else:
@@ -170,9 +170,8 @@ class EPIC_Kitchens_Dataset (Dataset):
 
         if bbox_gt:
             self.seg_bbox_dict = self.set_seg_bbox_dict()
-
-        if perturb:
-            self.seg_grounds_dict = self.set_seg_grounds_dict()
+        # if perturb:
+        #     self.seg_grounds_dict = self.set_seg_grounds_dict()
             # ave_ratio = self.cal_ground_area()
             # print(f'The aberage ratio of grounds size in frame {ave_ratio}.')
 
