@@ -187,13 +187,13 @@ def main_worker(gpu, args):
                         model_ft, x, lowest_labels, areas=args.areas, sigma=sigma, 
                         max_iter=args.perturb_niter, variant="preserve",
                         gpu_id=gpu, print_iter=200, perturb_type="blur",
-                        with_core=args.perturb_withcore)[0]
+                        with_core=args.perturb_withcore, core_num_keyframe=args.perturb_num_keyframe)[0]
                 else:
                     res = video_perturbation(
                             model_ft, x, labels, areas=args.areas, sigma=sigma, 
                             max_iter=args.perturb_niter, variant="preserve",
                             gpu_id=gpu, print_iter=200, perturb_type="blur",
-                            with_core=args.perturb_withcore)[0]
+                            with_core=args.perturb_withcore, core_num_keyframe=args.perturb_num_keyframe)[0]
                 # print(res.shape)
                 heatmaps_np = res.numpy()   # NxAx1xTxHxW
                 # print(heatmaps_np.shape)
@@ -249,7 +249,7 @@ if __name__ == "__main__":
     parser.add_argument("--perturb_niter", type=int, default=1000)
     parser.add_argument("--perturb_withcore", action='store_true')
     parser.add_argument("--perturb_num_keyframe", type=int, default=5)
-    parser.add_argument("--perturb_spatial_size", type=int, default=11)
+    # parser.add_argument("--perturb_spatial_size", type=int, default=11)
 
     parser.add_argument("--master_addr", type=str, default="127.0.1.1")
     parser.add_argument("--master_port", type=str, default="29501")
