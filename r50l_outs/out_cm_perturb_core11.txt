@@ -1,0 +1,3 @@
+['val']
+ucf101_r50l_perturb_full_core11
+Use 3 GPUs.
