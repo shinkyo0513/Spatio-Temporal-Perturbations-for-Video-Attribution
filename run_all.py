@@ -172,7 +172,8 @@ def main_worker(gpu, args):
                 heatmaps_np = res.numpy()   # Nx1xTxHxW
             elif args.vis_method == 'grad_cam':
                 if args.model == 'r2p1d':
-                    layer_name = ['layer4']
+                    # layer_name = ['layer4']
+                    layer_name = ['layer1']
                 elif args.model == 'v16l':
                     layer_name = ['pool5']
                 elif args.model == 'r50l':
