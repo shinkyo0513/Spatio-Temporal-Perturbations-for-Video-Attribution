@@ -29,16 +29,9 @@ ds_root = path_dict.ds_root
 
 from utils.ConfusionMatrix import plot_confusion_matrix
 from utils.CalAcc import AverageMeter, accuracy
+from ReadingDataset import loadTags
 
 crt_dir = os.path.dirname(os.path.realpath(__file__))
-
-def loadTags(filename):
-    with open(filename) as f:
-        reader = csv.reader(f)
-        data = list(reader)
-        
-    tagName = [r[0] for r in data]
-    return tagName, dict(zip(tagName, range(len(tagName))))
 
 import argparse
 parser = argparse.ArgumentParser()

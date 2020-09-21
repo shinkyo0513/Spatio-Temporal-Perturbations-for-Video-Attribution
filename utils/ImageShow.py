@@ -6,6 +6,8 @@ from PIL import Image
 from skimage import transform, filters
 import math
 import os
+import io
+import cv2
 
 import matplotlib
 matplotlib.use("Agg")
@@ -129,8 +131,23 @@ def imsc(img, *args, lim=None, quiet=False, interpolation='lanczos', **kwargs):
             curr_ax.axis('off')
     return img, handle
 
-def plot_voxel(voxel, saliency, show_plot=False, save_path=None):
-    # batch_size = len(input)
+def get_img_from_fig(fig, dpi=75):
+    buf = io.BytesIO()
+    fig.savefig(buf, format="png", dpi=dpi)
+    buf.seek(0)
+    img_arr = np.frombuffer(buf.getvalue(), dtype=np.uint8)
+    buf.close()
+    img = cv2.imdecode(img_arr, 1)
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    # io_buf = io.BytesIO()
+    # fig.savefig(io_buf, format='raw', dpi=dpi)
+    # io_buf.seek(0)
+    # img_arr = np.reshape(np.frombuffer(io_buf.getvalue(), dtype=np.uint8),
+    #                  newshape=(int(fig.bbox.bounds[3]), int(fig.bbox.bounds[2]), -1))
+    # io_buf.close()
+    return img
+
+def plot_voxel(voxel, saliency, show_plot=False, title=None, save_path=None, return_img=False, dpi=75):
     num_frame = voxel.shape[1]
     num_row = 2 * num_frame//8 
 
@@ -144,6 +161,9 @@ def plot_voxel(voxel, saliency, show_plot=False, save_path=None):
         plt.subplot(num_row, 8, (i//8)*16+i%8+8+1)
         imsc(saliency[:,i,:,:], interpolation='none')
 
+    if title is not None:
+        fig.suptitle(title, fontsize=14)
+
     # Save figure if path is specified.
     if save_path:
         save_dir = os.path.dirname(os.path.abspath(save_path))
@@ -156,6 +176,13 @@ def plot_voxel(voxel, saliency, show_plot=False, save_path=None):
     # Show plot if desired.
     if show_plot:
         plt.show()
+
+    if return_img:
+        img = get_img_from_fig(fig, dpi=dpi)
+        plt.close()
+        return img
+    
+    plt.close()
 
 def plot_voxel_wbbox(voxel, saliency, bbox_tensor, 
                     show_plot=False, save_path=None):

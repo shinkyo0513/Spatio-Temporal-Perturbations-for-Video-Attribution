@@ -8,6 +8,7 @@ ds_root = path_dict.ds_root
 
 from utils.ImageShow import *
 from utils.GaussianSmoothing import GaussianSmoothing
+from utils.ReadingDataset import get_frames, load_model_and_dataset
 
 import matplotlib
 matplotlib.use("Agg")
@@ -22,44 +23,52 @@ import torch, torchvision
 from skimage.transform import resize
 from skimage.filters import gaussian
 
-def standardize_epic_video_name(name):
-    video_name = name.split('/')[-1]
-    prefix = video_name.split('-')[0].split('_')
-    return '/'.join([prefix[0], '_'.join(prefix[:2]), video_name])
+def get_perturb_acc_dict (dataset_name, model_name, perturb_res_list, device):
+    from visual_meth.perturbation_area import Perturbation
+    from utils.CalAcc import process_activations
+    from torch.utils.data import Dataset, DataLoader
 
-def standardize_ucf101_video_name(name):
-    classification = name.split('_')[1]
-    return '/'.join(['images', classification, name])
+    model_ft, video_dataset = load_model_and_dataset(dataset_name, model_name)
+    model_ft.to(device)
+    model_ft.eval()
+    dataloader = DataLoader(video_dataset, batch_size=1, shuffle=False, num_workers=128)
 
-def get_frames(dataset_name, model_name, video_name, fids):
-    if dataset_name == 'epic':
-        vname = standardize_epic_video_name(video_name)
-        root_path = f'{ds_root}/epic/seg_train'
-        video_stf = int(sorted(os.listdir(os.path.join(root_path, vname)))[0][-14:-4])
-        frames = [Image.open(os.path.join(root_path, vname, 
-                        f'frame_{fid + video_stf:010d}.jpg')) for fid in fids]
-    elif dataset_name == 'ucf101':
-        root_path = f'{ds_root}/UCF101_24'
-        frames = [Image.open(os.path.join(root_path, standardize_ucf101_video_name(video_name),
-                        format(fid + 1, '05d') + '.jpg')) for fid in fids]
-    else:
-        print('ERROR!')
-        return
+    clip_tensor_dict = {}
+    clip_label_dict = {}
+    for sample in dataloader:
+        x, label, video_name, fidx_tensors = sample
+        video_name = video_name[0].split('/')[-1]
+        clip_tensor_dict[video_name] = x[0]
+        clip_label_dict[video_name] = label[0]
+
+    # print(clip_tensor_dict.keys())
+
+    prob_dict = {}
+    for res in tqdm(perturb_res['val']):
+        video_name = res["video_name"]
+        masks = res["mask"].astype(np.float)     #Ax1xTxHxW
+        fids = res["fidx"]
+
+        clip_tensor = clip_tensor_dict[video_name].to(device)  # CxTxHxW
+        pmt_inp = clip_tensor.transpose(0,1).contiguous() # TxCxHxW
+        # pmt_inp = pmt_inp.view(1*16, *pmt_inp.shape[2:])  # N*T x CxHxW
+        perturbation = Perturbation(pmt_inp, num_levels=8, type="blur").to(device)
+
+        masks_tensor = torch.from_numpy(masks.astype(np.float32)).transpose(1,2)    #AxTx1xHxW
+        masks_tensor = masks_tensor.view(-1, *masks_tensor.shape[2:])   #A*T x1xHxW
+        masks_tensor = masks_tensor.to(device)
+        perturb_x = perturbation.apply(masks_tensor)  # A*T x 1xCxHxW
+        perturb_x = perturb_x.view(-1, 16, *perturb_x.shape[2:]) # AxTxCxHxW
+        perturb_x = perturb_x.transpose(1, 2).contiguous()   # AxCxTxHxW
+        y = model_ft(perturb_x)    #Ax num_classes
+
+        label = clip_label_dict[video_name]
+        label = torch.tensor([label]).to(torch.long)
+        prob, pred_label, pred_label_prob = process_activations(y, label, softmaxed=True)   # prob: A
+        # print(f"{video_name}: {prob[0]:.3f}")
+        prob_dict[video_name] = prob.detach().cpu().numpy()
     
-    if model_name == 'r2p1d' or model_name == 'r50l':
-        transform = torchvision.transforms.Compose([
-            torchvision.transforms.Resize((112, 112)),
-        ])
-    elif model_name == 'v16l':
-        transform = torchvision.transforms.Compose([
-            torchvision.transforms.Resize((240, 320)),
-            torchvision.transforms.CenterCrop((224, 224))
-        ])
-    else:
-        print('ERROR!')
-        return
-    
-    return np.stack([np.array(transform(frame)) for frame in frames])
+    return prob_dict
 
 JET_CMAP = plt.get_cmap('jet')
 def mask_overlap(frames, masks, hm_flag, white_bg=False, frame_wise_norm=False):
@@ -101,7 +110,7 @@ def merge(mat, dim, gap=0):
             )
     return np.concatenate(mat, axis=dim)
 
-def vis_perturb_res (dataset, model, video_name, masks, frame_index, white_bg=False, with_text=True):
+def vis_perturb_res (dataset, model, video_name, masks, frame_index, white_bg=False, with_text=True, prob_dict=None):
     video_name_regu = video_name.split("/")[-1]
     frames = get_frames(dataset, model, video_name_regu, frame_index)
 
@@ -125,12 +134,18 @@ def vis_perturb_res (dataset, model, video_name, masks, frame_index, white_bg=Fa
     mats = [frames, ] + overlaps
     merged_lines = [merge(mat, 1, gap=5) for mat in mats]
     if with_text:
+        if prob_dict != None:
+            prob = prob_dict[video_name]
         for a_idx, area_line in enumerate(merged_lines[1:-1]):
             shape = list(area_line.shape)
             shape[0] = 15
             white_bar = np.ones(shape, dtype=np.uint8) * 255
             area_line = np.concatenate([white_bar, area_line], axis=0)
-            area_line = cv2.putText(area_line, f'{real_areas[a_idx]:.2f}', 
+            if prob_dict != None:
+                area_line = cv2.putText(area_line, f'Area: {real_areas[a_idx]:.2f}; Prob: {prob[a_idx]:.3f}', 
+                                    (2, 11), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,0))
+            else:
+                area_line = cv2.putText(area_line, f'Area: {real_areas[a_idx]:.2f}', 
                                     (2, 11), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,0))
             merged_lines[1+a_idx] = area_line
     merged_fig = merge(merged_lines, 0, gap=8)
@@ -151,7 +166,7 @@ def sum_masks (masks, norm=True):
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument("--dataset", type=str, default='ucf101', choices=['epic', 'ucf101'])
+    parser.add_argument("--dataset", type=str, default='ucf101', choices=['epic', 'ucf101', 'cat_ucf'])
     parser.add_argument("--model", type=str, default='r2p1d', choices=['v16l', 'r2p1d', 'r50l'])
     parser.add_argument('--white_bg', action='store_true')
     parser.add_argument("--specify_video", type=str, default=None)
@@ -168,27 +183,25 @@ if __name__ == "__main__":
         phase_label = "_train"
 
     res_label = f'{args.dataset}_{args.model}_perturb_full{args.extra_label}{phase_label}'
-    vis_save_path = os.path.join(proj_root, 'visual_res', res_label)
-    os.makedirs(vis_save_path, exist_ok=True)
+    if args.visualize:
+        vis_save_path = os.path.join(proj_root, 'visual_res', res_label)
+        os.makedirs(vis_save_path, exist_ok=True)
 
     perturb_res_dir = os.path.join(proj_root, 'exe_res', res_label+'.pt')
     perturb_res = torch.load(perturb_res_dir)
 
-    # res_label = f'{args.dataset}_{args.model}_perturb_full'
-    # perturb_res_dir_test = os.path.join(proj_root, 'exe_res', res_label+'_test.pt')
-    # perturb_res_test = torch.load(perturb_res_dir_test)
-    # perturb_res_dir_train = os.path.join(proj_root, 'exe_res', res_label+'_train.pt')
-    # perturb_res_train = torch.load(perturb_res_dir_train)
-
-    # perturb_res = {'train': perturb_res_train['train'], 'val': perturb_res_test['val']}
-    # perturb_res_dir = os.path.join(proj_root, 'exe_res', res_label+'.pt')
-    # torch.save(perturb_res, perturb_res_dir)
-    # print('Saved.')
-
     summed_res = {'train': list(), 'val': list()}
 
     if args.specify_video == None:
-        for phase in perturb_res.keys():
+        # for phase in perturb_res.keys():
+        for phase in ['val']:
+            if phase == 'val':
+                prob_dict = get_perturb_acc_dict(args.dataset, args.model, perturb_res[phase], 
+                                    torch.device("cuda" if torch.cuda.is_available() else "cpu"))
+            else:
+                prob_dict = None
+            # prob_dict = get_perturb_acc_dict(args.dataset, args.model, perturb_res[phase], 
+            #                         torch.device("cuda" if torch.cuda.is_available() else "cpu"))
             for res in tqdm(perturb_res[phase]):
                 video_name = res["video_name"]
                 masks = res["mask"].astype(np.float)     #Ax1xTxHxW
@@ -221,7 +234,7 @@ if __name__ == "__main__":
                     merged_fig = merge(merged_lines, 0, gap=8)
                     
                     merged_fig = vis_perturb_res(args.dataset, args.model, video_name_regu, 
-                                                masks, fids, white_bg=args.white_bg)
+                                                masks, fids, white_bg=args.white_bg, prob_dict=prob_dict)
                     Image.fromarray(merged_fig).save(os.path.join(vis_save_path, f"{video_name_regu}.jpg"))
                     print(f'Saved {video_name_regu}')
 

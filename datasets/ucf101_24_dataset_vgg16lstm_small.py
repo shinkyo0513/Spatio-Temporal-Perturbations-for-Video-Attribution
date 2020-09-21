@@ -26,6 +26,7 @@ import sys
 sys.path.append("..")
 from utils.GaussianSmoothing import GaussianSmoothing
 from utils import LongRangeSample 
+from ReadingDataset import loadTags
 
 import copy
 class SampledVideoClips (object):
@@ -113,15 +114,6 @@ class SampledVideoClips (object):
                         format(frame_idx+1, '05d')+'.jpg')) for frame_idx in clip_frame_indices]
 
         return clip_frames, video_idx, clip_frame_indices
-
-
-def loadTags(filename):
-    with open(filename) as f:
-        reader = csv.reader(f)
-        data = list(reader)
-        
-    tagName = [r[0] for r in data]
-    return tagName, dict(zip(tagName, range(len(tagName))))
 
 class UCF101_24_Dataset (Dataset):
     def __init__ (self, root_dir, frames_per_clip, sample_mode, 

@@ -10,7 +10,7 @@ import numpy as np
 from utils.CalAcc import AverageMeter, accuracy
 from utils.CalAcc import process_activations
 
-from torch.cuda import amp
+# from torch.cuda import amp
 
 
 class r2plus1d (nn.Module):

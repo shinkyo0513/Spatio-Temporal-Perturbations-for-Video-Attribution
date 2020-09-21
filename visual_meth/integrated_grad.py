@@ -75,6 +75,6 @@ def integrated_grad (inputs, labels, model, device, steps,
     vmax = np.percentile(grads_np, 99.9, axis=1, keepdims=True)
     vmin = np.min(grads_np, axis=1, keepdims=True)
     normed_grads = torch.from_numpy(np.clip((grads_np - vmin) / (vmax - vmin), 0, 1))    # Nx1xTxHxW
-    normed_grads = np.reshape(normed_grads, (bs, 1, nt, h, w))
+    normed_grads = normed_grads.reshape(bs, 1, nt, h, w)
     return normed_grads
 

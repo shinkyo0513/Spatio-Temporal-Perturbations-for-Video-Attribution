@@ -6,11 +6,8 @@ path_dict = PathDict()
 proj_root = path_dict.proj_root
 ds_root = path_dict.ds_root
 
-# import sys
-# sys.path.append(proj_root)
-# print(sys.path)
-
 from utils.ImageShow import *
+from utils.ReadingDataset import load_model_and_dataset, getTagScore, loadTags
 from process_perturb_res import vis_perturb_res
 
 from visual_meth.integrated_grad import integrated_grad
@@ -18,6 +15,7 @@ from visual_meth.gradients import gradients
 from visual_meth.perturbation_area import video_perturbation
 from visual_meth.grad_cam import grad_cam
 from visual_meth.smooth_grad import smooth_grad
+from visual_meth.excitation_backprop import excitation_bp
 
 import torch
 import torch.multiprocessing as mp
@@ -32,79 +30,14 @@ import time
 import csv
 import copy
 
-def loadTags(filename):
-    with open(filename) as f:
-        reader = csv.reader(f)
-        data = list(reader)
-        
-    tagName = [r[0] for r in data]
-    return tagName, dict(zip(tagName, range(len(tagName))))
-
-def getTagScore(scores, tags, tag2IDs):
-    tagScore = []
-    for r in tags:
-        tagScore.append((r, scores[tag2IDs[r]]))
-    return tagScore
-
-def load_model_and_dataset (args):
-    if args.dataset == "ucf101":
-        num_classes = 24
-        ds_path = f'{ds_root}/UCF101_24'
-        if args.model == "r2p1d":
-            from datasets.ucf101_24_dataset_new import UCF101_24_Dataset as dataset
-            from model_def.r2plus1d import r2plus1d as model
-            # model_wgts_dir = f"{proj_root}/model_param/ucf101_24_r2plus1d_18_16_Full_LongRange.pt"
-            model_wgts_dir = f"{proj_root}/model_param/ucf101_24_r2p1d_16_Full_LongRange.pt"
-        elif args.model == "r50l":
-            from datasets.ucf101_24_dataset_new import UCF101_24_Dataset as dataset
-            from model_def.r50lstm import r50lstm as model
-            model_wgts_dir = f"{proj_root}/model_param/ucf101_24_r50l_16_Full_LongRange.pt"
-        elif args.model == "v16l":
-            from datasets.ucf101_24_dataset_vgg16lstm import UCF101_24_Dataset as dataset
-            from model_def.vgg16lstm import vgg16lstm as model
-            model_wgts_dir = f"{proj_root}/model_param/ucf101_24_vgg16lstm_16_Full_LongRange.pt"
-    elif args.dataset == "epic":
-        num_classes = 20
-        ds_path = os.path.join(ds_root, path_dict.epic_rltv_dir)
-        if args.model == "r2p1d":
-            from datasets.epic_kitchens_dataset_new import EPIC_Kitchens_Dataset as dataset
-            from model_def.r2plus1d import r2plus1d as model
-            model_wgts_dir = f"{proj_root}/model_param/epic_r2p1d_16_Full_LongRange.pt"
-        elif args.model == "r50l":
-            from datasets.epic_kitchens_dataset_new import EPIC_Kitchens_Dataset as dataset
-            from model_def.r50lstm import r50lstm as model
-            model_wgts_dir = f"{proj_root}/model_param/epic_r50l_16_Full_LongRange.pt"
-        elif args.model == "v16l":
-            from datasets.epic_kitchens_dataset_vgg16lstm import EPIC_Kitchens_Dataset as dataset
-            from model_def.vgg16lstm import vgg16lstm as model
-            model_wgts_dir = f"{proj_root}/model_param/epic_vgg16lstm_16_Full_LongRange.pt"
-
-    if args.model == "r2p1d" or args.model == "r50l":
-        model_ft = model(num_classes=num_classes, with_softmax=True)
-    elif args.model == "v16l":
-        model_ft = model(num_classes=num_classes)
-    model_ft.load_weights(model_wgts_dir)
-
-    # phase_set = ["val"] if args.only_test else ["train", "val"]
-    sample_mode = 'long_range_last'
-    num_frame = 16
-    video_datasets = {x: dataset(ds_path, num_frame, sample_mode, 1, 6, \
-                            x=='train', testlist_idx=1) for x in args.phase_set}
-    # print(rank, {x: 'Num of clips:{}'.format(len(video_datasets[x])) for x in ['train', 'val']})
-    return model_ft, video_datasets
-
 def main_worker(gpu, args):
     if args.vis_method == 'perturb':
         if args.model == 'r2p1d' or args.model == "r50l":
             step = 7
             sigma = 11
-            # batch_size = 8
         elif args.model == 'v16l':
             step = 14
             sigma = 23
-            # batch_size = 4
-    # else:
-    #     batch_size = 8 if args.model == 'r2p1d' else 4
     batch_size = args.batch_size
 
     rank = gpu	                          
@@ -117,14 +50,13 @@ def main_worker(gpu, args):
 
     torch.manual_seed(0)
 
-    model_ft, video_datasets = load_model_and_dataset(args)
+    model_ft, video_datasets = load_model_and_dataset(args.dataset, args.model, args.phase_set)
     model_ft = model_ft.eval()  # important!
     model_ft.cuda(gpu)
     model_ft = DDP(model_ft, device_ids=[gpu])
 
     # Initialize the dataset and dataloader
     
-    # print('Only process videos in train set.')
     samplers = {x: torch.utils.data.distributed.DistributedSampler(video_datasets[x], 
                         num_replicas=args.world_size, rank=rank) for x in args.phase_set}
     dataloaders = {x: DataLoader(video_datasets[x], batch_size=batch_size, shuffle=False, 
@@ -173,7 +105,7 @@ def main_worker(gpu, args):
             elif args.vis_method == 'grad_cam':
                 if args.model == 'r2p1d':
                     # layer_name = ['layer4']
-                    layer_name = ['layer1']
+                    layer_name = ['layer3']
                 elif args.model == 'v16l':
                     layer_name = ['pool5']
                 elif args.model == 'r50l':
@@ -181,6 +113,9 @@ def main_worker(gpu, args):
                 res = grad_cam(x, labels, model_ft, args.model, device, layer_name=layer_name, norm_vis=True)
                 heatmaps_np = res.numpy()   # Nx1xTxHxW
                 # heatmaps_np = 1 - (1 - heatmaps_np ** 2.0) ** 2.4
+            elif args.vis_method == 'eb':
+                res = excitation_bp(x, labels, model_ft)
+                heatmaps_np = res.numpy()
             elif args.vis_method == 'perturb':
                 sigma = 11 if x.shape[-1] == 112 else 23
                 if args.lowest_label:
@@ -215,7 +150,7 @@ def main_worker(gpu, args):
                                                     heatmaps_np[bidx], fidxs, white_bg=False)
                         Image.fromarray(merged_fig).save(os.path.join(args.plot_save_path, seg_name+'.jpg'))
                     else:
-                        if args.vis_method == 'grad_cam':
+                        if args.vis_method == 'grad_cam' or args.vis_method == 'eb':
                             heatmap_np = overlap_maps_on_voxel_np(inp_np, heatmaps_np[bidx,0])
                         else:
                             heatmap_np = heatmaps_np[bidx].repeat(3, axis=0)      # 3 x num_f x 224 224
@@ -235,9 +170,9 @@ if __name__ == "__main__":
     # parser.add_argument("--testlist_idx", type=int, default=2, choices=[1, 2])
     # parser.add_argument("--num_f", type=int, default=16, choices=[8, 16])
     # parser.add_argument("--long_range", action='store_true')
-    parser.add_argument("--dataset", type=str, choices=['epic', 'ucf101'])
+    parser.add_argument("--dataset", type=str, choices=['epic', 'ucf101', 'cat_ucf'])
     parser.add_argument("--model", type=str, choices=['r2p1d', 'v16l', 'r50l'])
-    parser.add_argument("--vis_method", type=str, choices=['g', 'ig', 'sg', 'sg2', 'sg_var', 'grad_cam', 'perturb'])
+    parser.add_argument("--vis_method", type=str, choices=['g', 'ig', 'sg', 'sg2', 'sg_var', 'grad_cam', 'eb', 'perturb'])
     parser.add_argument("--only_test", action="store_true")
     parser.add_argument("--only_train", action="store_true")
     parser.add_argument("--num_gpu", type=int, default=-1)
@@ -265,6 +200,10 @@ if __name__ == "__main__":
         args.phase_set = ["val"]
     if args.only_train:
         args.phase_set = ["train"]
+
+    if args.dataset == 'cat_ucf':
+        args.phase_set = ["val"]
+
     print(args.phase_set)
 
     # Set path to save masks generated by perturbations
@@ -289,6 +228,8 @@ if __name__ == "__main__":
 
     if args.vis_method == 'perturb':
         args.areas = [0.05, 0.1, 0.15, 0.5]
+        if args.dataset == 'cat_ucf':
+            args.areas = [0.02, 0.05, 0.1]
 
     multi_gpu = True
     if args.num_gpu == -1:
