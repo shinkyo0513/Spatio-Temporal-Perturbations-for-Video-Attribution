@@ -1,4 +1,3 @@
-The visualization results will not be visualized and save.
 Loaded /home/lzq/ExpEval/exe_res/ucf101_r2p1d_perturb_full_core3_test_summed.pt
 v_Basketball_g01_c01: 0.26306523251182895
 v_Basketball_g01_c02: 0.4832968101781957

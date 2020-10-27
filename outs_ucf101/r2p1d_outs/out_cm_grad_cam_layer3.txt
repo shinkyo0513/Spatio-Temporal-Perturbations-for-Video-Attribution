@@ -1,4 +1,3 @@
-The visualization results will not be visualized and save.
 Loaded /home/lzq/ExpEval/exe_res/ucf101_r2p1d_grad_cam_full_layer3_test.pt
 v_Basketball_g01_c01: 0.3183210015443026
 v_Basketball_g01_c02: 0.4831255095846513

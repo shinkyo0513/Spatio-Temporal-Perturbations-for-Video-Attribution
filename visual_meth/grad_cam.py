@@ -15,9 +15,12 @@ def grad_cam_3d (inputs, labels, model, device, layer_name, norm_vis=True):
     # Forward hook
     forward_hook = lambda li: lambda m, i, o: li.append(o.detach())
 
+    print(model)
+
     observ_layer = model
     for name in layer_name:
         observ_layer = dict(observ_layer.named_children())[name]
+    # print(observ_layer)
 
     observ_grad_ = []
     observ_layer.register_backward_hook(backward_hook(observ_grad_))
@@ -56,6 +59,8 @@ def grad_cam_3d (inputs, labels, model, device, layer_name, norm_vis=True):
         normed_masks = (normed_masks - mins) / (maxs - mins)    
         out_masks = normed_masks.reshape(out_masks.shape)
 
+    print(out_masks.shape)
+
     return out_masks
 
 def grad_cam_rnn (inputs, labels, model, device, layer_name, norm_vis=True):
@@ -71,10 +76,9 @@ def grad_cam_rnn (inputs, labels, model, device, layer_name, norm_vis=True):
     # Forward hook
     forward_hook = lambda li: lambda m, i, o: li.append(o.detach()) # layer7: 4x1024x7x7
     # forward_hook = lambda li: lambda m, i, o: li.append(o.detach())
-
     observ_layer = model
     for name in layer_name:
-        # print(dict(observ_layer['module'].named_children()).keys())
+        # print(dict(observ_layer.named_children()).keys())
         observ_layer = dict(observ_layer.named_children())[name]
 
     # print(observ_layer)

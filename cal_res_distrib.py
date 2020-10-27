@@ -122,4 +122,4 @@ if __name__ == "__main__":
         ax.set_title(f"{tag}  {prob_mean:.3f}/{prob_std:.3f}", fontsize=12)
         ax.set_ylim([0.0, 0.12])
 
-    fig.savefig(f'{args.dataset}_{args.model}_{args.vis_method}_{args.phase}.png')
+    fig.savefig(f'{res_label}.png')

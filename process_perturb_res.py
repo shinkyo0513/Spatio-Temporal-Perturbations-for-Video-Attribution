@@ -44,9 +44,10 @@ def get_perturb_acc_dict (dataset_name, model_name, perturb_res_list, device):
     # print(clip_tensor_dict.keys())
 
     prob_dict = {}
-    for res in tqdm(perturb_res['val']):
+    for res in tqdm(perturb_res_list):
         video_name = res["video_name"]
         masks = res["mask"].astype(np.float)     #Ax1xTxHxW
+        # print(masks.shape)
         fids = res["fidx"]
 
         clip_tensor = clip_tensor_dict[video_name].to(device)  # CxTxHxW
@@ -100,19 +101,22 @@ def mask_overlap(frames, masks, hm_flag, white_bg=False, frame_wise_norm=False):
 def merge(mat, dim, gap=0):
     if type(mat) != list:
         assert(len(mat.shape) == 4)
-        mat = list(mat)        
+        mat = list(mat)     
+    merged_mat = []
     if gap > 0:
         shape = list(mat[0].shape)
         shape[dim] = gap
         for i in range(len(mat) - 1):
-            mat[i] = np.concatenate(
+            merged_mat.append(np.concatenate(
                 [mat[i], np.ones(shape, dtype=np.uint8) * 255], axis=dim
-            )
-    return np.concatenate(mat, axis=dim)
+            ))
+        merged_mat.append(mat[-1])
+    return np.concatenate(merged_mat, axis=dim)
 
-def vis_perturb_res (dataset, model, video_name, masks, frame_index, white_bg=False, with_text=True, prob_dict=None):
+def vis_perturb_res (dataset, model, video_name, masks, frame_index=None, frames=None, white_bg=False, with_text=True, prob_dict=None):
     video_name_regu = video_name.split("/")[-1]
-    frames = get_frames(dataset, model, video_name_regu, frame_index)
+    if frame_index != None:
+        frames = get_frames(dataset, model, video_name_regu, frame_index)
 
     num_area, nch, num_f, nrow, ncol = masks.shape
     real_areas = [masks[a_idx].mean() for a_idx in range(num_area)]
@@ -133,6 +137,7 @@ def vis_perturb_res (dataset, model, video_name, masks, frame_index, white_bg=Fa
 
     mats = [frames, ] + overlaps
     merged_lines = [merge(mat, 1, gap=5) for mat in mats]
+    # print(len(merged_lines))
     if with_text:
         if prob_dict != None:
             prob = prob_dict[video_name]
@@ -148,8 +153,9 @@ def vis_perturb_res (dataset, model, video_name, masks, frame_index, white_bg=Fa
                 area_line = cv2.putText(area_line, f'Area: {real_areas[a_idx]:.2f}', 
                                     (2, 11), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,0))
             merged_lines[1+a_idx] = area_line
+    # print(len(merged_lines))
     merged_fig = merge(merged_lines, 0, gap=8)
-    return merged_fig
+    return merged_fig, mats
 
 def sum_masks (masks, norm=True):
     # masks: Ax1xTxHxW
@@ -233,8 +239,8 @@ if __name__ == "__main__":
                     merged_lines = [merge(mat, 1, gap=5) for mat in mats]
                     merged_fig = merge(merged_lines, 0, gap=8)
                     
-                    merged_fig = vis_perturb_res(args.dataset, args.model, video_name_regu, 
-                                                masks, fids, white_bg=args.white_bg, prob_dict=prob_dict)
+                    merged_fig, mats = vis_perturb_res(args.dataset, args.model, video_name_regu, 
+                                                masks, frames=frames, white_bg=args.white_bg, prob_dict=prob_dict)
                     Image.fromarray(merged_fig).save(os.path.join(vis_save_path, f"{video_name_regu}.jpg"))
                     print(f'Saved {video_name_regu}')
 

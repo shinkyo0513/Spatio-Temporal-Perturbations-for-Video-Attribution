@@ -17,6 +17,7 @@ from tqdm import tqdm
 import math
 import numpy as np
 from skimage import transform
+from skimage.filters import gaussian
 
 import argparse
 parser = argparse.ArgumentParser()
@@ -25,10 +26,11 @@ parser.add_argument("--dataset", type=str, default="ucf101",
 parser.add_argument("--model", type=str, default="r2p1d", 
                                     choices=["r2p1d", "v16l", "r50l"])   
 parser.add_argument("--merge_masks", action='store_true')   
-parser.add_argument("--vis_method", type=str, choices=["g", "ig", "sg", "sg2", "grad_cam", "perturb"])     
+parser.add_argument("--vis_method", type=str, choices=["g", "ig", "sg", "sg2", "grad_cam", "perturb", "eb", "la", "gbp"])     
 parser.add_argument('--only_test', action='store_true')
 parser.add_argument('--only_train', action='store_true')         
-parser.add_argument('--extra_label', type=str, default="")       
+parser.add_argument('--extra_label', type=str, default="")   
+parser.add_argument('--smooth_sigma', type=int, default=0)    
 # parser.add_argument("--res_buf", type=str)
 # parser.add_argument("--tolerance", type=int, default=15, choices=[7, 15])
 args = parser.parse_args()
@@ -98,8 +100,9 @@ for res_dic in res_dic_lst:
 
     for fidx in range(num_f):
         bbox = bboxes[fidx].tolist()
-        mask = masks[fidx]  # numpy, 14x14
-        resized_mask = transform.resize(mask, resize, order=3, mode='symmetric')  # numpy, H x W
+        mask = masks[fidx].astype(np.float32)  # numpy, 14x14
+        resized_mask = transform.resize(mask, resize, order=1, mode='symmetric')  # numpy, H x W
+        resized_mask = gaussian(resized_mask, sigma=args.smooth_sigma)
         if bbox != (0,0,0,0):
             max_ind = np.unravel_index(np.argmax(resized_mask, axis=None), resized_mask.shape)
             hit = pg_recorder.evaluate(bbox, max_ind)

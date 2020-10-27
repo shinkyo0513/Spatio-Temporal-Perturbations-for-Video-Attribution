@@ -16,6 +16,8 @@ from visual_meth.perturbation_area import video_perturbation
 from visual_meth.grad_cam import grad_cam
 from visual_meth.smooth_grad import smooth_grad
 from visual_meth.excitation_backprop import excitation_bp
+from visual_meth.guided_backprop import guided_bp
+from visual_meth.linear_approximation import linear_appr
 
 import torch
 import torch.multiprocessing as mp
@@ -104,8 +106,8 @@ def main_worker(gpu, args):
                 heatmaps_np = res.numpy()   # Nx1xTxHxW
             elif args.vis_method == 'grad_cam':
                 if args.model == 'r2p1d':
-                    # layer_name = ['layer4']
-                    layer_name = ['layer3']
+                    layer_name = ['layer4']
+                    # layer_name = ['layer3']
                 elif args.model == 'v16l':
                     layer_name = ['pool5']
                 elif args.model == 'r50l':
@@ -113,8 +115,20 @@ def main_worker(gpu, args):
                 res = grad_cam(x, labels, model_ft, args.model, device, layer_name=layer_name, norm_vis=True)
                 heatmaps_np = res.numpy()   # Nx1xTxHxW
                 # heatmaps_np = 1 - (1 - heatmaps_np ** 2.0) ** 2.4
-            elif args.vis_method == 'eb':
-                res = excitation_bp(x, labels, model_ft)
+            elif args.vis_method == 'eb':   # Cannot support RNN
+                if args.model == 'r2p1d':
+                    layer_name = ['layer4']
+                elif args.model == 'r50l':
+                    layer_name = ['6']
+                else:
+                    raise Exception(f"Excitation BP supports only R(2+1)D now. Given {args.model}.")
+                res = excitation_bp(x, labels, model_ft, args.model, device, layer_name=layer_name, norm_vis=True)
+                heatmaps_np = res.numpy()   # Nx1xTxHxW
+            elif args.vis_method == 'gbp':
+                res = guided_bp(x, labels, model_ft)
+                heatmaps_np = res.numpy()
+            elif args.vis_method == 'la':
+                res = linear_appr(x, labels, model_ft)
                 heatmaps_np = res.numpy()
             elif args.vis_method == 'perturb':
                 sigma = 11 if x.shape[-1] == 112 else 23
@@ -144,10 +158,10 @@ def main_worker(gpu, args):
                 print(seg_names[bidx])
 
                 if args.visualize:
-                    inp_np = voxel_tensor_to_np(x[bidx].detach().cpu())   # 1 x num_f x 224 224
+                    inp_np = voxel_tensor_to_np(x[bidx].detach().cpu())   # 3 x num_f x 224 224
                     if args.vis_method == 'perturb':
-                        merged_fig = vis_perturb_res(args.dataset, args.model, seg_name, 
-                                                    heatmaps_np[bidx], fidxs, white_bg=False)
+                        merged_fig, _ = vis_perturb_res(args.dataset, args.model, seg_name, 
+                                                    heatmaps_np[bidx], frame_idx=fidxs, white_bg=False)
                         Image.fromarray(merged_fig).save(os.path.join(args.plot_save_path, seg_name+'.jpg'))
                     else:
                         if args.vis_method == 'grad_cam' or args.vis_method == 'eb':
@@ -172,7 +186,8 @@ if __name__ == "__main__":
     # parser.add_argument("--long_range", action='store_true')
     parser.add_argument("--dataset", type=str, choices=['epic', 'ucf101', 'cat_ucf'])
     parser.add_argument("--model", type=str, choices=['r2p1d', 'v16l', 'r50l'])
-    parser.add_argument("--vis_method", type=str, choices=['g', 'ig', 'sg', 'sg2', 'sg_var', 'grad_cam', 'eb', 'perturb'])
+    parser.add_argument("--vis_method", type=str, 
+                        choices=['g', 'ig', 'sg', 'sg2', 'grad_cam', 'perturb', 'eb', 'gbp', 'la'])
     parser.add_argument("--only_test", action="store_true")
     parser.add_argument("--only_train", action="store_true")
     parser.add_argument("--num_gpu", type=int, default=-1)

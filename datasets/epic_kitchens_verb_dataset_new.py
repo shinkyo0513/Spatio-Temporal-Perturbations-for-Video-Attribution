@@ -2,6 +2,7 @@ import torch
 from torch import nn
 import torch.nn.functional as F
 from torch.utils.data import Dataset, DataLoader
+import torchvision
 from torchvision import transforms
 
 import os
@@ -9,7 +10,7 @@ from os.path import join, isdir, isfile
 from os import listdir
 
 import pickle
-from PIL import Image
+# from PIL import Image
 from glob import glob
 import bisect
 import numpy as np
@@ -17,6 +18,10 @@ import math
 import random
 import pandas as pd
 import ast
+
+import accimage
+torchvision.set_image_backend('accimage')
+from accimage import Image
 
 import sys
 sys.path.append("..")
@@ -111,8 +116,9 @@ class SampledVideoClips (object):
         video_name = self.video_names[video_idx]
         video_stf = self.video_stf_dict[video_name]
         clip_frame_indices = self.video_clips_dict[video_name][clip_idx]
-        clip_frames = [copy.deepcopy(Image.open(join(self.root_path, video_name, 
-                        f"frame_{frame_idx+video_stf:010d}.jpg"))) for frame_idx in clip_frame_indices]
+        clip_frames = [Image(join(self.root_path, video_name, 
+                        f"frame_{frame_idx+video_stf:010d}.jpg")) for frame_idx in clip_frame_indices]
+
         return clip_frames, video_idx, clip_frame_indices
 
 class EPIC_Kitchens_Dataset (Dataset):
@@ -121,16 +127,15 @@ class EPIC_Kitchens_Dataset (Dataset):
                     bbox_gt = False, testlist_idx=2, 
                     perturb=None, fade_type='gaussian'):
         self.root_dir = root_dir
-        self.rgb_file = join(root_dir, "frames_rgb_flow/rgb/cat_obj_segs")
-        # self.rgb_file = join(root_dir, "frames_rgb_flow/rgb/train")
+        self.rgb_file = join(root_dir, "seg_train")
         if train:
-            self.annot_file = crt_dir.replace("datasets", "my_epic_annot/Valid_seg_top20_train.csv")
+            self.annot_file = crt_dir.replace("datasets", "my_epic_annot/Valid_seg_top20_verb_train_new.csv")
         else:
             if testlist_idx == 1:
-                testlist = "top20_500"
+                testlist = "top20_verb_500"
             elif testlist_idx == 2:
-                testlist = "top20_100"
-            self.annot_file = crt_dir.replace("datasets", f"my_epic_annot/Valid_seg_{testlist}_val_cat.csv")
+                testlist = "top20_verb_100"
+            self.annot_file = crt_dir.replace("datasets", f"my_epic_annot/Valid_seg_{testlist}_val_new.csv")
         self.perturb = perturb
 
         self.frames_per_clip = frames_per_clip
@@ -147,8 +152,7 @@ class EPIC_Kitchens_Dataset (Dataset):
             seg_id = seg_info["seg_id"]
             seg_noun = seg_info["noun"]
             seg_verb = seg_info["verb"]
-            # seg_name = join(f"{v_id[:3]}", f"{v_id}", f"{v_id}_{seg_id}-{seg_verb}-{seg_noun}")
-            seg_name = join(f"{v_id}_{seg_id}-{seg_verb}-{seg_noun}")
+            seg_name = join(f"{v_id[:3]}", f"{v_id}", f"{v_id}_{seg_id}-{seg_verb}-{seg_noun}")
             self.seg_annot_dict[seg_name] = seg_info
 
         all_list = list(self.seg_annot_dict.keys())
@@ -166,9 +170,8 @@ class EPIC_Kitchens_Dataset (Dataset):
 
         if bbox_gt:
             self.seg_bbox_dict = self.set_seg_bbox_dict()
-
-        if perturb:
-            self.seg_grounds_dict = self.set_seg_grounds_dict()
+        # if perturb:
+        #     self.seg_grounds_dict = self.set_seg_grounds_dict()
             # ave_ratio = self.cal_ground_area()
             # print(f'The aberage ratio of grounds size in frame {ave_ratio}.')
 
@@ -181,17 +184,7 @@ class EPIC_Kitchens_Dataset (Dataset):
         # clip_fidx: indices of frames in the clip (relative to one segment, i.e., 0~seg_len-1)
         clip_frames, seg_idx, clip_fidx = self.all_clips.get_clip(idx)
         seg_name = self.sltd_list[seg_idx]
-        label = int(self.seg_annot_dict[seg_name]["noun_label"])
-
-        seg_info = self.seg_annot_dict[seg_name]
-        st = seg_info["start_frame"]
-        mid = seg_info["middle_frame"]
-        ground = seg_info["ground"]
-        if ground == 'left':
-            temporal_ground_mask = [1 if fidx + st < mid else 0 for fidx in clip_fidx]
-        elif ground == 'right':
-            temporal_ground_mask = [0 if fidx + st < mid else 1 for fidx in clip_fidx]
-        temporal_ground_mask = torch.tensor(temporal_ground_mask)
+        label = int(self.seg_annot_dict[seg_name]["verb_label"])
 
         clip_tensor = torch.stack([self.transform(clip_frame) for clip_frame in 
                                     clip_frames], dim=1)    # 3x16x112x112
@@ -200,10 +193,14 @@ class EPIC_Kitchens_Dataset (Dataset):
         if self.bbox_gt:
             clip_bbox_tensor = self.get_clip_bbox_tensor(seg_name, clip_fidx, srch_hw=3)
             return clip_tensor, label, seg_name, clip_fidx_tensor, clip_bbox_tensor
+        
+        if self.perturb:
+            clip_grounds = self.get_clip_grounds(seg_name, clip_fidx)
+            clip_tensor = self.perturb_clip_tensor(clip_tensor, clip_grounds, 
+                                                    self.perturb, fade_type=self.fade_type)
+            return clip_tensor, label, seg_name, clip_grounds
 
-        return clip_tensor, label, seg_name, clip_fidx_tensor, temporal_ground_mask
-
-    # def get_temporal_ground_mask (self):
+        return clip_tensor, label, seg_name, clip_fidx_tensor
 
     def set_seg_bbox_dict (self):
         seg_bbox_dict = {}
@@ -244,3 +241,97 @@ class EPIC_Kitchens_Dataset (Dataset):
 
         clip_bbox_tensor = torch.tensor(clip_bbox_lst).long()   # 16 x 4
         return clip_bbox_tensor
+
+    def set_seg_grounds_dict (self):
+        seg_grounds_dict = {}
+        for seg_name in self.sltd_list:
+            seg_info = self.seg_annot_dict[seg_name]
+            seg_sf = int(seg_info["start_frame"])
+            seg_ef = int(seg_info["stop_frame"])
+            seg_bbox = ast.literal_eval(seg_info["bounding_boxes"])
+            seg_numf = seg_ef - seg_sf + 1
+
+            seg_grounds = [None]*seg_numf
+            for seg_fidx in range(seg_sf, seg_ef+1):
+                for fidx_wbbox in list(seg_bbox.keys()):
+                    if abs(seg_fidx-fidx_wbbox)<=15:
+                        seg_grounds[seg_fidx-seg_sf] = seg_bbox[fidx_wbbox]
+            
+            seg_grounds_dict[seg_name] = seg_grounds
+        return seg_grounds_dict
+            
+    def get_clip_grounds (self, seg_name, clip_frame_indices):
+        seg_grounds = self.seg_grounds_dict[seg_name]
+        clip_grounds = []
+        for f_idx in clip_frame_indices:
+            clip_grounds.append( seg_grounds[f_idx] )
+        return clip_grounds
+
+    # TODO: perturb frames by grounds need to be change
+    def perturb_clip_tensor (self, clip_tensor, clip_grounds, mode, fade_type='gaussian'):
+        # Using self-implemented gaussian perturbation
+        def get_perturb_masks(clip_grounds):
+            pmasks = []
+            for f_idx, f_grounds in enumerate(clip_grounds):
+                f_pmask = torch.zeros(1, 1, 112, 112)
+                if f_grounds != None:
+                    y, x, dy, dx = f_grounds
+                    x = math.floor(112*x / 1920)
+                    y = math.floor(112*y / 1080)
+                    dx = math.ceil(112*dx / 1920)
+                    dy = math.ceil(112*dy / 1080)
+                    f_pmask[:, :, y:y+dy, x:x+dx] = 1.0
+                pmasks.append(f_pmask)
+            pmasks_tensor = torch.cat(pmasks, dim=1)
+            return pmasks_tensor
+
+        pmasks_tensor = get_perturb_masks(clip_grounds) # 1x16x112x112
+        if fade_type == 'gaussian':
+            smoothing = GaussianSmoothing(channels=3, kernel_size=15, sigma=21)
+
+        p_clip_tensor = []
+        for f_idx in range(clip_tensor.shape[1]):
+            f_tensor = clip_tensor[:,f_idx,:,:].unsqueeze(0)    #1x3x112x112
+            if fade_type == 'gaussian':
+                blurred_f_tensor = smoothing(F.pad(f_tensor, (7, 7, 7, 7)))
+            elif fade_type == 'black':
+                blurred_f_tensor = torch.zeros_like(f_tensor)
+            elif fade_type == 'random':
+                blurred_f_tensor = torch.stack([
+                    torch.randn((112,112))*0.22803+0.43216,
+                    torch.randn((112,112))*0.22145+0.394666,
+                    torch.randn((112,112))*0.216989+0.37645,
+                ], dim=0).unsqueeze(0)
+            elif fade_type == 'mean':
+                blurred_f_tensor = torch.stack([
+                    torch.zeros((112,112))+0.43216,
+                    torch.zeros((112,112))+0.394666,
+                    torch.zeros((112,112))+0.37645,
+                ], dim=0).unsqueeze(0)
+            else:
+                raise Exception('No fade_type called '+fade_type)
+
+            f_pmask = pmasks_tensor[:,f_idx,:,:].unsqueeze(0)   #1x1x112x112
+            if mode=='delete':   # delete annotation regions
+                p_f_tensor = f_pmask * blurred_f_tensor + (1.0-f_pmask) * f_tensor
+            elif mode=='preserve':
+                p_f_tensor = (1.0-f_pmask) * blurred_f_tensor + f_pmask * f_tensor
+            elif mode=='full':
+                p_f_tensor = blurred_f_tensor
+            p_clip_tensor.append(p_f_tensor.squeeze(0)) #3x112x112
+        p_clip_tensor = torch.stack(p_clip_tensor, dim=1)   #3x16x112x112
+        return p_clip_tensor
+
+    def cal_ground_area (self):
+        area_sum = 0
+        num_ground = 0
+        for video_name, video_grounds in self.video_grounds_dict.items():
+            for f_idx, f_grounds in enumerate(video_grounds):
+                if f_grounds != None:
+                    f_area = 0
+                    for ground in f_grounds:
+                        x, y, dx, dy = list(ground.astype(np.int64))
+                        f_area += dx*dy
+                    area_sum += f_area
+                    num_ground += 1
+        return (area_sum/num_ground) / (1920*1440)

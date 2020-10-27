@@ -25,18 +25,25 @@ proj_root = path_dict.proj_root
 ds_root = path_dict.ds_root
 
 # img = img_as_float(astronaut()[::2, ::2])
-imgs1 = get_frames('ucf101', 'r2p1d', 'v_HorseRiding_g01_c01', [0,10,20,30])
-imgs2 = get_frames('ucf101', 'r2p1d', 'v_SalsaSpin_g01_c02', [0,10,20,30])
-imgs = np.concatenate([imgs1, imgs2], axis=0)
+imgs1 = get_frames('ucf101', 'r2p1d', 'v_HorseRiding_g01_c01', [0, 200])
+imgs2 = get_frames('ucf101', 'r2p1d', 'v_SalsaSpin_g01_c02', [0, 100])
+imgs3 = get_frames('epic', 'r2p1d', 'P06_09_11691-open-drawer', [0, 100])
+imgs = np.concatenate([imgs1], axis=0)
+# imgs = imgs1
 # img = imgs[0]
-segments_slic = slic(imgs, n_segments=200, compactness=25, sigma=1)
+segments_slic = slic(imgs, n_segments=256, sigma=1, slic_zero=True)#, compactness=20)
 print(imgs.shape, segments_slic.shape)
 print(f"SLIC number of segments: {len(np.unique(segments_slic))}")
+# print(segments_slic)
 
-fig, axes = plt.subplots(1, 8, figsize=(28, 4), sharex=True, sharey=True)
-for aidx, ax in enumerate(axes):
-    ax.imshow(mark_boundaries(imgs[aidx], segments_slic[aidx]))
-    # ax.set_title('SLIC')
+num_f = imgs.shape[0]
+if num_f > 1:
+    fig, axes = plt.subplots(1, num_f, figsize=(4*num_f, 4), sharex=True, sharey=True)
+    for aidx, ax in enumerate(axes):
+        ax.imshow(mark_boundaries(imgs[aidx], segments_slic[aidx]))
+else:
+    fig, ax = plt.subplots(1, num_f, figsize=(4*imgs.shape[0], 4), sharex=True, sharey=True)
+    ax.imshow(mark_boundaries(imgs[0], segments_slic[0]))
 
 plt.tight_layout()
-fig.savefig('test.png')
+fig.savefig('test256.png')

@@ -1,6 +1,5 @@
-The visualization results will not be visualized and save.
 Loaded /home/lzq/ExpEval/exe_res/ucf101_r2p1d_g_full.pt
-v_Basketball_v_Basketball_g01_c01: 0.6440565539341346
+v_Basketball_g01_c01: 0.6440565539341346
 v_Basketball_g01_c02: 0.7260056972503662
 v_Basketball_g01_c03: 0.8304474901919271
 v_Basketball_g01_c04: 0.6811479720414854
@@ -912,7 +911,6 @@ v_WalkingWithDog_g07_c04: 0.6896461697541835
 v_WalkingWithDog_g07_c05: 0.4458368461579084
 v_WalkingWithDog_g07_c06: 0.551081403961186
 Average: 0.0/0.4689654244534642
-The visualization results will not be visualized and save.
 Loaded /home/lzq/ExpEval/exe_res/ucf101_r2p1d_ig_full.pt
 v_Basketball_g01_c01: 0.5428921927497083
 v_Basketball_g01_c02: 0.5863287489496025
@@ -1825,7 +1823,6 @@ v_WalkingWithDog_g07_c04: 0.4882332049401514
 v_WalkingWithDog_g07_c05: 0.2361759939935177
 v_WalkingWithDog_g07_c06: 0.632264363594061
 Average: 0.0/0.5852823382978296
-The visualization results will not be visualized and save.
 Loaded /home/lzq/ExpEval/exe_res/ucf101_r2p1d_sg_full.pt
 v_Basketball_g01_c01: 0.3848220426297071
 v_Basketball_g01_c02: 0.5175231870154248
@@ -2738,7 +2735,6 @@ v_WalkingWithDog_g07_c04: 0.7119792991226502
 v_WalkingWithDog_g07_c05: 0.48192061142557685
 v_WalkingWithDog_g07_c06: 0.6524485510700911
 Average: 0.0/0.6228312031165525
-The visualization results will not be visualized and save.
 Loaded /home/lzq/ExpEval/exe_res/ucf101_r2p1d_sg2_full.pt
 v_Basketball_g01_c01: 0.6790229079697062
 v_Basketball_g01_c02: 0.7166280174226153
@@ -3651,7 +3647,6 @@ v_WalkingWithDog_g07_c04: 0.7992870467094083
 v_WalkingWithDog_g07_c05: 0.46204478594217124
 v_WalkingWithDog_g07_c06: 0.7351838618220177
 Average: 0.0/0.7643672037112481
-The visualization results will not be visualized and save.
 Loaded /home/lzq/ExpEval/exe_res/ucf101_r2p1d_grad_cam_full.pt
 v_Basketball_g01_c01: 0.8723235122129029
 v_Basketball_g01_c02: 0.8270533022342944

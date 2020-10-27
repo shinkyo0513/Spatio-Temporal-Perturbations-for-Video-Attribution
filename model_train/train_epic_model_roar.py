@@ -29,7 +29,7 @@ ds_root = path_dict.ds_root
 
 from utils.ConfusionMatrix import plot_confusion_matrix
 from utils.CalAcc import AverageMeter, accuracy
-from ReadingDataset import loadTags
+from utils.ReadingDataset import loadTags
 
 crt_dir = os.path.dirname(os.path.realpath(__file__))
 

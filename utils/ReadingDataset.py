@@ -13,6 +13,7 @@ import matplotlib.animation as animation
 
 import cv2
 import numpy as np
+import csv
 from tqdm import tqdm
 from PIL import Image
 import torch, torchvision
@@ -39,6 +40,29 @@ def standardize_epic_video_name(name):
 def standardize_ucf101_video_name(name):
     classification = name.split('_')[1]
     return '/'.join(['images', classification, name])
+
+
+def get_all_test_video_names (dataset_name, testlist_idx=1):
+    if dataset_name == 'epic':
+        if testlist_idx == 1:
+            testlist_label= "top20_500"
+        elif testlist_idx == 2:
+            testlist_label = "top20_100"
+
+        test_annot_path = os.path.join(proj_root, "my_epic_annot", f"Valid_seg_{testlist_label}_val.csv")
+        test_annot_pd = pd.read_csv(test_annot_path)
+        test_video_names = []
+        for idx, seg_info in test_annot_pd.iterrows():
+            v_id = seg_info["video_id"]
+            seg_id = seg_info["seg_id"]
+            seg_noun = seg_info["noun"]
+            seg_verb = seg_info["verb"]
+            video_name = os.path.join(f"{v_id[:3]}", f"{v_id}", f"{v_id}_{seg_id}-{seg_verb}-{seg_noun}")
+            test_video_names.append(video_name)
+    elif dataset_name == 'ucf101':
+        testlist_label = f'testlist{testlist_idx:02d}'
+        test_annot_path = os.path.join(root_dir, f'splits/{testlist_label}.txt')
+        test_video_names = sorted(open(test_annot_path, 'r').read().splitlines())
 
 def get_frames(dataset_name, model_name, video_name, fids):
     if dataset_name == 'epic':
@@ -121,7 +145,7 @@ class FramesReader ():
         return np.stack([np.array(self.transform(frame)) for frame in self.frames])
 
 
-def load_model_and_dataset (dataset_name, model_name, phase='val'):
+def load_model_and_dataset (dataset_name, model_name, phase='val', testlist_idx=1):
     assert dataset_name in ['ucf101', 'epic', 'cat_ucf']
     assert model_name in ['r2p1d', 'r50l']
     if isinstance(phase, list):
@@ -182,9 +206,9 @@ def load_model_and_dataset (dataset_name, model_name, phase='val'):
     num_frame = 16
     if isinstance(phase, list):
         video_datasets = {x: dataset(ds_path, num_frame, sample_mode, 1, 6, \
-                                x=='train', testlist_idx=1) for x in phase}
+                                x=='train', testlist_idx=testlist_idx) for x in phase}
         # print(rank, {x: 'Num of clips:{}'.format(len(video_datasets[x])) for x in ['train', 'val']})
         return model_ft, video_datasets
     else:
-        video_dataset = dataset(ds_path, num_frame, sample_mode, 1, 6, phase=='train', testlist_idx=1)
+        video_dataset = dataset(ds_path, num_frame, sample_mode, 1, 6, phase=='train', testlist_idx=testlist_idx)
         return model_ft, video_dataset

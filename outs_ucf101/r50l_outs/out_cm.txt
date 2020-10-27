@@ -1,4 +1,3 @@
-The visualization results will not be visualized and save.
 Loaded /home/lzq/ExpEval/exe_res/ucf101_r50l_g_full.pt
 v_Basketball_g01_c01: 0.3851321550623634
 v_Basketball_g01_c02: 0.4751003530093507
@@ -911,7 +910,6 @@ v_WalkingWithDog_g07_c04: 0.2943361068820126
 v_WalkingWithDog_g07_c05: 0.22148503479400514
 v_WalkingWithDog_g07_c06: 0.17984228364310093
 Average: 0.0/0.30951909863479077
-The visualization results will not be visualized and save.
 Loaded /home/lzq/ExpEval/exe_res/ucf101_r50l_ig_full.pt
 v_Basketball_g01_c01: 0.2984580146330234
 v_Basketball_g01_c02: 0.37155337275187406
@@ -1824,7 +1822,6 @@ v_WalkingWithDog_g07_c04: 0.152142219179691
 v_WalkingWithDog_g07_c05: 0.3201673615933549
 v_WalkingWithDog_g07_c06: 0.10588692654236737
 Average: 0.0/0.3927720716338082
-The visualization results will not be visualized and save.
 Loaded /home/lzq/ExpEval/exe_res/ucf101_r50l_sg_full.pt
 v_Basketball_g01_c01: 0.39876304245403044
 v_Basketball_g01_c02: 0.3059612538980197
@@ -2737,7 +2734,6 @@ v_WalkingWithDog_g07_c04: 0.5008746475851575
 v_WalkingWithDog_g07_c05: 0.047417080047637894
 v_WalkingWithDog_g07_c06: 0.09576160625212134
 Average: 0.0/0.3762704307720258
-The visualization results will not be visualized and save.
 Loaded /home/lzq/ExpEval/exe_res/ucf101_r50l_sg2_full.pt
 v_Basketball_g01_c01: 0.474778789374305
 v_Basketball_g01_c02: 0.3563194761970274
@@ -3650,7 +3646,6 @@ v_WalkingWithDog_g07_c04: 0.5172287183691281
 v_WalkingWithDog_g07_c05: 0.061042402749487835
 v_WalkingWithDog_g07_c06: 0.2860580861140537
 Average: 0.0/0.42419967090145966
-The visualization results will not be visualized and save.
 Loaded /home/lzq/ExpEval/exe_res/ucf101_r50l_grad_cam_full.pt
 v_Basketball_g01_c01: 0.7123807619174448
 v_Basketball_g01_c02: 0.6437972763704582
@@ -4563,8 +4558,6 @@ v_WalkingWithDog_g07_c04: 0.38525089744221075
 v_WalkingWithDog_g07_c05: 0.3738885552360809
 v_WalkingWithDog_g07_c06: 0.13300735150330414
 Average: 0.0/0.4451651103612305
-
-The visualization results will not be visualized and save.
 Loaded /home/lzq/ExpEval/exe_res/ucf101_r50l_perturb_full_summed.pt
 v_Basketball_g01_c01: 0.6074921238576656
 v_Basketball_g01_c02: 0.47199415505759346

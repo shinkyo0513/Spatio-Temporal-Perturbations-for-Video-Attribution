@@ -61,13 +61,30 @@ class Resnet50LSTM (nn.Module):
 
         self.fc6 = nn.Linear(2048, 1024, bias=True)
         self.fc7 = nn.Linear(1024, 512, bias=True)
-        # self.fc7 = nn.Linear(1024, 1024, bias=True)
         self.dropout = nn.Dropout(p=0.5)
         self.relu = nn.ReLU(True)
         self.lstm1 = ReluLSTMCell(512, 256, bias=True)
         self.fc8_final = nn.Linear(256, self.num_classes, bias=True)
-        # self.lstm1 = ReluLSTMCell(1024, 512, bias=True)
-        # self.fc8_final = nn.Linear(512, self.num_classes, bias=True)
+
+    # def __init__ (self, num_classes, pretrained=True):
+    #     super(Resnet50LSTM, self).__init__()
+    #     self.num_classes = num_classes
+
+    #     self.resnet = torchvision.models.resnet50(pretrained=False)
+    #     if pretrained:
+    #         pt_wgts = torch.load(os.path.join(proj_root, 'model_param', 'kinetics400_rgb_resnet18_tsn.pt'))
+    #         model_wgts = self.resnet.state_dict()
+    #         for k in model_wgts.keys():
+    #             if k in pt_wgts:
+    #                 model_wgts[k] = pt_wgts[k]
+    #         self.resnet.load_state_dict(model_wgts)
+    #     self.resnet.fc = nn.Linear(2048, 1024)
+
+    #     self.fc7 = nn.Linear(1024, 512, bias=True)
+    #     self.dropout = nn.Dropout(p=0.5)
+    #     self.relu = nn.ReLU(True)
+    #     self.lstm1 = ReluLSTMCell(512, 256, bias=True)
+    #     self.fc8_final = nn.Linear(256, self.num_classes, bias=True)
 
     def forward (self, video_tensor):
         # video_tensor: batch_size x 3 x num_f x H x W
@@ -78,8 +95,6 @@ class Resnet50LSTM (nn.Module):
         # preds = []
         h_top = torch.zeros(batch_size, 256).to(video_tensor.device)
         c_top = torch.zeros(batch_size, 256).to(video_tensor.device)
-        # h_top = torch.zeros(batch_size, 512).to(video_tensor.device)
-        # c_top = torch.zeros(batch_size, 512).to(video_tensor.device)
         for fidx in range(seq_len):
             img_tensor = video_tensor[:,:,fidx,:,:]
             y = self.resnet(img_tensor)
@@ -95,6 +110,39 @@ class Resnet50LSTM (nn.Module):
         logits = torch.stack(logits, dim=1)   # bs x numf x num_cls
         pred = torch.mean(logits, dim=1)    # bs x num_cls
         return pred
+
+    # def forward (self, video_tensor):
+    #     # video_tensor: batch_size x 3 x num_f x H x W
+    #     batch_size, num_ch, seq_len, h, w = video_tensor.shape
+
+    #     logits = []
+    #     h_top = torch.zeros(batch_size, 256).to(video_tensor.device)
+    #     c_top = torch.zeros(batch_size, 256).to(video_tensor.device)
+
+    #     # img_tensor = video_tensor.transpose(2,1)    # N x T x C x H x W
+    #     # img_tensor = video_tensor.view(batch_size*seq_len, num_ch, h, w).contiguous()   # N*T x C x H x W
+    #     # img_feat = self.resnet(img_tensor)  # N*T x 2048 x 1 x 1
+    #     # img_feat = img_feat.view(batch_size*seq_len, -1)    # N*T x 2048
+    #     # img_feat = self.dropout(self.relu(self.fc6(img_feat)))  # N*T x 1024
+    #     # img_feat = self.dropout(self.relu(self.fc7(img_feat)))  # N*T x 512
+    #     # img_feat = img_feat.reshape(batch_size, seq_len, -1)    # N x T x 512
+
+    #     for fidx in range(seq_len):
+    #         # y = img_feat[:,fidx,:]  # N x 512
+
+    #         img_tensor = video_tensor[:,:,fidx,:,:]
+    #         y = self.resnet(img_tensor) # N x 1024
+    #         y = self.dropout(self.relu(y))
+    #         y = self.dropout(self.relu(self.fc7(y)))
+
+    #         h_top, c_top = self.lstm1(y, h_top.detach(), c_top.detach())
+    #         y = self.dropout(h_top)
+    #         y = self.fc8_final(y)
+
+    #         logits.append(y)
+    #     logits = torch.stack(logits, dim=1)   # bs x numf x num_cls
+    #     pred = torch.mean(logits, dim=1)    # bs x num_cls
+    #     return pred
 
 class r50lstm (nn.Module):
     def __init__ (self, num_classes, with_softmax=False, pretrained=True):

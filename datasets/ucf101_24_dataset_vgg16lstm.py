@@ -26,7 +26,7 @@ import sys
 sys.path.append("..")
 from utils.GaussianSmoothing import GaussianSmoothing
 from utils import LongRangeSample 
-from ReadingDataset import loadTags
+from utils.ReadingDataset import loadTags
 
 import copy
 class SampledVideoClips (object):
