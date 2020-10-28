@@ -42,9 +42,9 @@ if __name__ == "__main__":
     vis_save_dir = os.path.join(proj_root, 'vis_all_for_one', f'{args.dataset}_{args.model}')
     os.makedirs(vis_save_dir, exist_ok=True)
 
-    all_methods_list = ['g', 'ig', 'sg', 'la', 'grad_cam', 'eb', 'perturb', 'core5', 'core11']
-    # all_methods_list = ['eb', 'perturb', 'core5', 'core11']
-    vis_classes_list = ['Ski']
+    # all_methods_list = ['g', 'ig', 'sg', 'la', 'grad_cam', 'eb', 'perturb', 'core5', 'core11']
+    all_methods_list = ['perturb', 'core5', 'core11']
+    vis_classes_list = ['Fencing', 'Diving']
 
     model_ft, video_dataset = load_model_and_dataset(args.dataset, args.model, testlist_idx=2)
     dataloader = DataLoader(video_dataset, batch_size=1, shuffle=False, num_workers=128)

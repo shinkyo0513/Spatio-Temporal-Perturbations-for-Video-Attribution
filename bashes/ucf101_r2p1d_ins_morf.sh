@@ -24,9 +24,10 @@
 # CUDA_VISIBLE_DEVICES=5 python evaluation/main_causal_metric.py --dataset ucf101 --model r2p1d --vis_method perturb --mode ins --order most_first --num_step 128 --batch_size 30 --new_size 16 
 # CUDA_VISIBLE_DEVICES=5 python evaluation/main_causal_metric.py --dataset ucf101 --model r2p1d --vis_method perturb --mode ins --order most_first --num_step 128 --batch_size 30 --new_size 16 --extra_label _core5 --only_test
 # CUDA_VISIBLE_DEVICES=5 python evaluation/main_causal_metric.py --dataset ucf101 --model r2p1d --vis_method perturb --mode ins --order most_first --num_step 128 --batch_size 30 --new_size 16 --extra_label _core11 --only_test
-CUDA_VISIBLE_DEVICES=1 python evaluation/main_causal_metric.py --dataset ucf101 --model r2p1d --vis_method eb --mode ins --order most_first --num_step 128 --batch_size 30 --new_size 16
-CUDA_VISIBLE_DEVICES=1 python evaluation/main_causal_metric.py --dataset ucf101 --model r2p1d --vis_method la --mode ins --order most_first --num_step 128 --batch_size 30 --new_size 16
-CUDA_VISIBLE_DEVICES=1 python evaluation/main_causal_metric.py --dataset ucf101 --model r2p1d --vis_method gbp --mode ins --order most_first --num_step 128 --batch_size 30 --new_size 16
+# CUDA_VISIBLE_DEVICES=1 python evaluation/main_causal_metric.py --dataset ucf101 --model r2p1d --vis_method eb --mode ins --order most_first --num_step 128 --batch_size 30 --new_size 16
+# CUDA_VISIBLE_DEVICES=1 python evaluation/main_causal_metric.py --dataset ucf101 --model r2p1d --vis_method la --mode ins --order most_first --num_step 128 --batch_size 30 --new_size 16
+# CUDA_VISIBLE_DEVICES=1 python evaluation/main_causal_metric.py --dataset ucf101 --model r2p1d --vis_method gbp --mode ins --order most_first --num_step 128 --batch_size 30 --new_size 16
+CUDA_VISIBLE_DEVICES=4 python evaluation/main_causal_metric.py --dataset ucf101 --model r2p1d --vis_method perturb --mode ins --order most_first --num_step 128 --batch_size 30 --new_size 16 --extra_label _core8
 
 # SCM (#superpixel=256)
 # CUDA_VISIBLE_DEVICES=5 python evaluation/main_superpixel_causal_metric.py --dataset ucf101 --model r2p1d --vis_method random --mode ins --order most_first --num_step 128 --parallel_size 30 --num_superpixel 256 
@@ -41,4 +42,5 @@ CUDA_VISIBLE_DEVICES=1 python evaluation/main_causal_metric.py --dataset ucf101 
 # CUDA_VISIBLE_DEVICES=1 python evaluation/main_superpixel_causal_metric.py --dataset ucf101 --model r2p1d --vis_method eb --mode ins --order most_first --num_step 128 --parallel_size 30 --num_superpixel 256 
 # CUDA_VISIBLE_DEVICES=1 python evaluation/main_superpixel_causal_metric.py --dataset ucf101 --model r2p1d --vis_method la --mode ins --order most_first --num_step 128 --parallel_size 30 --num_superpixel 256 
 # CUDA_VISIBLE_DEVICES=1 python evaluation/main_superpixel_causal_metric.py --dataset ucf101 --model r2p1d --vis_method gbp --mode ins --order most_first --num_step 128 --parallel_size 30 --num_superpixel 256 
+CUDA_VISIBLE_DEVICES=4 python evaluation/main_superpixel_causal_metric.py --dataset ucf101 --model r2p1d --vis_method perturb --mode ins --order most_first --num_step 128 --parallel_size 30 --num_superpixel 256 --extra_label _core8
 
