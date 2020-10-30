@@ -54,7 +54,7 @@ def auc(arr):
 def plot_causal_metric_curve (scores, all_steps=None, show_txt=None, save_dir=None, return_img=False, dpi=75):
     assert isinstance(scores, np.ndarray) and len(scores.shape)==1
     num_score = scores.shape[0]
-    print(num_score-1)
+    # print(num_score-1)
 
     if all_steps == None:
         all_steps = num_score
@@ -69,6 +69,9 @@ def plot_causal_metric_curve (scores, all_steps=None, show_txt=None, save_dir=No
     plt.xlim(0, 1.0)
     plt.ylim(0, 1.05)
     plt.fill_between(x_coords, scores, alpha=0.4)
+
+    plt.xlabel('Pixels Perturbed (%)')
+    plt.ylabel('Probability (%)')
 
     if show_txt is not None:
         plt.title(show_txt)

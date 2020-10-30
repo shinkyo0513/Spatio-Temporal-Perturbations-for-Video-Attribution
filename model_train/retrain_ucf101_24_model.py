@@ -31,7 +31,8 @@ from utils.CalAcc import AverageMeter, accuracy
 
 import argparse
 parser = argparse.ArgumentParser()
-parser.add_argument("--model", type=str, default="v16l", choices=["r2p1d", "v16l", "r50l"])
+parser.add_argument("--model", type=str, default="r2p1d",
+                    choices=["r2p1d", "r50l"])
 parser.add_argument("--num_f", type=int, default=16, choices=[8, 16])
 parser.add_argument("--long_range", action='store_true')
 parser.add_argument("--num_epochs", type=int, default=40)
@@ -41,8 +42,12 @@ parser.add_argument("--only_test", action='store_true')
 parser.add_argument("--multi_gpu", action='store_true')
 parser.add_argument("--retrain_type", type=str, default="Full",
                     choices=["FC+FinalConv", "Full"])
-parser.add_argument("--vis_method", type=str, choices=["g", "ig", "sg", "sg2", "grad_cam", "perturb", "random"])
+parser.add_argument("--vis_method", type=str, 
+                    choices=["g", "ig", "sg", "sg2", "grad_cam", "perturb", "random"])
+
 parser.add_argument("--perturb_ratio", type=float)
+parser.add_argument("--perturb_mode", type=str, default='keep', choices=["remove", "keep"])
+
 parser.add_argument("--smoothed_perturb", action='store_true')
 parser.add_argument("--smooth_sigma", type=int, default=10, choices=[5, 10])
 parser.add_argument("--perturb_by_block", action='store_true')
@@ -55,9 +60,6 @@ if args.model == "r2p1d":
 elif args.model == "r50l":
     from model_def.r50lstm import r50lstm as model
     from datasets.ucf101_24_perturb_dataset_new import UCF101_24_Dataset
-elif args.model == "v16l":
-    from model_def.vgg16lstm import vgg16lstm as model
-    from datasets.ucf101_24_perturb_dataset_vgg16lstm import UCF101_24_Dataset
 # retrain_type = args.retrain_type
 num_classes = 24
 ds_name = "ucf101_24"
@@ -66,6 +68,11 @@ ds_path = f"{ds_root}/UCF101_24/"
 save_label = f"{ds_name}_{args.model}_{args.num_f}"
 save_label = save_label + "_" + args.retrain_type
 save_label = save_label + f"_{args.vis_method}_{args.perturb_ratio}"
+if args.perturb_mode == 'remove':
+    save_label = save_label + "_roar"
+elif args.perturb_mode == 'keep':
+    save_label = save_label + "_kar"
+
 if args.smoothed_perturb:
     save_label = save_label + '_smoothed' + f'{args.smooth_sigma}'
 if args.perturb_by_block:
@@ -119,7 +126,7 @@ if not args.only_test:
             num_clips = 1
             frame_rate = 2
         video_datasets[x] = UCF101_24_Dataset(ds_path, args.num_f, sample_mode, num_clips, 
-                                                heatmaps_dir, args.perturb_ratio,
+                                                heatmaps_dir, args.perturb_ratio, args.perturb_mode,
                                                 frame_rate, x=='train', 
                                                 testlist_idx=args.testlist_idx,
                                                 smoothed_perturb=args.smoothed_perturb,
@@ -142,7 +149,7 @@ if not args.only_test:
 sample_mode = 'long_range_last' if args.long_range else "fixed"
 frame_rate = 6 if args.long_range else 2
 val_dataset = UCF101_24_Dataset(ds_path, args.num_f, sample_mode, 1, 
-                                heatmaps_dir, args.perturb_ratio,
+                                heatmaps_dir, args.perturb_ratio, args.perturb_mode,
                                 frame_rate, train=False, 
                                 testlist_idx=args.testlist_idx,
                                 smoothed_perturb=args.smoothed_perturb,

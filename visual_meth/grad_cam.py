@@ -15,7 +15,7 @@ def grad_cam_3d (inputs, labels, model, device, layer_name, norm_vis=True):
     # Forward hook
     forward_hook = lambda li: lambda m, i, o: li.append(o.detach())
 
-    print(model)
+    # print(model)
 
     observ_layer = model
     for name in layer_name:
@@ -59,7 +59,7 @@ def grad_cam_3d (inputs, labels, model, device, layer_name, norm_vis=True):
         normed_masks = (normed_masks - mins) / (maxs - mins)    
         out_masks = normed_masks.reshape(out_masks.shape)
 
-    print(out_masks.shape)
+    # print(out_masks.shape)
 
     return out_masks
 

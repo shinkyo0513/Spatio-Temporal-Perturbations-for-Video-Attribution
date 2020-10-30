@@ -20,6 +20,7 @@ import torch.nn.functional as F
 from tqdm import tqdm
 import math
 import numpy as np
+import pandas as pd
 from skimage import transform
 
 import argparse
@@ -37,6 +38,7 @@ parser.add_argument("--batch_size", type=int, default=10)
 parser.add_argument("--num_step", type=int, default=256)
 parser.add_argument("--shuffle_dataset", action='store_true') 
 parser.add_argument("--save_vis", action='store_true')     
+parser.add_argument("--save_probs", action='store_true')   
 parser.add_argument('--only_test', action='store_true')
 parser.add_argument('--only_train', action='store_true')  
 parser.add_argument('--vis_process', action='store_true')   
@@ -61,7 +63,8 @@ if args.dataset == "ucf101":
         model_wgts_path = f"{proj_root}/model_param/ucf101_24_r50l_16_Full_LongRange.pt"
 elif args.dataset == "epic":
     num_classes = 20
-    ds_path = f'{ds_root}/epic'
+    # ds_path = f'{ds_root}/epic'
+    ds_path = os.path.join(ds_root, path_dict.epic_rltv_dir)
     if args.model == "v16l":
         from model_def.vgg16lstm import vgg16lstm as model
         from datasets.epic_kitchens_dataset_vgg16lstm import EPIC_Kitchens_Dataset as dataset
@@ -75,21 +78,25 @@ elif args.dataset == "epic":
         from datasets.epic_kitchens_dataset_new import EPIC_Kitchens_Dataset as dataset
         model_wgts_path = f"{proj_root}/model_param/epic_r50l_16_Full_LongRange.pt"
 
+save_label = f"{args.dataset}_{args.model}_{args.mode}_{args.vis_method}"
+if args.extra_label != "":
+    save_label += f"{args.extra_label}"
+if args.new_size != None:
+    save_label += f"_{args.new_size}"
+if args.mask_smooth_sigma != 0:
+    save_label += f"_sigma{args.mask_smooth_sigma}"
+
 if args.save_vis:
-    save_label = f"{args.dataset}_{args.model}_{args.vis_method}_{args.mode}_{args.keep_ratio}".replace(".", "_")
-    if args.new_size != None:
-        save_label = save_label + f"_{args.new_size}"
     vis_dir = f"{proj_root}/visual_res/auc_{save_label}"
     os.makedirs(vis_dir, exist_ok=True)
 
+if args.save_probs:
+    probs_save_dir = f"{proj_root}/cm_probs/"
+    os.makedirs(probs_save_dir, exist_ok=True)
+    probs_dict = {}
+
 if args.vis_process:
-    proc_vis_dir = f"{proj_root}/vis_cm/{args.dataset}_{args.model}_{args.mode}_{args.vis_method}"
-    if args.extra_label != "":
-        proc_vis_dir += f"{args.extra_label}"
-    if args.new_size != None:
-        proc_vis_dir += f"_{args.new_size}"
-    if args.mask_smooth_sigma != 0:
-        proc_vis_dir += f"_sigma{args.mask_smooth_sigma}"
+    proc_vis_dir = f"{proj_root}/vis_cm/{save_label}"
     os.makedirs(proc_vis_dir, exist_ok=True)
 else:
     proc_vis_dir = None
@@ -164,6 +171,8 @@ for sample_idx, samples in enumerate(dataloader):
             if args.save_vis:
                 plot_causal_metric_curve(scores, show_txt = f"{video_name}_{args.mode}, auc = {auc:.2f}",
                                             save_dir = join(vis_dir, f"{video_name}_{args.mode}.png"))
+            if args.save_probs:
+                probs_dict[video_name] = scores
             auc_sum += auc
     else:
         ins_probs = cm_calculator.evaluate("ins", clip_batch, mask_batch, class_ids, order=args.order,
@@ -198,3 +207,7 @@ if args.mode == "ins" or args.mode == "del":
     print(f"Average: {auc_sum/len(video_dataset)}")
 else:
     print(f"Average: {del_auc_sum/len(video_dataset)}/{ins_auc_sum/len(video_dataset)}")
+
+if args.save_probs:
+    probs_df = pd.DataFrame.from_dict(data=probs_dict, orient='index')
+    probs_df.to_csv(join(probs_save_dir, f'{save_label}.csv'), header=True)

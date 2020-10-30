@@ -14,18 +14,22 @@ path_dict = PathDict()
 proj_root = path_dict.proj_root
 ds_root = path_dict.ds_root
 
+# 测试 AUC_ins_morf - AUC_del_morf 的可信度会不会更高
+
 dataset_name = 'ucf101'
 model_name = 'r2p1d'
 ds_base = 'outs_'+dataset_name
 
-metric_mode = 'ins'
+# metric_mode = 'ins'
 metric_order = 'morf'
 
-txt_file = f'{model_name}_{metric_mode}_{metric_order}.txt'
-video_res_dict = {}
-column_labels = []
-metric_units = set()
-with open(join(ds_base, txt_file), 'r') as f:
+txt_file_ins = f'{model_name}_ins_{metric_order}.txt'
+txt_file_del = f'{model_name}_del_{metric_order}.txt'
+
+ins_video_res_dict = {}
+ins_column_labels = []
+ins_metric_units = set()
+with open(join(ds_base, txt_file_ins), 'r') as f:
     for line in f.readlines():
         line = line.strip() 
         if line.startswith('Loaded'):
@@ -33,28 +37,50 @@ with open(join(ds_base, txt_file), 'r') as f:
         elif line.startswith('Finished:'):
             labels = line[10:].split(', ')
             metric_unit = labels[0]
-            metric_units.add(metric_unit)
+            ins_metric_units.add(metric_unit)
             vis_meth = labels[-2]
-            column_labels.append(f'{metric_unit}-{vis_meth}')
+            ins_column_labels.append(f'{metric_unit}-{vis_meth}')
         elif ': ' in line:
             video_name, auc = line.split(': ')
-            video_res_dict[video_name] = video_res_dict.get(video_name, list()) + [float(auc), ]
+            ins_video_res_dict[video_name] = ins_video_res_dict.get(video_name, list()) + [float(auc), ]
+ins_video_res_dict = {k: v for k, v in sorted(ins_video_res_dict.items(), key=lambda item: item[0])}
+ins_df = pd.DataFrame.from_dict(data=ins_video_res_dict, orient='index', columns=ins_column_labels)
+# print(ins_column_labels)
+
+del_video_res_dict = {}
+del_column_labels = []
+del_metric_units = set()
+with open(join(ds_base, txt_file_del), 'r') as f:
+    for line in f.readlines():
+        line = line.strip() 
+        if line.startswith('Loaded'):
+            continue
+        elif line.startswith('Finished:'):
+            labels = line[10:].split(', ')
+            metric_unit = labels[0]
+            del_metric_units.add(metric_unit)
+            vis_meth = labels[-2]
+            del_column_labels.append(f'{metric_unit}-{vis_meth}')
+        elif ': ' in line:
+            video_name, auc = line.split(': ')
+            del_video_res_dict[video_name] = del_video_res_dict.get(video_name, list()) + [float(auc), ]
+del_video_res_dict = {k: v for k, v in sorted(del_video_res_dict.items(), key=lambda item: item[0])}
+del_df = pd.DataFrame.from_dict(data=del_video_res_dict, orient='index', columns=del_column_labels)
+# print(del_column_labels)
             
-df = pd.DataFrame.from_dict(data=video_res_dict, orient='index', columns=column_labels)
-# print(column_labels)
 
 # Calculating inter-rater reliability (by Weighted Ranking Correlation)
-for metric_unit in metric_units:
+for metric_unit in ins_metric_units:
     # print('\n')
     sltd_methods = ['random', 'g', 'ig', 'sg', 'sg2', 'grad_cam']
     sltd_labels = [f'{metric_unit}-{method}' for method in sltd_methods]
+    # print(sltd_labels)
 
-    data = np.array([df[col_label] for col_label in sltd_labels]).transpose(1,0)   # num_inputs (910) x num_methods
+    ins_data = np.array([ins_df[col_label] for col_label in sltd_labels]).transpose(1,0)   # num_inputs (910) x num_methods
+    del_data = np.array([del_df[col_label] for col_label in sltd_labels]).transpose(1,0)   # num_inputs (910) x num_methods
+    data = ins_data - del_data
 
-    if f'{metric_mode}-{metric_order}' in ['ins-lerf', 'del-morf']:
-        rank_descend = True 
-    elif f'{metric_mode}-{metric_order}' in ['ins-morf', 'del-lerf']:
-        rank_descend = False
+    rank_descend = False
     rank = np.array([[sorted(row, reverse=rank_descend).index(item) for item in row] for row in data])
 
     row_wgt = (data.shape[1] - 1 - rank[:, 0]) / (data.shape[1] - 1)
@@ -63,7 +89,7 @@ for metric_unit in metric_units:
     # Spearman Correlation
     rho, pvalue = stats.spearmanr(data, axis=1)   # num_inputs x num_inputs
     alpha = np.triu(cross_wgt * (rho + 1), k=1).sum() / (np.triu(cross_wgt, k=1).sum() + 1e-10) - 1
-    print(f'{metric_mode}-{metric_order}-{metric_unit}: Alpha={alpha:.4f}')
+    print(f'minus-{metric_order}-{metric_unit}: Alpha={alpha:.4f}')
 
     # sum_rho = np.triu((rho + 1), k=1).sum()
     # avg_row_wgt = row_wgt.sum() / len(row_wgt)
@@ -92,7 +118,7 @@ for metric_unit in metric_units:
 
     # from utils.KrippendorffAlpha import krippendorff_alpha, nominal_metric, interval_metric
     # alpha = krippendorff_alpha(reliab_mat, nominal_metric)
-    # print(f'{metric_mode}-{metric_order}-{metric_unit}: Alpha={alpha:.4f}')
+    # print(f'minus-{metric_order}-{metric_unit}: Alpha={alpha:.4f}')
 
     # Inter-rater reliability (by Krippendorff Alpha)
     # data is in the format
@@ -109,4 +135,4 @@ for metric_unit in metric_units:
 
     from utils.KrippendorffAlpha import krippendorff_alpha, nominal_metric, interval_metric
     alpha = krippendorff_alpha(reliab_mat, nominal_metric)
-    print(f'{metric_mode}-{metric_order}-{metric_unit} Krip_Alpha={alpha:.4f}')
+    print(f'minus-{metric_order}-{metric_unit} Krip_Alpha={alpha:.4f}')

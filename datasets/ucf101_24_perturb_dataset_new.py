@@ -120,7 +120,7 @@ class SampledVideoClips (object):
 
         return clip_frames, video_idx, clip_frame_indices
 
-def perturb_frames (frames_tensor, heatmaps_tensor, perturb_ratio, fade_type='zero'):
+def perturb_frames (frames_tensor, heatmaps_tensor, perturb_ratio, perturb_mode='remove', fade_type='zero'):
     # frames: 3x16x112x112; heatmaps: 1x16x h x w
     fch, fnt, fnrow, fncol = frames_tensor.shape
     hch, hnt, hnrow, hncol = heatmaps_tensor.shape
@@ -129,14 +129,18 @@ def perturb_frames (frames_tensor, heatmaps_tensor, perturb_ratio, fade_type='ze
     #     heatmaps_tensor = F.interpolate(heatmaps_tensor, (fnrow, fncol), 
     #                         mode='bilinear', align_corners=False)    # 1x16x112x112
 
-    perturb_k = int(perturb_ratio * fnt * fnrow * fncol)
-    _, k_idxs = heatmaps_tensor.reshape(1, -1).topk(perturb_k, dim=1)
+    if perturb_mode == 'remove':
+        perturb_k = int(perturb_ratio * fnt * fnrow * fncol)
+        _, k_idxs = heatmaps_tensor.reshape(1, -1).topk(perturb_k, dim=1, largest=True)
+    elif perturb_mode == 'keep':
+        perturb_k = int((1-perturb_ratio) * fnt * fnrow * fncol)
+        _, k_idxs = heatmaps_tensor.reshape(1, -1).topk(perturb_k, dim=1, largest=False)
     k_idxs = k_idxs.repeat_interleave(fch, dim=0)
     perturbed_frames_tensor = frames_tensor.clone()
     perturbed_frames_tensor.view(fch, -1).scatter_(1, k_idxs, 0) # Set the topk elements in frames_tensor to be 0
     return perturbed_frames_tensor, heatmaps_tensor
 
-def perturb_frames_by_block (frames_tensor, heatmaps_tensor, perturb_ratio, block_size=7):
+def perturb_frames_by_block (frames_tensor, heatmaps_tensor, perturb_ratio, perturb_mode='remove', block_size=7):
     # frames: 3x16x112x112; heatmaps: 1x16x h x w
     fch, fnt, fnrow, fncol = frames_tensor.shape
     hch, hnt, hnrow, hncol = heatmaps_tensor.shape
@@ -149,8 +153,12 @@ def perturb_frames_by_block (frames_tensor, heatmaps_tensor, perturb_ratio, bloc
     new_heatmaps_tensor = F.conv2d(new_heatmaps_tensor, k, stride=block_size, padding=0)    # 16 x 1 x h' x w'
     new_heatmaps_tensor = new_heatmaps_tensor.transpose(0, 1)    # 1 x 16 x h' x w'
 
-    sal_order = new_heatmaps_tensor.reshape(1, -1).argsort(dim=-1, descending=True) # 1 x 16*h'*w'
-    remove_topk = int(perturb_ratio * fnt * new_heatmap_size * new_heatmap_size)
+    if perturb_mode == 'remove':
+        sal_order = new_heatmaps_tensor.reshape(1, -1).argsort(dim=-1, descending=True) # 1 x 16*h'*w'
+        remove_topk = int(perturb_ratio * fnt * new_heatmap_size * new_heatmap_size)
+    elif perturb_mode == 'keep':
+        sal_order = new_heatmaps_tensor.reshape(1, -1).argsort(dim=-1, descending=False) # 1 x 16*h'*w'
+        remove_topk = int((1-perturb_ratio) * fnt * new_heatmap_size * new_heatmap_size)
     remove_pos = sal_order[:, :remove_topk]
     idx = torch.arange(hch, dtype=torch.long).view(-1,1).to(device)
 
@@ -162,8 +170,8 @@ def perturb_frames_by_block (frames_tensor, heatmaps_tensor, perturb_ratio, bloc
 
 class UCF101_24_Dataset (Dataset):
     def __init__ (self, root_dir, frames_per_clip, sample_mode, 
-                    num_clips, heatmap_dir, perturb_ratio, frame_rate=1, 
-                    train=True, testlist_idx=2, 
+                    num_clips, heatmap_dir, perturb_ratio, perturb_mode='remove', 
+                    frame_rate=1, train=True, testlist_idx=2, 
                     smoothed_perturb=False, smooth_sigma=10, 
                     perturb_by_block=False, block_size=7,
                     noised=False):
@@ -206,6 +214,7 @@ class UCF101_24_Dataset (Dataset):
 
         self.heatmap_dir = heatmap_dir
         self.perturb_ratio = perturb_ratio
+        self.perturb_mode = perturb_mode
         self.smoothed_perturb = smoothed_perturb
         self.smooth_sigma = smooth_sigma
         self.perturb_by_block = perturb_by_block
@@ -248,9 +257,10 @@ class UCF101_24_Dataset (Dataset):
 
         if self.perturb_by_block:
             perturbed_clip_tensor, heatmaps_tensor = perturb_frames_by_block(clip_tensor, heatmaps_tensor, 
-                                                                self.perturb_ratio, self.block_size)
+                                                        self.perturb_ratio, self.perturb_mode, self.block_size)
         else:
-            perturbed_clip_tensor, heatmaps_tensor = perturb_frames(clip_tensor, heatmaps_tensor, self.perturb_ratio)
+            perturbed_clip_tensor, heatmaps_tensor = perturb_frames(clip_tensor, heatmaps_tensor, 
+                                                        self.perturb_ratio, self.perturb_mode)
 
         perturbed_clip_tensor = torch.stack([self.norm_trans(f.squeeze(1)) for f in 
                                     perturbed_clip_tensor.split(1, dim=1)], dim=1)    # 3x16x112x112

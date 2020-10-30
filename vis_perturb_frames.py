@@ -37,6 +37,8 @@ parser.add_argument("--model", type=str, default="r2p1d", choices=["r2p1d", "r50
 parser.add_argument("--num_f", type=int, default=16, choices=[8, 16])
 parser.add_argument("--testlist_idx", type=int, default=1, choices=[1, 2])
 parser.add_argument("--vis_method", type=str, choices=["g", "ig", "sg", "sg2", "grad_cam", "perturb", "random"])
+parser.add_argument("--mode", type=str, default="ins", choices=["ins", "del"])
+parser.add_argument("--specify_video_name", type=str, default="")
 parser.add_argument("--perturb_ratio", type=float)
 parser.add_argument("--smoothed_perturb", action='store_true')
 parser.add_argument("--smooth_sigma", type=int, default=10, choices=[5, 10])

@@ -67,7 +67,8 @@ def get_all_test_video_names (dataset_name, testlist_idx=1):
 def get_frames(dataset_name, model_name, video_name, fids):
     if dataset_name == 'epic':
         vname = standardize_epic_video_name(video_name)
-        root_path = f'{ds_root}/epic/seg_train'
+        # root_path = f'{ds_root}/epic/seg_train'
+        root_path = os.path.join(ds_root, path_dict.epic_rltv_dir, 'seg_train')
         video_stf = int(sorted(os.listdir(os.path.join(root_path, vname)))[0][-14:-4])
         frames = [Image.open(os.path.join(root_path, vname, 
                         f'frame_{fid + video_stf:010d}.jpg')) for fid in fids]
@@ -104,7 +105,8 @@ class FramesReader ():
         self.model_name = model_name
 
         if dataset_name == 'epic':
-            self.root_path = f'{ds_root}/epic/seg_train'
+            # self.root_path = f'{ds_root}/epic/seg_train'
+            self.root_path = os.path.join(ds_root, path_dict.epic_rltv_dir)
         elif dataset_name == 'ucf101':
             self.root_path = f'{ds_root}/UCF101_24'
         elif dataset_name == 'cat_ucf':

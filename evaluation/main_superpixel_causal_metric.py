@@ -63,7 +63,8 @@ if args.dataset == "ucf101":
         model_wgts_path = f"{proj_root}/model_param/ucf101_24_r50l_16_Full_LongRange.pt"
 elif args.dataset == "epic":
     num_classes = 20
-    ds_path = f'{ds_root}/epic'
+    # ds_path = f'{ds_root}/epic'
+    ds_path = os.path.join(ds_root, path_dict.epic_rltv_dir)
     if args.model == "v16l":
         from model_def.vgg16lstm import vgg16lstm as model
         from datasets.epic_kitchens_dataset_vgg16lstm import EPIC_Kitchens_Dataset as dataset

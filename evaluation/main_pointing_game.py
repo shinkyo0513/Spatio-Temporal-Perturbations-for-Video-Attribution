@@ -50,7 +50,7 @@ if args.dataset == "ucf101":
         from datasets.ucf101_24_dataset_vgg16lstm import UCF101_24_Dataset as dataset
 elif args.dataset == "epic":
     num_classes = 20
-    ds_path = f'{ds_root}/epic'
+    ds_path = join(ds_root, path_dict.epic_rltv_dir)
     if args.model == "r2p1d" or args.model == "r50l":
         from datasets.epic_kitchens_dataset_new import EPIC_Kitchens_Dataset as dataset
     elif args.model == "v16l":
