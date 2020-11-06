@@ -209,7 +209,8 @@ class Perturbation:
 
 class CoreLossCalulator:
     def __init__ (self, bs, nt, nrow, ncol, areas, device, 
-                  num_key_frames=7, spatial_range=(11, 11)):
+                  num_key_frames=7, spatial_range=(11, 11),
+                  core_shape='ellipsoid'):
         self.bs = bs
         self.nt = nt
         self.nrow = nrow
@@ -223,13 +224,19 @@ class CoreLossCalulator:
 
         self.num_key_frames = num_key_frames
         self.spatial_range = spatial_range
+        self.core_shape = core_shape
         self.conv_stride = spatial_range[0]
         self.core_kernel_ones = int(num_key_frames * spatial_range[0] * spatial_range[1] * 0.5236)
         self.core_kernels = []
         self.core_topks = []
 
         for a_idx, area in enumerate(areas):
-            core_kernel = self.get_ellipsoid_kernel([num_key_frames, spatial_range[0], spatial_range[1]]).to(device)
+            if self.core_shape == 'ellipsoid':
+                core_kernel = self.get_ellipsoid_kernel([num_key_frames, spatial_range[0], spatial_range[1]]).to(device)
+            elif self.core_shape == 'cylinder':
+                core_kernel = self.get_cylinder_kernel([num_key_frames, spatial_range[0], spatial_range[1]]).to(device)
+            else:
+                raise Exception(f'Unsurported core_shape, given {self.core_shape}')
             # core_kernel /= core_kernel.sum()
             self.core_kernels.append(core_kernel)
             self.core_topks.append(math.ceil((area*self.nt*self.new_nrow*self.new_ncol) / self.core_kernel_ones))
@@ -263,6 +270,13 @@ class CoreLossCalulator:
         d1, d2, d3 = dims
         v1, v2, v3 = np.meshgrid(np.linspace(-1, 1, d1), np.linspace(-1, 1, d2), np.linspace(-1, 1, d3), indexing='ij')
         dist = np.sqrt(v1 ** 2 + v2 ** 2 + v3 ** 2)
+        return torch.from_numpy((dist <= 1)[np.newaxis, np.newaxis, ...]).float()
+
+    def get_cylinder_kernel(self, dims):
+        assert(len(dims) == 3)
+        d1, d2, d3 = dims
+        v1, v2, v3 = np.meshgrid(np.linspace(-1, 1, d1), np.linspace(-1, 1, d2), np.linspace(-1, 1, d3), indexing='ij')
+        dist = np.sqrt(v2 ** 2 + v3 ** 2)
         return torch.from_numpy((dist <= 1)[np.newaxis, np.newaxis, ...]).float()
 
 # Control smoothness
@@ -304,7 +318,8 @@ def video_perturbation(model,
                           smooth=0,
                           gpu_id=0,
                           core_num_keyframe=5,
-                          core_spatial_size=11):
+                          core_spatial_size=11,
+                          core_shape='ellipsoid'):
     
     if isinstance(areas, float):
         areas = [areas]
@@ -313,6 +328,7 @@ def video_perturbation(model,
     regul_weight = 300
     reward_weight = 1
     core_weight = 0
+    # core_weight = 300
     
     device = input.device
     torch.cuda.set_device(gpu_id)
@@ -365,7 +381,8 @@ def video_perturbation(model,
         mask_core = CoreLossCalulator(batch_size, num_frame, 
                             mask_generator.shape_out[0], mask_generator.shape_out[1], 
                             areas, device, num_key_frames=core_num_keyframe,
-                            spatial_range=(core_spatial_size, core_spatial_size))
+                            spatial_range=(core_spatial_size, core_spatial_size),
+                            core_shape=core_shape)
 
     max_area = np.prod(mask_generator.shape_out)
     max_volume = np.prod(mask_generator.shape_out) * num_frame

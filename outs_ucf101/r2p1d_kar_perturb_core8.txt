@@ -1,0 +1,751 @@
+Use 4 GPUs!
+{'train': 'Num of clips:2284', 'val': 'Num of clips:910'}
+Epoch 0/19
+----------
+train Loss: 3.0363 Acc: 0.1524
+val Loss: 2.7668 Acc: 0.2626
+
+Epoch 1/19
+----------
+train Loss: 2.4544 Acc: 0.4505
+val Loss: 2.2635 Acc: 0.4473
+
+Epoch 2/19
+----------
+train Loss: 1.8850 Acc: 0.6322
+val Loss: 1.8445 Acc: 0.5604
+
+Epoch 3/19
+----------
+train Loss: 1.4395 Acc: 0.7255
+val Loss: 1.4802 Acc: 0.6396
+
+Epoch 4/19
+----------
+train Loss: 1.0923 Acc: 0.7850
+val Loss: 1.2485 Acc: 0.6791
+
+Epoch 5/19
+----------
+train Loss: 0.8371 Acc: 0.8498
+val Loss: 1.0996 Acc: 0.7044
+
+Epoch 6/19
+----------
+train Loss: 0.6329 Acc: 0.8984
+val Loss: 0.9589 Acc: 0.7484
+
+Epoch 7/19
+----------
+train Loss: 0.4794 Acc: 0.9374
+val Loss: 0.8976 Acc: 0.7560
+
+Epoch 8/19
+----------
+train Loss: 0.3862 Acc: 0.9532
+val Loss: 0.8194 Acc: 0.7692
+
+Epoch 9/19
+----------
+train Loss: 0.2950 Acc: 0.9742
+val Loss: 0.7816 Acc: 0.7758
+
+Epoch 10/19
+----------
+train Loss: 0.2240 Acc: 0.9860
+val Loss: 0.7416 Acc: 0.7967
+
+Epoch 11/19
+----------
+train Loss: 0.1913 Acc: 0.9834
+val Loss: 0.6969 Acc: 0.7923
+
+Epoch 12/19
+----------
+train Loss: 0.1482 Acc: 0.9921
+val Loss: 0.6441 Acc: 0.8165
+
+Epoch 13/19
+----------
+train Loss: 0.1191 Acc: 0.9952
+val Loss: 0.6476 Acc: 0.8077
+
+Epoch 14/19
+----------
+train Loss: 0.0982 Acc: 0.9965
+val Loss: 0.6265 Acc: 0.8132
+
+Epoch 15/19
+----------
+train Loss: 0.0904 Acc: 0.9974
+val Loss: 0.6256 Acc: 0.8176
+
+Epoch 16/19
+----------
+train Loss: 0.0790 Acc: 0.9978
+val Loss: 0.6087 Acc: 0.8143
+
+Epoch 17/19
+----------
+train Loss: 0.0663 Acc: 0.9987
+val Loss: 0.6148 Acc: 0.8220
+
+Epoch 18/19
+----------
+train Loss: 0.0609 Acc: 0.9996
+val Loss: 0.5905 Acc: 0.8275
+
+Epoch 19/19
+----------
+train Loss: 0.0574 Acc: 0.9982
+val Loss: 0.6088 Acc: 0.8209
+
+Training complete in 21m 36s
+Best val Acc: 0.827473
+Saved the weights of the best epoch in /home/acb11711tx/lzq/ExpEval/model_param/ucf101_24_r2p1d_16_Full_perturb_core8_0.05_kar_LongRange.pt
+Num of clips:910
+ Val: Acc@1 82.747 Acc@5 97.692
+
+Normalized confusion matrix
+Traceback (most recent call last):
+  File "model_train/retrain_ucf101_24_model.py", line 172, in <module>
+    cm_fig.savefig(os.path.join(proj_root, 'visual_res', 'cm', f'{save_label}.png'))
+  File "/home/acb11711tx/miniconda3/envs/pytorch1.1/lib/python3.6/site-packages/matplotlib/figure.py", line 2062, in savefig
+    self.canvas.print_figure(fname, **kwargs)
+  File "/home/acb11711tx/miniconda3/envs/pytorch1.1/lib/python3.6/site-packages/matplotlib/backend_bases.py", line 2263, in print_figure
+    **kwargs)
+  File "/home/acb11711tx/miniconda3/envs/pytorch1.1/lib/python3.6/site-packages/matplotlib/backends/backend_agg.py", line 530, in print_png
+    with cbook.open_file_cm(filename_or_obj, "wb") as fh:
+  File "/home/acb11711tx/miniconda3/envs/pytorch1.1/lib/python3.6/contextlib.py", line 81, in __enter__
+    return next(self.gen)
+  File "/home/acb11711tx/miniconda3/envs/pytorch1.1/lib/python3.6/site-packages/matplotlib/cbook/__init__.py", line 626, in open_file_cm
+    fh, opened = to_filehandle(path_or_file, mode, True, encoding)
+  File "/home/acb11711tx/miniconda3/envs/pytorch1.1/lib/python3.6/site-packages/matplotlib/cbook/__init__.py", line 611, in to_filehandle
+    fh = io.open(fname, flag, encoding=encoding)
+FileNotFoundError: [Errno 2] No such file or directory: '/home/acb11711tx/lzq/ExpEval/visual_res/cm/ucf101_24_r2p1d_16_Full_perturb_core8_0.05_kar_LongRange.png'
+
+Use 4 GPUs!
+{'train': 'Num of clips:2284', 'val': 'Num of clips:910'}
+Epoch 0/19
+----------
+train Loss: 3.0206 Acc: 0.1589
+val Loss: 2.7122 Acc: 0.3110
+
+Epoch 1/19
+----------
+train Loss: 2.3350 Acc: 0.5171
+val Loss: 2.0677 Acc: 0.5571
+
+Epoch 2/19
+----------
+train Loss: 1.7009 Acc: 0.6961
+val Loss: 1.5865 Acc: 0.6429
+
+Epoch 3/19
+----------
+train Loss: 1.2288 Acc: 0.7824
+val Loss: 1.2200 Acc: 0.7308
+
+Epoch 4/19
+----------
+train Loss: 0.8977 Acc: 0.8538
+val Loss: 1.0454 Acc: 0.7560
+
+Epoch 5/19
+----------
+train Loss: 0.6682 Acc: 0.8919
+val Loss: 0.8766 Acc: 0.7978
+
+Epoch 6/19
+----------
+train Loss: 0.5064 Acc: 0.9326
+val Loss: 0.7515 Acc: 0.8110
+
+Epoch 7/19
+----------
+train Loss: 0.3664 Acc: 0.9602
+val Loss: 0.6860 Acc: 0.8220
+
+Epoch 8/19
+----------
+train Loss: 0.2833 Acc: 0.9698
+val Loss: 0.6106 Acc: 0.8451
+
+Epoch 9/19
+----------
+train Loss: 0.2169 Acc: 0.9812
+val Loss: 0.5719 Acc: 0.8440
+
+Epoch 10/19
+----------
+train Loss: 0.1798 Acc: 0.9869
+val Loss: 0.5317 Acc: 0.8615
+
+Epoch 11/19
+----------
+train Loss: 0.1497 Acc: 0.9926
+val Loss: 0.5193 Acc: 0.8549
+
+Epoch 12/19
+----------
+train Loss: 0.1147 Acc: 0.9952
+val Loss: 0.5046 Acc: 0.8626
+
+Epoch 13/19
+----------
+train Loss: 0.1012 Acc: 0.9969
+val Loss: 0.5008 Acc: 0.8582
+
+Epoch 14/19
+----------
+train Loss: 0.0846 Acc: 0.9974
+val Loss: 0.4863 Acc: 0.8648
+
+Epoch 15/19
+----------
+train Loss: 0.0768 Acc: 0.9978
+val Loss: 0.4696 Acc: 0.8626
+
+Epoch 16/19
+----------
+train Loss: 0.0674 Acc: 0.9982
+val Loss: 0.4668 Acc: 0.8659
+
+Epoch 17/19
+----------
+train Loss: 0.0599 Acc: 0.9987
+val Loss: 0.4572 Acc: 0.8659
+
+Epoch 18/19
+----------
+train Loss: 0.0584 Acc: 0.9987
+val Loss: 0.4535 Acc: 0.8769
+
+Epoch 19/19
+----------
+train Loss: 0.0505 Acc: 0.9987
+val Loss: 0.4441 Acc: 0.8714
+
+Training complete in 22m 1s
+Best val Acc: 0.876923
+Saved the weights of the best epoch in /home/acb11711tx/lzq/ExpEval/model_param/ucf101_24_r2p1d_16_Full_perturb_core8_0.1_kar_LongRange.pt
+Num of clips:910
+ Val: Acc@1 87.692 Acc@5 97.582
+
+Normalized confusion matrix
+Traceback (most recent call last):
+  File "model_train/retrain_ucf101_24_model.py", line 172, in <module>
+    cm_fig.savefig(os.path.join(proj_root, 'visual_res', 'cm', f'{save_label}.png'))
+  File "/home/acb11711tx/miniconda3/envs/pytorch1.1/lib/python3.6/site-packages/matplotlib/figure.py", line 2062, in savefig
+    self.canvas.print_figure(fname, **kwargs)
+  File "/home/acb11711tx/miniconda3/envs/pytorch1.1/lib/python3.6/site-packages/matplotlib/backend_bases.py", line 2263, in print_figure
+    **kwargs)
+  File "/home/acb11711tx/miniconda3/envs/pytorch1.1/lib/python3.6/site-packages/matplotlib/backends/backend_agg.py", line 530, in print_png
+    with cbook.open_file_cm(filename_or_obj, "wb") as fh:
+  File "/home/acb11711tx/miniconda3/envs/pytorch1.1/lib/python3.6/contextlib.py", line 81, in __enter__
+    return next(self.gen)
+  File "/home/acb11711tx/miniconda3/envs/pytorch1.1/lib/python3.6/site-packages/matplotlib/cbook/__init__.py", line 626, in open_file_cm
+    fh, opened = to_filehandle(path_or_file, mode, True, encoding)
+  File "/home/acb11711tx/miniconda3/envs/pytorch1.1/lib/python3.6/site-packages/matplotlib/cbook/__init__.py", line 611, in to_filehandle
+    fh = io.open(fname, flag, encoding=encoding)
+FileNotFoundError: [Errno 2] No such file or directory: '/home/acb11711tx/lzq/ExpEval/visual_res/cm/ucf101_24_r2p1d_16_Full_perturb_core8_0.1_kar_LongRange.png'
+Use 4 GPUs!
+{'train': 'Num of clips:2284', 'val': 'Num of clips:910'}
+Epoch 0/19
+----------
+train Loss: 2.9286 Acc: 0.2421
+val Loss: 2.4177 Acc: 0.4824
+
+Epoch 1/19
+----------
+train Loss: 2.0086 Acc: 0.6817
+val Loss: 1.5475 Acc: 0.7374
+
+Epoch 2/19
+----------
+train Loss: 1.2747 Acc: 0.8428
+val Loss: 1.0057 Acc: 0.8626
+
+Epoch 3/19
+----------
+train Loss: 0.7727 Acc: 0.9282
+val Loss: 0.6673 Acc: 0.9022
+
+Epoch 4/19
+----------
+train Loss: 0.5096 Acc: 0.9532
+val Loss: 0.5049 Acc: 0.9077
+
+Epoch 5/19
+----------
+train Loss: 0.3448 Acc: 0.9737
+val Loss: 0.4079 Acc: 0.9121
+
+Epoch 6/19
+----------
+train Loss: 0.2438 Acc: 0.9829
+val Loss: 0.3517 Acc: 0.9264
+
+Epoch 7/19
+----------
+train Loss: 0.1940 Acc: 0.9886
+val Loss: 0.3262 Acc: 0.9319
+
+Epoch 8/19
+----------
+train Loss: 0.1525 Acc: 0.9895
+val Loss: 0.2830 Acc: 0.9319
+
+Epoch 9/19
+----------
+train Loss: 0.1259 Acc: 0.9921
+val Loss: 0.2629 Acc: 0.9407
+
+Epoch 10/19
+----------
+train Loss: 0.1069 Acc: 0.9969
+val Loss: 0.2539 Acc: 0.9374
+
+Epoch 11/19
+----------
+train Loss: 0.0945 Acc: 0.9947
+val Loss: 0.2350 Acc: 0.9473
+
+Epoch 12/19
+----------
+train Loss: 0.0801 Acc: 0.9969
+val Loss: 0.2291 Acc: 0.9429
+
+Epoch 13/19
+----------
+train Loss: 0.0719 Acc: 0.9974
+val Loss: 0.2195 Acc: 0.9440
+
+Epoch 14/19
+----------
+train Loss: 0.0690 Acc: 0.9956
+val Loss: 0.2262 Acc: 0.9440
+
+Epoch 15/19
+----------
+train Loss: 0.0564 Acc: 0.9987
+val Loss: 0.2046 Acc: 0.9473
+
+Epoch 16/19
+----------
+train Loss: 0.0560 Acc: 0.9965
+val Loss: 0.1983 Acc: 0.9484
+
+Epoch 17/19
+----------
+train Loss: 0.0457 Acc: 0.9991
+val Loss: 0.1895 Acc: 0.9484
+
+Epoch 18/19
+----------
+train Loss: 0.0483 Acc: 0.9991
+val Loss: 0.1951 Acc: 0.9462
+
+Epoch 19/19
+----------
+train Loss: 0.0381 Acc: 1.0000
+val Loss: 0.1986 Acc: 0.9407
+
+Training complete in 21m 49s
+Best val Acc: 0.948352
+Saved the weights of the best epoch in /home/acb11711tx/lzq/ExpEval/model_param/ucf101_24_r2p1d_16_Full_perturb_core8_0.3_kar_LongRange.pt
+Num of clips:910
+ Val: Acc@1 94.835 Acc@5 99.780
+
+Normalized confusion matrix
+Traceback (most recent call last):
+  File "model_train/retrain_ucf101_24_model.py", line 172, in <module>
+    cm_fig.savefig(os.path.join(proj_root, 'visual_res', 'cm', f'{save_label}.png'))
+  File "/home/acb11711tx/miniconda3/envs/pytorch1.1/lib/python3.6/site-packages/matplotlib/figure.py", line 2062, in savefig
+    self.canvas.print_figure(fname, **kwargs)
+  File "/home/acb11711tx/miniconda3/envs/pytorch1.1/lib/python3.6/site-packages/matplotlib/backend_bases.py", line 2263, in print_figure
+    **kwargs)
+  File "/home/acb11711tx/miniconda3/envs/pytorch1.1/lib/python3.6/site-packages/matplotlib/backends/backend_agg.py", line 530, in print_png
+    with cbook.open_file_cm(filename_or_obj, "wb") as fh:
+  File "/home/acb11711tx/miniconda3/envs/pytorch1.1/lib/python3.6/contextlib.py", line 81, in __enter__
+    return next(self.gen)
+  File "/home/acb11711tx/miniconda3/envs/pytorch1.1/lib/python3.6/site-packages/matplotlib/cbook/__init__.py", line 626, in open_file_cm
+    fh, opened = to_filehandle(path_or_file, mode, True, encoding)
+  File "/home/acb11711tx/miniconda3/envs/pytorch1.1/lib/python3.6/site-packages/matplotlib/cbook/__init__.py", line 611, in to_filehandle
+    fh = io.open(fname, flag, encoding=encoding)
+FileNotFoundError: [Errno 2] No such file or directory: '/home/acb11711tx/lzq/ExpEval/visual_res/cm/ucf101_24_r2p1d_16_Full_perturb_core8_0.3_kar_LongRange.png'
+Use 4 GPUs!
+{'train': 'Num of clips:2284', 'val': 'Num of clips:910'}
+Epoch 0/19
+----------
+train Loss: 2.8763 Acc: 0.2557
+val Loss: 2.3015 Acc: 0.5626
+
+Epoch 1/19
+----------
+train Loss: 1.8353 Acc: 0.7754
+val Loss: 1.3086 Acc: 0.8242
+
+Epoch 2/19
+----------
+train Loss: 1.0361 Acc: 0.9221
+val Loss: 0.7628 Acc: 0.9132
+
+Epoch 3/19
+----------
+train Loss: 0.6002 Acc: 0.9650
+val Loss: 0.4995 Acc: 0.9308
+
+Epoch 4/19
+----------
+train Loss: 0.3928 Acc: 0.9715
+val Loss: 0.3809 Acc: 0.9429
+
+Epoch 5/19
+----------
+train Loss: 0.2776 Acc: 0.9834
+val Loss: 0.3113 Acc: 0.9484
+
+Epoch 6/19
+----------
+train Loss: 0.2119 Acc: 0.9873
+val Loss: 0.2665 Acc: 0.9495
+
+Epoch 7/19
+----------
+train Loss: 0.1642 Acc: 0.9895
+val Loss: 0.2331 Acc: 0.9549
+
+Epoch 8/19
+----------
+train Loss: 0.1345 Acc: 0.9921
+val Loss: 0.2293 Acc: 0.9538
+
+Epoch 9/19
+----------
+train Loss: 0.1148 Acc: 0.9956
+val Loss: 0.2132 Acc: 0.9527
+
+Epoch 10/19
+----------
+train Loss: 0.0921 Acc: 0.9952
+val Loss: 0.1998 Acc: 0.9593
+
+Epoch 11/19
+----------
+train Loss: 0.0832 Acc: 0.9978
+val Loss: 0.1967 Acc: 0.9516
+
+Epoch 12/19
+----------
+train Loss: 0.0722 Acc: 0.9956
+val Loss: 0.1743 Acc: 0.9626
+
+Epoch 13/19
+----------
+train Loss: 0.0673 Acc: 0.9991
+val Loss: 0.1621 Acc: 0.9626
+
+Epoch 14/19
+----------
+train Loss: 0.0642 Acc: 0.9952
+val Loss: 0.1565 Acc: 0.9637
+
+Epoch 15/19
+----------
+train Loss: 0.0574 Acc: 0.9965
+val Loss: 0.1487 Acc: 0.9626
+
+Epoch 16/19
+----------
+train Loss: 0.0525 Acc: 0.9982
+val Loss: 0.1473 Acc: 0.9659
+
+Epoch 17/19
+----------
+train Loss: 0.0490 Acc: 0.9991
+val Loss: 0.1349 Acc: 0.9648
+
+Epoch 18/19
+----------
+train Loss: 0.0436 Acc: 0.9982
+val Loss: 0.1499 Acc: 0.9626
+
+Epoch 19/19
+----------
+train Loss: 0.0445 Acc: 0.9969
+val Loss: 0.1395 Acc: 0.9626
+
+Training complete in 21m 54s
+Best val Acc: 0.965934
+Saved the weights of the best epoch in /home/acb11711tx/lzq/ExpEval/model_param/ucf101_24_r2p1d_16_Full_perturb_core8_0.5_kar_LongRange.pt
+Num of clips:910
+ Val: Acc@1 96.593 Acc@5 100.000
+
+Normalized confusion matrix
+Traceback (most recent call last):
+  File "model_train/retrain_ucf101_24_model.py", line 172, in <module>
+    cm_fig.savefig(os.path.join(proj_root, 'visual_res', 'cm', f'{save_label}.png'))
+  File "/home/acb11711tx/miniconda3/envs/pytorch1.1/lib/python3.6/site-packages/matplotlib/figure.py", line 2062, in savefig
+    self.canvas.print_figure(fname, **kwargs)
+  File "/home/acb11711tx/miniconda3/envs/pytorch1.1/lib/python3.6/site-packages/matplotlib/backend_bases.py", line 2263, in print_figure
+    **kwargs)
+  File "/home/acb11711tx/miniconda3/envs/pytorch1.1/lib/python3.6/site-packages/matplotlib/backends/backend_agg.py", line 530, in print_png
+    with cbook.open_file_cm(filename_or_obj, "wb") as fh:
+  File "/home/acb11711tx/miniconda3/envs/pytorch1.1/lib/python3.6/contextlib.py", line 81, in __enter__
+    return next(self.gen)
+  File "/home/acb11711tx/miniconda3/envs/pytorch1.1/lib/python3.6/site-packages/matplotlib/cbook/__init__.py", line 626, in open_file_cm
+    fh, opened = to_filehandle(path_or_file, mode, True, encoding)
+  File "/home/acb11711tx/miniconda3/envs/pytorch1.1/lib/python3.6/site-packages/matplotlib/cbook/__init__.py", line 611, in to_filehandle
+    fh = io.open(fname, flag, encoding=encoding)
+FileNotFoundError: [Errno 2] No such file or directory: '/home/acb11711tx/lzq/ExpEval/visual_res/cm/ucf101_24_r2p1d_16_Full_perturb_core8_0.5_kar_LongRange.png'
+Use 4 GPUs!
+{'train': 'Num of clips:2284', 'val': 'Num of clips:910'}
+Epoch 0/19
+----------
+train Loss: 2.8586 Acc: 0.2916
+val Loss: 2.1539 Acc: 0.6560
+
+Epoch 1/19
+----------
+train Loss: 1.6907 Acc: 0.8192
+val Loss: 1.1233 Acc: 0.8714
+
+Epoch 2/19
+----------
+train Loss: 0.8975 Acc: 0.9330
+val Loss: 0.5977 Acc: 0.9275
+
+Epoch 3/19
+----------
+train Loss: 0.5430 Acc: 0.9510
+val Loss: 0.4054 Acc: 0.9374
+
+Epoch 4/19
+----------
+train Loss: 0.3492 Acc: 0.9755
+val Loss: 0.3201 Acc: 0.9407
+
+Epoch 5/19
+----------
+train Loss: 0.2576 Acc: 0.9790
+val Loss: 0.2559 Acc: 0.9538
+
+Epoch 6/19
+----------
+train Loss: 0.1957 Acc: 0.9847
+val Loss: 0.2356 Acc: 0.9560
+
+Epoch 7/19
+----------
+train Loss: 0.1557 Acc: 0.9908
+val Loss: 0.2073 Acc: 0.9571
+
+Epoch 8/19
+----------
+train Loss: 0.1364 Acc: 0.9882
+val Loss: 0.1857 Acc: 0.9626
+
+Epoch 9/19
+----------
+train Loss: 0.1074 Acc: 0.9947
+val Loss: 0.1857 Acc: 0.9451
+
+Epoch 10/19
+----------
+train Loss: 0.1011 Acc: 0.9934
+val Loss: 0.1659 Acc: 0.9637
+
+Epoch 11/19
+----------
+train Loss: 0.0839 Acc: 0.9947
+val Loss: 0.1638 Acc: 0.9538
+
+Epoch 12/19
+----------
+train Loss: 0.0764 Acc: 0.9965
+val Loss: 0.1524 Acc: 0.9626
+
+Epoch 13/19
+----------
+train Loss: 0.0653 Acc: 0.9974
+val Loss: 0.1591 Acc: 0.9538
+
+Epoch 14/19
+----------
+train Loss: 0.0646 Acc: 0.9947
+val Loss: 0.1415 Acc: 0.9637
+
+Epoch 15/19
+----------
+train Loss: 0.0523 Acc: 0.9991
+val Loss: 0.1298 Acc: 0.9670
+
+Epoch 16/19
+----------
+train Loss: 0.0596 Acc: 0.9956
+val Loss: 0.1321 Acc: 0.9670
+
+Epoch 17/19
+----------
+train Loss: 0.0494 Acc: 0.9974
+val Loss: 0.1366 Acc: 0.9637
+
+Epoch 18/19
+----------
+train Loss: 0.0479 Acc: 0.9965
+val Loss: 0.1213 Acc: 0.9670
+
+Epoch 19/19
+----------
+train Loss: 0.0418 Acc: 0.9982
+val Loss: 0.1299 Acc: 0.9648
+
+Training complete in 21m 43s
+Best val Acc: 0.967033
+Saved the weights of the best epoch in /home/acb11711tx/lzq/ExpEval/model_param/ucf101_24_r2p1d_16_Full_perturb_core8_0.7_kar_LongRange.pt
+Num of clips:910
+ Val: Acc@1 96.703 Acc@5 100.000
+
+Normalized confusion matrix
+Traceback (most recent call last):
+  File "model_train/retrain_ucf101_24_model.py", line 172, in <module>
+    cm_fig.savefig(os.path.join(proj_root, 'visual_res', 'cm', f'{save_label}.png'))
+  File "/home/acb11711tx/miniconda3/envs/pytorch1.1/lib/python3.6/site-packages/matplotlib/figure.py", line 2062, in savefig
+    self.canvas.print_figure(fname, **kwargs)
+  File "/home/acb11711tx/miniconda3/envs/pytorch1.1/lib/python3.6/site-packages/matplotlib/backend_bases.py", line 2263, in print_figure
+    **kwargs)
+  File "/home/acb11711tx/miniconda3/envs/pytorch1.1/lib/python3.6/site-packages/matplotlib/backends/backend_agg.py", line 530, in print_png
+    with cbook.open_file_cm(filename_or_obj, "wb") as fh:
+  File "/home/acb11711tx/miniconda3/envs/pytorch1.1/lib/python3.6/contextlib.py", line 81, in __enter__
+    return next(self.gen)
+  File "/home/acb11711tx/miniconda3/envs/pytorch1.1/lib/python3.6/site-packages/matplotlib/cbook/__init__.py", line 626, in open_file_cm
+    fh, opened = to_filehandle(path_or_file, mode, True, encoding)
+  File "/home/acb11711tx/miniconda3/envs/pytorch1.1/lib/python3.6/site-packages/matplotlib/cbook/__init__.py", line 611, in to_filehandle
+    fh = io.open(fname, flag, encoding=encoding)
+FileNotFoundError: [Errno 2] No such file or directory: '/home/acb11711tx/lzq/ExpEval/visual_res/cm/ucf101_24_r2p1d_16_Full_perturb_core8_0.7_kar_LongRange.png'
+Use 4 GPUs!
+{'train': 'Num of clips:2284', 'val': 'Num of clips:910'}
+Epoch 0/19
+----------
+train Loss: 2.7719 Acc: 0.3301
+val Loss: 2.0534 Acc: 0.6923
+
+Epoch 1/19
+----------
+train Loss: 1.5601 Acc: 0.8411
+val Loss: 0.9617 Acc: 0.9165
+
+Epoch 2/19
+----------
+train Loss: 0.7839 Acc: 0.9510
+val Loss: 0.5315 Acc: 0.9374
+
+Epoch 3/19
+----------
+train Loss: 0.4743 Acc: 0.9689
+val Loss: 0.3695 Acc: 0.9451
+
+Epoch 4/19
+----------
+train Loss: 0.3266 Acc: 0.9724
+val Loss: 0.2859 Acc: 0.9527
+
+Epoch 5/19
+----------
+train Loss: 0.2302 Acc: 0.9886
+val Loss: 0.2508 Acc: 0.9473
+
+Epoch 6/19
+----------
+train Loss: 0.1844 Acc: 0.9877
+val Loss: 0.2115 Acc: 0.9549
+
+Epoch 7/19
+----------
+train Loss: 0.1465 Acc: 0.9891
+val Loss: 0.2023 Acc: 0.9560
+
+Epoch 8/19
+----------
+train Loss: 0.1227 Acc: 0.9930
+val Loss: 0.1845 Acc: 0.9549
+
+Epoch 9/19
+----------
+train Loss: 0.1079 Acc: 0.9921
+val Loss: 0.1635 Acc: 0.9637
+
+Epoch 10/19
+----------
+train Loss: 0.0866 Acc: 0.9947
+val Loss: 0.1563 Acc: 0.9593
+
+Epoch 11/19
+----------
+train Loss: 0.0812 Acc: 0.9969
+val Loss: 0.1446 Acc: 0.9637
+
+Epoch 12/19
+----------
+train Loss: 0.0740 Acc: 0.9961
+val Loss: 0.1582 Acc: 0.9560
+
+Epoch 13/19
+----------
+train Loss: 0.0693 Acc: 0.9961
+val Loss: 0.1346 Acc: 0.9626
+
+Epoch 14/19
+----------
+train Loss: 0.0627 Acc: 0.9965
+val Loss: 0.1354 Acc: 0.9593
+
+Epoch 15/19
+----------
+train Loss: 0.0529 Acc: 0.9969
+val Loss: 0.1241 Acc: 0.9703
+
+Epoch 16/19
+----------
+train Loss: 0.0529 Acc: 0.9965
+val Loss: 0.1213 Acc: 0.9703
+
+Epoch 17/19
+----------
+train Loss: 0.0493 Acc: 0.9991
+val Loss: 0.1234 Acc: 0.9648
+
+Epoch 18/19
+----------
+train Loss: 0.0428 Acc: 0.9969
+val Loss: 0.1300 Acc: 0.9604
+
+Epoch 19/19
+----------
+train Loss: 0.0417 Acc: 0.9982
+val Loss: 0.1163 Acc: 0.9659
+
+Training complete in 21m 51s
+Best val Acc: 0.970330
+Saved the weights of the best epoch in /home/acb11711tx/lzq/ExpEval/model_param/ucf101_24_r2p1d_16_Full_perturb_core8_0.9_kar_LongRange.pt
+Num of clips:910
+ Val: Acc@1 97.033 Acc@5 100.000
+
+Normalized confusion matrix
+Traceback (most recent call last):
+  File "model_train/retrain_ucf101_24_model.py", line 172, in <module>
+    cm_fig.savefig(os.path.join(proj_root, 'visual_res', 'cm', f'{save_label}.png'))
+  File "/home/acb11711tx/miniconda3/envs/pytorch1.1/lib/python3.6/site-packages/matplotlib/figure.py", line 2062, in savefig
+    self.canvas.print_figure(fname, **kwargs)
+  File "/home/acb11711tx/miniconda3/envs/pytorch1.1/lib/python3.6/site-packages/matplotlib/backend_bases.py", line 2263, in print_figure
+    **kwargs)
+  File "/home/acb11711tx/miniconda3/envs/pytorch1.1/lib/python3.6/site-packages/matplotlib/backends/backend_agg.py", line 530, in print_png
+    with cbook.open_file_cm(filename_or_obj, "wb") as fh:
+  File "/home/acb11711tx/miniconda3/envs/pytorch1.1/lib/python3.6/contextlib.py", line 81, in __enter__
+    return next(self.gen)
+  File "/home/acb11711tx/miniconda3/envs/pytorch1.1/lib/python3.6/site-packages/matplotlib/cbook/__init__.py", line 626, in open_file_cm
+    fh, opened = to_filehandle(path_or_file, mode, True, encoding)
+  File "/home/acb11711tx/miniconda3/envs/pytorch1.1/lib/python3.6/site-packages/matplotlib/cbook/__init__.py", line 611, in to_filehandle
+    fh = io.open(fname, flag, encoding=encoding)
+FileNotFoundError: [Errno 2] No such file or directory: '/home/acb11711tx/lzq/ExpEval/visual_res/cm/ucf101_24_r2p1d_16_Full_perturb_core8_0.9_kar_LongRange.png'

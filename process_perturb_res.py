@@ -115,7 +115,7 @@ def merge(mat, dim, gap=0):
 
 def vis_perturb_res (dataset, model, video_name, masks, frame_index=None, frames=None, white_bg=False, with_text=True, prob_dict=None):
     video_name_regu = video_name.split("/")[-1]
-    if frame_index != None:
+    if isinstance(frame_index, np.ndarray):
         frames = get_frames(dataset, model, video_name_regu, frame_index)
 
     num_area, nch, num_f, nrow, ncol = masks.shape
@@ -199,8 +199,8 @@ if __name__ == "__main__":
     summed_res = {'train': list(), 'val': list()}
 
     if args.specify_video == None:
-        # for phase in perturb_res.keys():
-        for phase in ['val']:
+        for phase in perturb_res.keys():
+        # for phase in ['val']:
             if phase == 'val':
                 prob_dict = get_perturb_acc_dict(args.dataset, args.model, perturb_res[phase], 
                                     torch.device("cuda" if torch.cuda.is_available() else "cpu"))

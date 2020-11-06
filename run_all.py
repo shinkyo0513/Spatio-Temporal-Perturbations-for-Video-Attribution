@@ -137,13 +137,17 @@ def main_worker(gpu, args):
                         model_ft, x, lowest_labels, areas=args.areas, sigma=sigma, 
                         max_iter=args.perturb_niter, variant="preserve",
                         gpu_id=gpu, print_iter=200, perturb_type="blur",
-                        with_core=args.perturb_withcore, core_num_keyframe=args.perturb_num_keyframe)[0]
+                        with_core=args.perturb_withcore, 
+                        core_num_keyframe=args.perturb_num_keyframe,
+                        core_shape=args.perturb_core_shape)[0]
                 else:
                     res = video_perturbation(
                             model_ft, x, labels, areas=args.areas, sigma=sigma, 
                             max_iter=args.perturb_niter, variant="preserve",
                             gpu_id=gpu, print_iter=200, perturb_type="blur",
-                            with_core=args.perturb_withcore, core_num_keyframe=args.perturb_num_keyframe)[0]
+                            with_core=args.perturb_withcore, 
+                            core_num_keyframe=args.perturb_num_keyframe,
+                            core_shape=args.perturb_core_shape)[0]
                 # print(res.shape)
                 heatmaps_np = res.numpy()   # NxAx1xTxHxW
                 # print(heatmaps_np.shape)
@@ -161,7 +165,7 @@ def main_worker(gpu, args):
                     inp_np = voxel_tensor_to_np(x[bidx].detach().cpu())   # 3 x num_f x 224 224
                     if args.vis_method == 'perturb':
                         merged_fig, _ = vis_perturb_res(args.dataset, args.model, seg_name, 
-                                                    heatmaps_np[bidx], frame_idx=fidxs, white_bg=False)
+                                                        heatmaps_np[bidx], frame_index=fidxs, white_bg=False)
                         Image.fromarray(merged_fig).save(os.path.join(args.plot_save_path, seg_name+'.jpg'))
                     else:
                         if args.vis_method == 'grad_cam' or args.vis_method == 'eb':
@@ -200,6 +204,7 @@ if __name__ == "__main__":
     parser.add_argument("--perturb_niter", type=int, default=1000)
     parser.add_argument("--perturb_withcore", action='store_true')
     parser.add_argument("--perturb_num_keyframe", type=int, default=5)
+    parser.add_argument("--perturb_core_shape", type=str, default='ellipsoid', choices=["ellipsoid", "cylinder"])
     # parser.add_argument("--perturb_spatial_size", type=int, default=11)
 
     parser.add_argument("--master_addr", type=str, default="127.0.1.1")
@@ -227,6 +232,8 @@ if __name__ == "__main__":
         save_label = save_label + "_lowest"
     if args.perturb_withcore:
         save_label = save_label + "_core" + f"{args.perturb_num_keyframe}"
+    if args.perturb_core_shape == 'cylinder':
+        save_label = save_label + "_cylinder"
     if args.extra_label != "":
         save_label = save_label + f"_{args.extra_label}"
     args.save_label = save_label

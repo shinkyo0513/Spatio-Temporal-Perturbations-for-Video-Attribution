@@ -43,7 +43,8 @@ parser.add_argument("--multi_gpu", action='store_true')
 parser.add_argument("--retrain_type", type=str, default="Full",
                     choices=["FC+FinalConv", "Full"])
 parser.add_argument("--vis_method", type=str, 
-                    choices=["g", "ig", "sg", "sg2", "grad_cam", "perturb", "random"])
+                    choices=["g", "ig", "sg", "la", "eb", "grad_cam", "perturb", "random"])
+parser.add_argument("--extra_label", type=str, default="")
 
 parser.add_argument("--perturb_ratio", type=float)
 parser.add_argument("--perturb_mode", type=str, default='keep', choices=["remove", "keep"])
@@ -65,20 +66,32 @@ num_classes = 24
 ds_name = "ucf101_24"
 ds_path = f"{ds_root}/UCF101_24/"
 
-save_label = f"{ds_name}_{args.model}_{args.num_f}"
-save_label = save_label + "_" + args.retrain_type
-save_label = save_label + f"_{args.vis_method}_{args.perturb_ratio}"
+save_label = f"{ds_name}_{args.model}_{args.num_f}_{args.retrain_type}_{args.vis_method}"
+if args.extra_label != '':
+    save_label = save_label + f"{args.extra_label}"
+save_label = save_label + f"_{args.perturb_ratio}"
 if args.perturb_mode == 'remove':
     save_label = save_label + "_roar"
 elif args.perturb_mode == 'keep':
     save_label = save_label + "_kar"
-
 if args.smoothed_perturb:
     save_label = save_label + '_smoothed' + f'{args.smooth_sigma}'
 if args.perturb_by_block:
     save_label = save_label + '_block'
 if args.long_range:
     save_label = save_label + "_LongRange"
+
+heatmaps_dir = os.path.join(
+    proj_root, 'exe_res', f'ucf101_{args.model}_{args.vis_method}_full.pt')
+if args.extra_label != '':
+    heatmaps_dir = heatmaps_dir.replace('_full.pt', f'_full{args.extra_label}.pt')
+if args.vis_method == 'perturb':
+    heatmaps_dir = heatmaps_dir.replace('.pt', '_summed.pt')
+elif args.vis_method == 'random':
+    heatmaps_dir = 'random'
+
+# Path to save and read model parameters
+pt_save_dir = join(proj_root, 'model_param', f"{save_label}.pt")
 
 multi_gpu = args.multi_gpu
 num_devices = torch.cuda.device_count()
@@ -91,20 +104,11 @@ model_ft.to_device(device)
 if multi_gpu:
     model_ft.parallel_model(device_ids=list(range(num_devices)))
 
-heatmaps_dir = os.path.join(proj_root, 'exe_res', f'ucf101_{args.model}_{args.vis_method}_full.pt')
-if args.vis_method == 'perturb':
-    heatmaps_dir = heatmaps_dir.replace('.pt', '_summed.pt')
-elif args.vis_method == 'random':
-    heatmaps_dir = 'random'
-
-# Path to save and read model parameters
-pt_save_dir = join(proj_root, 'model_param', f"{save_label}.pt")
-
 if not args.only_test:
     #================== Train & Evaluate ===================#
-    # OPtimizer and Loss fn
+    # Optimizer and Loss fn
     if args.model == "r50l":
-        optimizer_ft = torch.optim.SGD(params_to_update, lr=0.05, momentum=0.9)#, weight_decay=0.001)
+        optimizer_ft = torch.optim.SGD(params_to_update, lr=0.1, momentum=0.9)#, weight_decay=0.001)
     else:
         optimizer_ft = torch.optim.SGD(params_to_update, lr=0.001, momentum=0.9)
     # criterion = nn.NLLLoss()

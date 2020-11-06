@@ -3,7 +3,7 @@
 #$ -N ucf_r50l
 #$ -l rt_F=1
 #$ -l h_rt=48:00:00
-#$ -o outs_ucf101/r50l_perturb_core14_proc.txt
+#$ -o outs_ucf101/r50l_perturb_core8_train_proc.txt
 #$ -j y
 #$ -cwd
 source /etc/profile.d/modules.sh
@@ -24,5 +24,8 @@ conda activate pytorch1.1
 # python run_all.py --dataset ucf101 --model r50l --only_test --vis_method perturb \
 # --perturb_niter 1200 --perturb_withcore --perturb_num_keyframe 8 --batch_size 4 
 
-python run_all.py --dataset ucf101 --model r50l --only_test --vis_method perturb \
---perturb_niter 1200 --perturb_withcore --perturb_num_keyframe 14 --batch_size 4 
+# python run_all.py --dataset ucf101 --model r50l --only_test --vis_method perturb \
+# --perturb_niter 1200 --perturb_withcore --perturb_num_keyframe 14 --batch_size 4 
+
+python run_all.py --dataset ucf101 --model r50l --only_train --vis_method perturb \
+--perturb_niter 1200 --perturb_withcore --perturb_num_keyframe 8 --batch_size 4 --perturb_core_shape ellipsoid

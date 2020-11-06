@@ -1,0 +1,24 @@
+Use 4 GPUs!
+{'train': 'Num of clips:2284', 'val': 'Num of clips:910'}
+Epoch 0/39
+----------
+train Loss: 3.1638 Acc: 0.0429
+val Loss: 3.1430 Acc: 0.0626
+
+Epoch 1/39
+----------
+train Loss: 2.9955 Acc: 0.1060
+val Loss: 3.4091 Acc: 0.0791
+
+Epoch 2/39
+----------
+train Loss: 2.8280 Acc: 0.1497
+val Loss: 3.3398 Acc: 0.1648
+
+Epoch 3/39
+----------
+train Loss: 2.7282 Acc: 0.1856
+val Loss: 2.9787 Acc: 0.1758
+
+Epoch 4/39
+----------
