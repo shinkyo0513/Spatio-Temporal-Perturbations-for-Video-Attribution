@@ -48,8 +48,8 @@ fig = plt.figure(figsize=(8,8))
 plt.subplot(111)
 plt.xlim(0, 1.0)
 plt.ylim(0, 1.05)
-plt.xlabel('Pixels Perturbed (%)', fontsize=16)
-plt.ylabel('Probability (%)', fontsize=16)
+plt.xlabel('Pixels Perturbed (%)', fontsize=20)
+plt.ylabel('Probability (%)', fontsize=20)
 
 frame_transform = transforms.Compose([
             transforms.Resize((112,112)),
@@ -80,13 +80,13 @@ for midx, vis_method in enumerate(vis_methods):
         probs_dict[row_els[0]] = row_els[1:]
 
     video_probs = probs_dict[video_name]
-    plt.plot(x_coords, video_probs, color=colors[midx], linestyle='solid', label=f"{vis_method}: {video_name[2:]}")
+    plt.plot(x_coords, video_probs, color=colors[midx], linestyle='solid', linewidth=2, label=f"{vis_method}: {video_name[2:]}")
 
     probs_array = np.array(list(probs_dict.values()))
     avg_probs = probs_array.mean(axis=0)
-    plt.plot(x_coords, avg_probs, color=colors[midx], linestyle='dashed', label=f"{vis_method}: Average")
+    plt.plot(x_coords, avg_probs, color=colors[midx], linestyle='dashed', linewidth=2, label=f"{vis_method}: Average")
 
-    plt.axvline(args.perturb_ratio, 0, 1, color='gray', linewidth=0.5)
+    plt.axvline(args.perturb_ratio, 0, 1, color='gray', linewidth=2)
 
     if vis_method != 'random':
         res_save_path = join(proj_root, 'exe_res', f"{args.dataset}_{args.model}_{vis_method}_full.pt")
@@ -131,10 +131,11 @@ for midx, vis_method in enumerate(vis_methods):
         pframe_tensor = pframes_tensor[it]
         pframe_np = img_tensor_to_np(pframe_tensor) # 0~1
         pframe_forshow = (pframe_np * 255).astype(np.uint8).transpose(1,2,0)
-        Image.fromarray(pframe_forshow).save(join(pframe_save_path, f'{it:02d}.jpg'))
+        Image.fromarray(pframe_forshow).save(join(pframe_save_path, f'{it:02d}.pdf'))
 
-plt.legend(loc='upper center', bbox_to_anchor=(0.5, 1.15), ncol=2, fontsize=16)
-plt.savefig(join(final_save_path, "comparison.jpg"))
+# plt.legend(loc='upper center', bbox_to_anchor=(0.5, 1.15), ncol=2, fontsize=16)
+plt.legend(loc='upper left', fontsize=18)
+plt.savefig(join(final_save_path, "comparison.pdf"))
 
     
 

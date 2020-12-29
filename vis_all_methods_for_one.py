@@ -44,7 +44,7 @@ if __name__ == "__main__":
 
     # all_methods_list = ['g', 'ig', 'sg', 'la', 'grad_cam', 'eb', 'perturb', 'core5', 'core11']
     all_methods_list = ['perturb', 'core5', 'core11']
-    vis_classes_list = ['Fencing', 'Diving']
+    vis_classes_list = ['plate']#, 'pan', 'glass', 'spatula', 'bottle', 'cloth']
 
     model_ft, video_dataset = load_model_and_dataset(args.dataset, args.model, testlist_idx=2)
     dataloader = DataLoader(video_dataset, batch_size=1, shuffle=False, num_workers=128)
