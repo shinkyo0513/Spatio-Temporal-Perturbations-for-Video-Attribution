@@ -108,7 +108,8 @@ if not args.only_test:
     #================== Train & Evaluate ===================#
     # Optimizer and Loss fn
     if args.model == "r50l":
-        optimizer_ft = torch.optim.SGD(params_to_update, lr=0.1, momentum=0.9)#, weight_decay=0.001)
+        # optimizer_ft = torch.optim.SGD(params_to_update, lr=0.1, momentum=0.9)#, weight_decay=0.001)
+        optimizer_ft = torch.optim.Adam(params_to_update, lr=0.1)
     else:
         optimizer_ft = torch.optim.SGD(params_to_update, lr=0.001, momentum=0.9)
     # criterion = nn.NLLLoss()
