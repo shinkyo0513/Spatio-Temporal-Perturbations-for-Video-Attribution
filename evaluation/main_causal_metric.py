@@ -26,8 +26,8 @@ from skimage import transform
 import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument("--dataset", type=str, default="ucf101", 
-                                    choices=["ucf101", "epic"])
-parser.add_argument("--model", type=str, choices=["v16l", "r2p1d", "r50l"])
+                                    choices=["ucf101", "epic", "sthsthv2"])
+parser.add_argument("--model", type=str, choices=["v16l", "r2p1d", "r50l", "tsm"])
 parser.add_argument("--vis_method", type=str, choices=["g", "ig", "sg", "sg2", "grad_cam", "perturb", "random", "eb", "la", "gbp"])  
 parser.add_argument("--mode", type=str, default="ins", choices=["ins", "del", "both"])
 parser.add_argument("--order", type=str, default="most_first", choices=["most_first", "least_first"])

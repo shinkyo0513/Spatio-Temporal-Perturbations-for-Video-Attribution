@@ -80,11 +80,15 @@ def get_frames(dataset_name, model_name, video_name, fids):
         root_path = f'{ds_root}/Cat_UCF101'
         frames = [Image.open(os.path.join(root_path, standardize_ucf101_video_name(video_name),
                         format(fid + 1, '05d') + '.jpg')) for fid in fids]
+    elif dataset_name == 'sthsthv2':
+        root_path = os.path.join(ds_root, 'something_something_v2/20bn-something-something-v2-frames')
+        frames = [Image.open(os.path.join(root_path, video_name,
+                        format(fid + 1, '06d') + '.jpg')) for fid in fids]
     else:
         print('ERROR!')
         return
     
-    if model_name == 'r2p1d' or model_name == 'r50l':
+    if model_name == 'r2p1d' or model_name == 'r50l' or model_name == 'tsm':
         transform = torchvision.transforms.Compose([
             torchvision.transforms.Resize((112, 112)),
         ])
@@ -147,21 +151,21 @@ class FramesReader ():
         return np.stack([np.array(self.transform(frame)) for frame in self.frames])
 
 
-def load_model_and_dataset (dataset_name, model_name, phase='val', testlist_idx=1):
-    assert dataset_name in ['ucf101', 'epic', 'cat_ucf']
-    assert model_name in ['r2p1d', 'r50l']
+def load_model_and_dataset (dataset_name, model_name, phase='val', testlist_idx=1, labels_set='full'):
+    assert dataset_name in ['ucf101', 'epic', 'cat_ucf', 'sthsthv2']
+    assert model_name in ['r2p1d', 'r50l', 'tsm']
     if isinstance(phase, list):
         assert phase in [['val'], ['train'], ['val', 'train'], ['train', 'val']]
     else:
         assert phase in ['val', 'train']
 
+    # Model
     if dataset_name == "ucf101":
         num_classes = 24
         ds_path = f'{ds_root}/UCF101_24'
         if model_name == "r2p1d":
             from datasets.ucf101_24_dataset_new import UCF101_24_Dataset as dataset
             from model_def.r2plus1d import r2plus1d as model
-            # model_wgts_dir = f"{proj_root}/model_param/ucf101_24_r2plus1d_18_16_Full_LongRange.pt"
             model_wgts_dir = f"{proj_root}/model_param/ucf101_24_r2p1d_16_Full_LongRange.pt"
         elif model_name == "r50l":
             from datasets.ucf101_24_dataset_new import UCF101_24_Dataset as dataset
@@ -171,6 +175,9 @@ def load_model_and_dataset (dataset_name, model_name, phase='val', testlist_idx=
             from datasets.ucf101_24_dataset_vgg16lstm import UCF101_24_Dataset as dataset
             from model_def.vgg16lstm import vgg16lstm as model
             model_wgts_dir = f"{proj_root}/model_param/ucf101_24_vgg16lstm_16_Full_LongRange.pt"
+        model_ft = model(num_classes=num_classes, with_softmax=True)
+        model_ft.load_weights(model_wgts_dir)
+
     elif dataset_name == "epic":
         num_classes = 20
         ds_path = os.path.join(ds_root, path_dict.epic_rltv_dir)
@@ -186,6 +193,26 @@ def load_model_and_dataset (dataset_name, model_name, phase='val', testlist_idx=
             from datasets.epic_kitchens_dataset_vgg16lstm import EPIC_Kitchens_Dataset as dataset
             from model_def.vgg16lstm import vgg16lstm as model
             model_wgts_dir = f"{proj_root}/model_param/epic_vgg16lstm_16_Full_LongRange.pt"
+        model_ft = model(num_classes=num_classes, with_softmax=True)
+        model_ft.load_weights(model_wgts_dir)
+
+    elif dataset_name == "sthsthv2":
+        ds_path = os.path.join(ds_root, 'something_something_v2')
+        if labels_set == 'top25':
+            num_classes = 25 
+        elif labels_set == 'full':
+            num_classes = 174
+        if model_name == "tsm":
+            from datasets.sthsthv2_dataset_new import SthSthV2_Dataset as dataset
+            from model_def.tsm import tsm as model
+            model_ft = model(num_classes=num_classes, segment_count=16, pretrained=dataset_name, with_softmax=True)
+        elif model_name == "r2p1d":
+            from datasets.sthsthv2_dataset_new import SthSthV2_Dataset as dataset
+            from model_def.r2plus1d import r2plus1d as model
+            model_wgts_dir = f"{proj_root}/model_param/sthsthv2_r2p1d_16_Full_LongRange.pt"
+            model_ft = model(num_classes=num_classes, with_softmax=True)
+            model_ft.load_weights(model_wgts_dir)
+
     elif dataset_name == "cat_ucf":
         num_classes = 24
         ds_path = f'{ds_root}/Cat_UCF101'
@@ -197,20 +224,28 @@ def load_model_and_dataset (dataset_name, model_name, phase='val', testlist_idx=
             from datasets.cat_ucf_testset_new import Cat_UCF_Testset as dataset
             from model_def.r50lstm import r50lstm as model
             model_wgts_dir = f"{proj_root}/model_param/ucf101_24_r50l_16_Full_LongRange.pt"
-
-    if model_name == "r2p1d" or model_name == "r50l":
         model_ft = model(num_classes=num_classes, with_softmax=True)
-    elif model_name == "v16l":
-        model_ft = model(num_classes=num_classes)
-    model_ft.load_weights(model_wgts_dir)
+        model_ft.load_weights(model_wgts_dir)
 
-    sample_mode = 'long_range_last'
-    num_frame = 16
-    if isinstance(phase, list):
-        video_datasets = {x: dataset(ds_path, num_frame, sample_mode, 1, 6, \
-                                x=='train', testlist_idx=testlist_idx) for x in phase}
-        # print(rank, {x: 'Num of clips:{}'.format(len(video_datasets[x])) for x in ['train', 'val']})
-        return model_ft, video_datasets
-    else:
-        video_dataset = dataset(ds_path, num_frame, sample_mode, 1, 6, phase=='train', testlist_idx=testlist_idx)
-        return model_ft, video_dataset
+    # Dataset
+    if dataset_name in ["ucf101", "epic", "cat_ucf"]:
+        sample_mode = 'long_range_last'
+        num_frame = 16
+        if isinstance(phase, list):
+            video_datasets = {x: dataset(ds_path, num_frame, sample_mode, 1, 6, \
+                                    x=='train', testlist_idx=testlist_idx) for x in phase}
+        else:
+            video_datasets = dataset(ds_path, num_frame, sample_mode, 1, 6, \
+                                    phase=='train', testlist_idx=testlist_idx)
+                                    
+    elif dataset_name == "sthsthv2":
+        sample_mode = 'long_range_last'
+        num_frame = 16
+        if isinstance(phase, list):
+            video_datasets = {x: dataset(ds_path, num_frame, sample_mode, 1, 2, \
+                                x=='train', testlist_idx=testlist_idx, labels_set=labels_set) for x in phase}
+        else:
+            video_datasets = dataset(ds_path, num_frame, sample_mode, 1, 2, \
+                                phase=='train', testlist_idx=testlist_idx, labels_set=labels_set)
+
+    return model_ft, video_datasets

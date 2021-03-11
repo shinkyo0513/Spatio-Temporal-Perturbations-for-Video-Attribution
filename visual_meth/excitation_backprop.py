@@ -3,6 +3,42 @@ import numpy as np
 from torchray.attribution.excitation_backprop import excitation_backprop, update_resnet
 from torchray.attribution.excitation_backprop import ExcitationBackpropContext
 
+
+def excitation_bp_2d (inputs, labels, model, device, layer_name, norm_vis=True):
+    model.eval()   # Set model to evaluate mode
+    # print(model)
+    # print(dict(model.named_modules()).keys())
+
+    observ_layer = model
+    for name in layer_name:
+        # print(dict(observ_layer.named_children()).keys())
+        observ_layer = dict(observ_layer.named_children())[name]
+    # print(observ_layer)
+
+    bs0, nch0, nt0, h0, w0 = inputs.shape
+
+    eb_grads = excitation_backprop(model, inputs, labels, saliency_layer=observ_layer)  # N*Tx1xHxW
+    eb_grads = torch.stack(torch.split(eb_grads, nt0, dim=0), dim=0).transpose(1,2) # N x 1 x numf x 14x14
+    eb_grads = torch.abs(eb_grads)  # N*Tx1xHxW
+    # eb_grads = torch.clamp(eb_grads, min=0.0)
+    eb_grads = eb_grads.mean(dim=1, keepdim=True)  # Nx1xTxHxW
+    bs, nch, nt, h, w = eb_grads.shape
+
+    if norm_vis:
+        grads_np = eb_grads.cpu().numpy()
+        grads_np = np.reshape(grads_np, (bs, -1))
+        vmax = np.percentile(grads_np, 99.0, axis=1, keepdims=True)
+        vmin = np.percentile(grads_np, 0.0, axis=1, keepdims=True)
+        out_masks = torch.from_numpy(np.clip((grads_np - vmin) / (vmax - vmin), 0, 1))    # Nx1xTxHxW
+        out_masks = out_masks.reshape(bs, 1, nt, h, w)
+    else:
+        out_masks = eb_grads
+
+    if nt != nt0:
+        out_masks = torch.repeat_interleave(out_masks, int(nt0/nt), dim=2)
+    
+    return out_masks
+
 def excitation_bp_3d (inputs, labels, model, device, layer_name, norm_vis=True):
     model.eval()   # Set model to evaluate mode
     # print(model)
@@ -130,5 +166,8 @@ def excitation_bp (inputs, labels, model, model_name, device, layer_name, norm_v
     elif model_name == 'r50l':
         layer_name = ['module', 'model', 'resnet'] + layer_name
         return excitation_bp_rnn(inputs, labels, model, device, layer_name, norm_vis)
+    if model_name == 'tsm':
+        layer_name = ['module', 'model', 'base_model'] + layer_name
+        return excitation_bp_2d(inputs, labels, model, device, layer_name, norm_vis)
     else:
         raise Exception(f'Unsupoorted class: given {model_name}')

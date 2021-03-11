@@ -34,12 +34,12 @@ import copy
 
 def main_worker(gpu, args):
     if args.vis_method == 'perturb':
-        if args.model == 'r2p1d' or args.model == "r50l":
-            step = 7
-            sigma = 11
-        elif args.model == 'v16l':
+        if args.model == 'v16l':
             step = 14
             sigma = 23
+        else:
+            step = 7
+            sigma = 11
     batch_size = args.batch_size
 
     rank = gpu	                          
@@ -52,23 +52,18 @@ def main_worker(gpu, args):
 
     torch.manual_seed(0)
 
-    model_ft, video_datasets = load_model_and_dataset(args.dataset, args.model, args.phase_set)
+    model_ft, video_datasets = load_model_and_dataset(args.dataset, args.model, args.phase_set, labels_set=args.labels_set)
     model_ft = model_ft.eval()  # important!
     model_ft.cuda(gpu)
     model_ft = DDP(model_ft, device_ids=[gpu])
+    # print(model_ft)
 
     # Initialize the dataset and dataloader
-    
     samplers = {x: torch.utils.data.distributed.DistributedSampler(video_datasets[x], 
                         num_replicas=args.world_size, rank=rank) for x in args.phase_set}
     dataloaders = {x: DataLoader(video_datasets[x], batch_size=batch_size, shuffle=False, 
                         num_workers=0, sampler=samplers[x], pin_memory=False) for x in args.phase_set}
     print(rank, {x: 'Num of batches:{}'.format(len(dataloaders[x])) for x in args.phase_set})
-
-    if args.dataset == 'epic':
-        tags,tag2ID = loadTags(f'{proj_root}/datasets/epic_top20_catName.txt')
-    elif args.dataset == 'ucf101':
-        tags,tag2ID = loadTags(f'{proj_root}/datasets/ucf101_24_catName.txt')
 
     if args.visualize:
         plot_save_path = f"{proj_root}/visual_res/{args.save_label}"
@@ -80,16 +75,15 @@ def main_worker(gpu, args):
         for samples in dataloaders[phase]:
             # x: 1x3x16x112x112; label: 1; output mask: 
             # 1x1x16x112x112; fidx_tensors: 1x16;
-            x, labels, seg_names, fidx_tensors = samples
+            x, labels, seg_names, fidx_tensors = samples[:4]
             x = x.cuda(gpu)
             labels = labels.to(dtype=torch.long).cuda(gpu)
-            # print(x.shape, x.device)
+
+            if args.dataset == 'sthsthv2':
+                action_label = samples[4]
 
             y = model_ft(x)
             lowest_probs, lowest_labels = torch.min(y, dim=1)
-            # for bidx in range(ymin_labels.shape[0]):
-            #     print(f'{ymin_labels[bidx]}: {tags[ymin_labels[bidx]]}')
-            # print(f'{labels.shape}, {ymin_labels.shape}')
 
             device = x.device
 
@@ -112,7 +106,10 @@ def main_worker(gpu, args):
                     layer_name = ['pool5']
                 elif args.model == 'r50l':
                     layer_name = ['6']
+                elif args.model == 'tsm':
+                    layer_name = ['layer4']
                 res = grad_cam(x, labels, model_ft, args.model, device, layer_name=layer_name, norm_vis=True)
+                # print(res.shape)
                 heatmaps_np = res.numpy()   # Nx1xTxHxW
                 # heatmaps_np = 1 - (1 - heatmaps_np ** 2.0) ** 2.4
             elif args.vis_method == 'eb':   # Cannot support RNN
@@ -120,6 +117,8 @@ def main_worker(gpu, args):
                     layer_name = ['layer4']
                 elif args.model == 'r50l':
                     layer_name = ['6']
+                elif args.model == 'tsm':
+                    layer_name = ['layer4']
                 else:
                     raise Exception(f"Excitation BP supports only R(2+1)D now. Given {args.model}.")
                 res = excitation_bp(x, labels, model_ft, args.model, device, layer_name=layer_name, norm_vis=True)
@@ -158,22 +157,26 @@ def main_worker(gpu, args):
                 fidxs = copy.deepcopy(fidx_tensors[bidx].detach().cpu().numpy())
                 fidxs = fidxs.astype('uint16')
 
-                res_buf[phase].append({"video_name": seg_name, "mask": heatmap, "fidx": fidxs})
-                print(seg_names[bidx])
+                res_buf[phase].append({"video_name": seg_name, "mask": heatmap, "fidx": fidxs}) 
 
                 if args.visualize:
                     inp_np = voxel_tensor_to_np(x[bidx].detach().cpu())   # 3 x num_f x 224 224
+                    plot_save_name = seg_name + '.jpg'
+                    if args.dataset == 'sthsthv2':
+                        plot_save_name = plot_save_name.replace('.jpg', f'_{action_label[bidx]}.jpg')
+                    print(plot_save_name)
+
                     if args.vis_method == 'perturb':
                         merged_fig, _ = vis_perturb_res(args.dataset, args.model, seg_name, 
                                                         heatmaps_np[bidx], frame_index=fidxs, white_bg=False)
-                        Image.fromarray(merged_fig).save(os.path.join(args.plot_save_path, seg_name+'.jpg'))
+                        Image.fromarray(merged_fig).save(os.path.join(args.plot_save_path, plot_save_name))
                     else:
                         if args.vis_method == 'grad_cam' or args.vis_method == 'eb':
                             heatmap_np = overlap_maps_on_voxel_np(inp_np, heatmaps_np[bidx,0])
                         else:
                             heatmap_np = heatmaps_np[bidx].repeat(3, axis=0)      # 3 x num_f x 224 224
                         plot_voxel_np(inp_np, heatmap_np, title=seg_name, 
-                                        save_path=os.path.join(args.plot_save_path, seg_name+'.jpg') )
+                                        save_path=os.path.join(args.plot_save_path, plot_save_name) )
 
         res_save_name = f'{args.save_label}_gpu{gpu}_{phase}.pt'
         torch.save(res_buf, join(args.res_save_path, res_save_name))
@@ -188,8 +191,9 @@ if __name__ == "__main__":
     # parser.add_argument("--testlist_idx", type=int, default=2, choices=[1, 2])
     # parser.add_argument("--num_f", type=int, default=16, choices=[8, 16])
     # parser.add_argument("--long_range", action='store_true')
-    parser.add_argument("--dataset", type=str, choices=['epic', 'ucf101', 'cat_ucf'])
-    parser.add_argument("--model", type=str, choices=['r2p1d', 'v16l', 'r50l'])
+    parser.add_argument("--dataset", type=str, choices=['epic', 'ucf101', 'cat_ucf', 'sthsthv2'])
+    parser.add_argument("--model", type=str, choices=['r2p1d', 'v16l', 'r50l', 'tsm'])
+    parser.add_argument("--labels_set", type=str, default="full")
     parser.add_argument("--vis_method", type=str, 
                         choices=['g', 'ig', 'sg', 'sg2', 'grad_cam', 'perturb', 'eb', 'gbp', 'la'])
     parser.add_argument("--only_test", action="store_true")

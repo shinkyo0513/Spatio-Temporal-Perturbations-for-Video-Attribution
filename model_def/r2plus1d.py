@@ -119,10 +119,11 @@ class r2plus1d (nn.Module):
                 running_corrects = 0
 
                 # Iterate over data.
-                # for samples in tqdm(dataloaders[phase]):
-                for samples in dataloaders[phase]:
+                for samples in tqdm(dataloaders[phase]):
+                # for samples in dataloaders[phase]:
                     inputs = samples[0].to(self.device)
-                    labels = samples[1].to(self.device)
+                    labels = samples[1].to(self.device, dtype=torch.long)
+                    # print(labels)
 
                     # zero the parameter gradients
                     optimizer.zero_grad()
@@ -132,7 +133,6 @@ class r2plus1d (nn.Module):
                     with torch.set_grad_enabled(phase == 'train'):
                         # with amp.autocast(enabled=use_amp):
                         # Get model outputs and calculate loss
-                        # outputs = self.model(inputs)    # assume outputs are softmax activations
                         outputs = self.forward(inputs)    # assume outputs are softmax activations
                         if self.with_softmax:
                             loss = criterion(torch.log(outputs), labels)    # Using NLLLoss

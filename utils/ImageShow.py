@@ -76,7 +76,8 @@ def overlap_map_on_img(img_np, attMap, norm_map=False, blur=False):
     # img_np: CxHxW, attMap: h x w
     plt.axis('off')
     resized_map, colormap = map_to_colormap(attMap, resize=(img_np.shape[1:]), norm_map=False, blur=blur)
-    resized_map = 1*(1-resized_map**0.8)*img_np + (resized_map**0.8)*colormap
+    resized_map = (1-resized_map**0.8)*img_np + (resized_map**0.8)*colormap
+    resized_map = np.clip(resized_map, 0, 1)
     return resized_map
 
 def overlap_maps_on_voxel_np(voxel_np, attMaps, norm_map=False, blur=False):
@@ -252,6 +253,7 @@ def plot_voxel_np(voxel_np, saliency_np, title=None,
     # Show plot if desired.
     if show_plot:
         plt.show()
+    plt.close(fig)
 
 def plot_voxel_wbbox_np(voxel_np, saliency_np, bbox_tensor, title=None,
                     show_plot=False, save_path=None):

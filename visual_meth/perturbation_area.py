@@ -229,6 +229,7 @@ class CoreLossCalulator:
         self.core_kernel_ones = int(num_key_frames * spatial_range[0] * spatial_range[1] * 0.5236)
         self.core_kernels = []
         self.core_topks = []
+        self.betas = []
 
         for a_idx, area in enumerate(areas):
             if self.core_shape == 'ellipsoid':
@@ -237,9 +238,12 @@ class CoreLossCalulator:
                 core_kernel = self.get_cylinder_kernel([num_key_frames, spatial_range[0], spatial_range[1]]).to(device)
             else:
                 raise Exception(f'Unsurported core_shape, given {self.core_shape}')
-            # core_kernel /= core_kernel.sum()
             self.core_kernels.append(core_kernel)
+            # Old
             self.core_topks.append(math.ceil((area*self.nt*self.new_nrow*self.new_ncol) / self.core_kernel_ones))
+            # New
+            beta = (nt*nrow*ncol) / ((nt+num_key_frames-1)*(nrow+spatial_range[0]-1)*(ncol+spatial_range[1]-1))
+            self.betas.append(beta)
 
     # mask: AxNx1xTx S_out x S_out
     def calculate (self, masks):
@@ -257,10 +261,14 @@ class CoreLossCalulator:
             mask_conv_sorted = mask_conv.view(self.bs, -1)
             shuffled_inds = torch.randperm(mask_conv_sorted.shape[1], device=mask_conv_sorted.device)
             mask_conv_sorted = mask_conv_sorted[:, shuffled_inds].sort(dim=1, descending=True)[0]
-            # loss = ((mask_conv_sorted[:, :self.core_topks[a_idx]] - 1) ** 2).mean(dim=1) \
-            #         + ((mask_conv_sorted[:, self.core_topks[a_idx]:] - 0) ** 2).mean(dim=1)
+            # # Old
             loss = ((mask_conv_sorted[:, :self.core_topks[a_idx]]/core_kernel_sum - 1) ** 2).mean(dim=1) \
                     + ((mask_conv_sorted[:, self.core_topks[a_idx]:]/core_kernel_sum - 0) ** 2).mean(dim=1)
+            # New
+            # topk = int(self.betas[a_idx] * area * mask_conv_sorted.shape[1])
+            # loss = ((mask_conv_sorted[:, :topk]/core_kernel_sum - 1)**2).mean(dim=1) \
+            #         + ((mask_conv_sorted[:, topk:]/core_kernel_sum - 0)**2).mean(dim=1)
+
             losses.append(loss)
         losses = torch.stack(losses, dim=0)   # A x N
         return losses
