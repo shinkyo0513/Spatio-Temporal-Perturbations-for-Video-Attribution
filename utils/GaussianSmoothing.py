@@ -44,6 +44,7 @@ class GaussianSmoothing(nn.Module):
         # Reshape to depthwise convolutional weight
         kernel = kernel.view(1, 1, *kernel.size())
         kernel = kernel.repeat(channels, *[1] * (kernel.dim() - 1))
+        # print(kernel.shape)
 
         self.register_buffer('weight', kernel)
         self.groups = channels

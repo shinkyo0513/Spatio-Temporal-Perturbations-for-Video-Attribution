@@ -13,6 +13,7 @@ from utils.CausalMetric import CausalMetric, plot_causal_metric_curve
 from utils.CausalMetric import auc as cal_auc
 # from perturb.perturb_utils import *
 from utils.ImageShow import *
+from utils.ReadingDataset import load_model_and_dataset
 
 import torch
 from torch.utils.data import Dataset, DataLoader
@@ -46,37 +47,37 @@ parser.add_argument('--mask_smooth_sigma', type=int, default=0)
 parser.add_argument('--extra_label', type=str, default="")                
 args = parser.parse_args()
 
-if args.dataset == "ucf101":
-    num_classes = 24
-    ds_path = f'{ds_root}/UCF101_24'
-    if args.model == "v16l":
-        from model_def.vgg16lstm import vgg16lstm as model
-        from datasets.ucf101_24_dataset_vgg16lstm import UCF101_24_Dataset as dataset
-        model_wgts_path = f"{proj_root}/model_param/ucf101_24_vgg16lstm_16_Full_LongRange.pt"
-    elif args.model == "r2p1d":
-        from model_def.r2plus1d import r2plus1d as model
-        from datasets.ucf101_24_dataset_new import UCF101_24_Dataset as dataset
-        model_wgts_path = f"{proj_root}/model_param/ucf101_24_r2p1d_16_Full_LongRange.pt"
-    elif args.model == "r50l":
-        from model_def.r50lstm import r50lstm as model
-        from datasets.ucf101_24_dataset_new import UCF101_24_Dataset as dataset
-        model_wgts_path = f"{proj_root}/model_param/ucf101_24_r50l_16_Full_LongRange.pt"
-elif args.dataset == "epic":
-    num_classes = 20
-    # ds_path = f'{ds_root}/epic'
-    ds_path = os.path.join(ds_root, path_dict.epic_rltv_dir)
-    if args.model == "v16l":
-        from model_def.vgg16lstm import vgg16lstm as model
-        from datasets.epic_kitchens_dataset_vgg16lstm import EPIC_Kitchens_Dataset as dataset
-        model_wgts_path = f"{proj_root}/model_param/epic_vgg16lstm_16_Full_LongRange.pt"
-    elif args.model == "r2p1d":
-        from model_def.r2plus1d import r2plus1d as model
-        from datasets.epic_kitchens_dataset_new import EPIC_Kitchens_Dataset as dataset
-        model_wgts_path = f"{proj_root}/model_param/epic_r2p1d_16_Full_LongRange.pt"
-    elif args.model == "r50l":
-        from model_def.r50lstm import r50lstm as model
-        from datasets.epic_kitchens_dataset_new import EPIC_Kitchens_Dataset as dataset
-        model_wgts_path = f"{proj_root}/model_param/epic_r50l_16_Full_LongRange.pt"
+# if args.dataset == "ucf101":
+#     num_classes = 24
+#     ds_path = f'{ds_root}/UCF101_24'
+#     if args.model == "v16l":
+#         from model_def.vgg16lstm import vgg16lstm as model
+#         from datasets.ucf101_24_dataset_vgg16lstm import UCF101_24_Dataset as dataset
+#         model_wgts_path = f"{proj_root}/model_param/ucf101_24_vgg16lstm_16_Full_LongRange.pt"
+#     elif args.model == "r2p1d":
+#         from model_def.r2plus1d import r2plus1d as model
+#         from datasets.ucf101_24_dataset_new import UCF101_24_Dataset as dataset
+#         model_wgts_path = f"{proj_root}/model_param/ucf101_24_r2p1d_16_Full_LongRange.pt"
+#     elif args.model == "r50l":
+#         from model_def.r50lstm import r50lstm as model
+#         from datasets.ucf101_24_dataset_new import UCF101_24_Dataset as dataset
+#         model_wgts_path = f"{proj_root}/model_param/ucf101_24_r50l_16_Full_LongRange.pt"
+# elif args.dataset == "epic":
+#     num_classes = 20
+#     # ds_path = f'{ds_root}/epic'
+#     ds_path = os.path.join(ds_root, path_dict.epic_rltv_dir)
+#     if args.model == "v16l":
+#         from model_def.vgg16lstm import vgg16lstm as model
+#         from datasets.epic_kitchens_dataset_vgg16lstm import EPIC_Kitchens_Dataset as dataset
+#         model_wgts_path = f"{proj_root}/model_param/epic_vgg16lstm_16_Full_LongRange.pt"
+#     elif args.model == "r2p1d":
+#         from model_def.r2plus1d import r2plus1d as model
+#         from datasets.epic_kitchens_dataset_new import EPIC_Kitchens_Dataset as dataset
+#         model_wgts_path = f"{proj_root}/model_param/epic_r2p1d_16_Full_LongRange.pt"
+#     elif args.model == "r50l":
+#         from model_def.r50lstm import r50lstm as model
+#         from datasets.epic_kitchens_dataset_new import EPIC_Kitchens_Dataset as dataset
+#         model_wgts_path = f"{proj_root}/model_param/epic_r50l_16_Full_LongRange.pt"
 
 save_label = f"{args.dataset}_{args.model}_{args.mode}_{args.vis_method}"
 if args.extra_label != "":
@@ -124,15 +125,16 @@ print(f"Loaded {res_buf}")
 num_devices = torch.cuda.device_count()
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-model_tf = model(num_classes, with_softmax=True)
-model_tf.load_weights(model_wgts_path)
+model_tf, video_dataset = load_model_and_dataset(args.dataset, args.model, "val")
+
+# model_tf = model(num_classes, with_softmax=True)
+# model_tf.load_weights(model_wgts_path)
 model_tf.eval()
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model_tf.to(device)
 if args.multi_gpu:
     model_tf.parallel_model(device_ids=list(range(num_devices)))
 
-video_dataset = dataset(ds_path, 16, 'long_range_last', 1, 6, False, bbox_gt=False, testlist_idx=1)
+# video_dataset = dataset(ds_path, 16, 'long_range_last', 1, 6, False, bbox_gt=False, testlist_idx=1)
 
 dataloader = DataLoader(video_dataset, batch_size=args.batch_size, shuffle=args.shuffle_dataset, num_workers=128)
 cm_calculator = CausalMetric(model_tf, device)
@@ -144,8 +146,11 @@ else:
     del_auc_sum = 0
 
 for sample_idx, samples in enumerate(dataloader):
-    clip_batch, class_ids, video_names, fidx_tensors = samples
+    clip_batch, class_ids, video_names, fidx_tensors = samples[:4]
     clip_batch = clip_batch.to(device).requires_grad_(False)
+
+    if args.dataset == 'sthsthv2':
+        class_names = samples[4]
 
     if args.vis_method != 'random':
         mask_batch = [video_mask_dic[video_name.split("/")[-1]] for video_name in video_names]
@@ -168,6 +173,7 @@ for sample_idx, samples in enumerate(dataloader):
             auc = cal_auc(scores)
             video_name = video_name.split("/")[-1]
             print(f"{video_name}: {auc}")
+            # print(class_names, class_ids)
             if args.save_vis:
                 plot_causal_metric_curve(scores, show_txt = f"{video_name}_{args.mode}, auc = {auc:.2f}",
                                             save_dir = join(vis_dir, f"{video_name}_{args.mode}.png"))

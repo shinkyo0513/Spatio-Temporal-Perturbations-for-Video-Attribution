@@ -52,7 +52,7 @@ def main_worker(gpu, args):
 
     torch.manual_seed(0)
 
-    model_ft, video_datasets = load_model_and_dataset(args.dataset, args.model, args.phase_set, labels_set=args.labels_set)
+    model_ft, video_datasets = load_model_and_dataset(args.dataset, args.model, args.phase_set)
     model_ft = model_ft.eval()  # important!
     model_ft.cuda(gpu)
     model_ft = DDP(model_ft, device_ids=[gpu])
@@ -100,8 +100,8 @@ def main_worker(gpu, args):
                 heatmaps_np = res.numpy()   # Nx1xTxHxW
             elif args.vis_method == 'grad_cam':
                 if args.model == 'r2p1d':
-                    layer_name = ['layer4']
-                    # layer_name = ['layer3']
+                    # layer_name = ['layer4']
+                    layer_name = ['layer3']
                 elif args.model == 'v16l':
                     layer_name = ['pool5']
                 elif args.model == 'r50l':
@@ -138,6 +138,7 @@ def main_worker(gpu, args):
                         gpu_id=gpu, print_iter=200, perturb_type="blur",
                         with_core=args.perturb_withcore, 
                         core_num_keyframe=args.perturb_num_keyframe,
+                        core_spatial_size=args.perturb_spatial_size,
                         core_shape=args.perturb_core_shape)[0]
                 else:
                     res = video_perturbation(
@@ -146,6 +147,7 @@ def main_worker(gpu, args):
                             gpu_id=gpu, print_iter=200, perturb_type="blur",
                             with_core=args.perturb_withcore, 
                             core_num_keyframe=args.perturb_num_keyframe,
+                            core_spatial_size=args.perturb_spatial_size,
                             core_shape=args.perturb_core_shape)[0]
                 # print(res.shape)
                 heatmaps_np = res.numpy()   # NxAx1xTxHxW
@@ -193,7 +195,6 @@ if __name__ == "__main__":
     # parser.add_argument("--long_range", action='store_true')
     parser.add_argument("--dataset", type=str, choices=['epic', 'ucf101', 'cat_ucf', 'sthsthv2'])
     parser.add_argument("--model", type=str, choices=['r2p1d', 'v16l', 'r50l', 'tsm'])
-    parser.add_argument("--labels_set", type=str, default="full")
     parser.add_argument("--vis_method", type=str, 
                         choices=['g', 'ig', 'sg', 'sg2', 'grad_cam', 'perturb', 'eb', 'gbp', 'la'])
     parser.add_argument("--only_test", action="store_true")
@@ -209,7 +210,7 @@ if __name__ == "__main__":
     parser.add_argument("--perturb_withcore", action='store_true')
     parser.add_argument("--perturb_num_keyframe", type=int, default=5)
     parser.add_argument("--perturb_core_shape", type=str, default='ellipsoid', choices=["ellipsoid", "cylinder"])
-    # parser.add_argument("--perturb_spatial_size", type=int, default=11)
+    parser.add_argument("--perturb_spatial_size", type=int, default=11)
 
     parser.add_argument("--master_addr", type=str, default="127.0.1.1")
     parser.add_argument("--master_port", type=str, default="29501")

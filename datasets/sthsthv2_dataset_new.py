@@ -163,6 +163,11 @@ class SthSthV2_Dataset (Dataset):
             transforms.ToTensor(),
             transforms.Normalize([0.43216, 0.394666, 0.37645], [0.22803, 0.22145, 0.216989]),
         ])
+        # self.transform = transforms.Compose([
+        #     transforms.CenterCrop((224,224)),
+        #     transforms.ToTensor(),
+        #     transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
+        # ])
 
         self.video_clips = SampledVideoClips(self.sample_list, self.rgb_dir, frames_per_clip, 
                                                 frame_rate, num_clips, sample_mode)
@@ -177,6 +182,7 @@ class SthSthV2_Dataset (Dataset):
         video_id = sample['id']
         action_label = sample['template'].replace('[', '').replace(']', '')
         label_index = int(self.labels_index_dict[action_label])
+        # print(action_label, '-->', label_index)
 
         clip_tensor = torch.stack([self.transform(clip_frame) for clip_frame in 
                                     clip_frames], dim=1)    # 3x16x112x112

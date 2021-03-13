@@ -36,7 +36,7 @@ crt_dir = os.path.dirname(os.path.realpath(__file__))
 
 import argparse
 parser = argparse.ArgumentParser()
-parser.add_argument("--model", type=str, default='r2p1d', choices=['r2p1d', 'r50l'])
+parser.add_argument("--model", type=str, default='r2p1d', choices=['r2p1d', 'r50l', 'tsm'])
 parser.add_argument("--num_f", type=int, default=16, choices=[8, 16])
 parser.add_argument("--long_range", action='store_true')
 parser.add_argument("--num_epochs", type=int, default=40)
@@ -56,8 +56,10 @@ if args.model == "r2p1d":
 elif args.model == "r50l":
     from model_def.r50lstm import r50lstm as model
     from datasets.sthsthv2_dataset_new import SthSthV2_Dataset
+elif args.model == "tsm":
+    from model_def.tsm import tsm as model
+    from datasets.sthsthv2_dataset_new import SthSthV2_Dataset
 
-num_classes = 25
 ds_name = "sthsthv2"
 ds_path = os.path.join(ds_root, 'something_something_v2')
 
@@ -75,15 +77,23 @@ multi_gpu = args.multi_gpu
 num_devices = torch.cuda.device_count()
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-model_ft = model(num_classes=num_classes, pretrained=True)
-# if args.load_pretrain:
-#     model_ft.load_weights(pt_save_dir)
-#     print(f'Loaded pretrained parameters from {pt_save_dir}.')
-model_ft.set_parameter_requires_grad(args.retrain_type)
-params_to_update = model_ft.get_parameter_to_update(debug=False)
-model_ft.to_device(device)
-if multi_gpu:
-    model_ft.parallel_model(device_ids=list(range(num_devices)))
+if args.model == 'tsm':
+    num_classes = 174
+    labels_set = 'full'
+    model_ft = model(num_classes=num_classes, segment_count=16, pretrained='sthsthv2')
+    model_ft.to_device(device)
+else:
+    num_classes = 25
+    labels_set = 'top25'
+    model_ft = model(num_classes=num_classes, pretrained=True)
+    # if args.load_pretrain:
+    #     model_ft.load_weights(pt_save_dir)
+    #     print(f'Loaded pretrained parameters from {pt_save_dir}.')
+    model_ft.set_parameter_requires_grad(args.retrain_type)
+    params_to_update = model_ft.get_parameter_to_update(debug=False)
+    model_ft.to_device(device)
+    if multi_gpu:
+        model_ft.parallel_model(device_ids=list(range(num_devices)))
 
 if not args.only_test:
     #================== Train & Evaluate (for EPIC) ===================#
@@ -118,7 +128,7 @@ if not args.only_test:
             frame_rate = 2
         video_datasets[x] = SthSthV2_Dataset(ds_path, args.num_f, sample_mode, num_clips, 
                                             frame_rate, x=='train', testlist_idx=args.testlist_idx, 
-                                            labels_set='top25')
+                                            labels_set=labels_set)
     print({x: 'Num of clips:{}'.format(len(video_datasets[x])) for x in ['train', 'val']})
     dataloaders = {x: DataLoader(video_datasets[x], batch_size=args.batch_size, shuffle=True, 
                         num_workers=128) for x in ['train', 'val']}
@@ -128,17 +138,20 @@ if not args.only_test:
 #========================== Only validate =========================#
 sample_mode = 'long_range_last' if args.long_range else "fixed"
 val_dataset = SthSthV2_Dataset(ds_path, args.num_f, sample_mode, 1, 2, train=False, 
-                               testlist_idx=args.testlist_idx, labels_set='top25')
+                               testlist_idx=args.testlist_idx, labels_set=labels_set)
 print('Num of clips:{}'.format(len(val_dataset)))
 val_dataloader = DataLoader(val_dataset, batch_size=args.batch_size, shuffle=True, 
                     num_workers=128)
 # Validate
-y_pred, y_true = model_ft.val_model(val_dataloader, pt_save_dir)
+if args.model == 'tsm':
+    y_pred, y_true = model_ft.val_model(val_dataloader)
+else:
+    y_pred, y_true = model_ft.val_model(val_dataloader, pt_save_dir)
 
-# # Draw confusion matrix
-annot_path = os.path.join(proj_root, 'my_sthsthv2_annot', 'top25_labels_index.json')
-with open(annot_path) as f:
-    labels_index = json.load(f)
-class_names = list(labels_index.keys())
-cm_fig, _ = plot_confusion_matrix(y_true, y_pred, class_names, normalize=True)
-cm_fig.savefig(os.path.join(proj_root, 'visual_res', 'cm', f'{save_label}.png'))
+# # # Draw confusion matrix
+# annot_path = os.path.join(proj_root, 'my_sthsthv2_annot', 'top25_labels_index.json')
+# with open(annot_path) as f:
+#     labels_index = json.load(f)
+# class_names = list(labels_index.keys())
+# cm_fig, _ = plot_confusion_matrix(y_true, y_pred, class_names, normalize=True)
+# cm_fig.savefig(os.path.join(proj_root, 'visual_res', 'cm', f'{save_label}.png'))

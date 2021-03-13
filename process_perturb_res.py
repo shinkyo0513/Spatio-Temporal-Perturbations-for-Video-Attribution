@@ -172,8 +172,8 @@ def sum_masks (masks, norm=True):
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument("--dataset", type=str, default='ucf101', choices=['epic', 'ucf101', 'cat_ucf'])
-    parser.add_argument("--model", type=str, default='r2p1d', choices=['v16l', 'r2p1d', 'r50l'])
+    parser.add_argument("--dataset", type=str, default='ucf101', choices=['epic', 'ucf101', 'cat_ucf', 'sthsthv2'])
+    parser.add_argument("--model", type=str, default='r2p1d', choices=['v16l', 'r2p1d', 'r50l', 'tsm'])
     parser.add_argument('--white_bg', action='store_true')
     parser.add_argument("--specify_video", type=str, default=None)
     parser.add_argument('--visualize', action='store_true')
@@ -200,14 +200,13 @@ if __name__ == "__main__":
 
     if args.specify_video == None:
         for phase in perturb_res.keys():
-        # for phase in ['val']:
-            if phase == 'val':
-                prob_dict = get_perturb_acc_dict(args.dataset, args.model, perturb_res[phase], 
-                                    torch.device("cuda" if torch.cuda.is_available() else "cpu"))
-            else:
-                prob_dict = None
-            # prob_dict = get_perturb_acc_dict(args.dataset, args.model, perturb_res[phase], 
-            #                         torch.device("cuda" if torch.cuda.is_available() else "cpu"))
+            if args.visualize:
+                if phase == 'val':
+                    prob_dict = get_perturb_acc_dict(args.dataset, args.model, perturb_res[phase], 
+                                        torch.device("cuda" if torch.cuda.is_available() else "cpu"))
+                else:
+                    prob_dict = None
+
             for res in tqdm(perturb_res[phase]):
                 video_name = res["video_name"]
                 masks = res["mask"].astype(np.float)     #Ax1xTxHxW

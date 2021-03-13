@@ -254,8 +254,8 @@ class r50lstm (nn.Module):
                 running_corrects = 0
 
                 # Iterate over data.
-                # for samples in tqdm(dataloaders[phase]):
-                for samples in dataloaders[phase]:
+                for samples in tqdm(dataloaders[phase]):
+                # for samples in dataloaders[phase]:
                     inputs = samples[0].to(self.device)
                     labels = samples[1].to(self.device)
 
