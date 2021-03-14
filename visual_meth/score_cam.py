@@ -41,7 +41,7 @@ def score_cam_2d (inputs, labels, model, device, layer_name, norm_vis=True):
             masks = observ_actv[:,i,...].copy_()    # N x num_f x 14x14
             masks = F.interpolate(masks, size=(h, w), mode='bilinear', align_corners=False) # N x num_f x H x W
 
-            masks = mask.view(bs, -1)
+            masks = masks.view(bs, -1)
             masks_min = masks.min(dim=1)[0]
             masks_max = masks.max(dim=1)[0]
             if masks_min == masks_min:
@@ -108,27 +108,26 @@ def score_cam_3d (inputs, labels, model, device, layer_name, norm_vis=True):
     num_masks = observ_actv.shape[1]
     with torch.no_grad():
         for i in range(num_masks):
-            masks = observ_actv[:,i,...].copy_()    # N x num_f x 14x14
+            masks = observ_actv[:,i,...].clone()    # N x num_f x 14x14
             masks = F.interpolate(masks, size=(h, w), mode='bilinear', align_corners=False) # N x num_f x H x W
 
-            masks = mask.view(bs, -1)
+            masks = masks.view(bs, -1)
             masks_min = masks.min(dim=1)[0]
             masks_max = masks.max(dim=1)[0]
-            if masks_min == masks_min:
-                continue
             # normalize to 0-1
+            if masks_min == masks_max:
+                continue
             norm_masks = (masks - masks_min) / (masks_max - masks_min)
-            norm_masks = torch.view(bs, 1, nt, h, w)    # N x 1 x num_f x H x W
+            norm_masks = norm_masks.view(bs, 1, nt, h, w)    # N x 1 x num_f x H x W
 
             # how much increase if keeping the highlighted region
             # predication on masked input
             outputs = model(inputs * norm_masks)
-            # score = output[0][predicted_class]
-            scores = torch.zeros_like(labels, device=device)
+            scores = torch.zeros_like(labels, device=device, dtype=torch.float)
             for bidx in range(bs):
-                scores[bidx] = outputs[bidx][labels[bidx].item()]
-
-            out_masks +=  scores * masks
+                scores[bidx] = outputs[bidx][labels[bidx].item()].item()
+            
+            out_masks +=  scores * norm_masks
 
     out_masks = F.relu(out_masks)
     out_masks = out_masks.detach().cpu()
@@ -140,10 +139,9 @@ def score_cam_3d (inputs, labels, model, device, layer_name, norm_vis=True):
         normed_masks = (normed_masks - mins) / (maxs - mins)    
         out_masks = normed_masks.reshape(out_masks.shape)
 
-    # print(out_masks.shape)
     return out_masks
 
-def score_cam_rnn (inputs, labels, model, device, layer_name):
+def score_cam_rnn(inputs, labels, model, device, layer_name, norm_vis=True):
     model.eval()   # Set model to evaluate mode
     
     bs, ch, nt, h, w = inputs.shape
@@ -177,10 +175,10 @@ def score_cam_rnn (inputs, labels, model, device, layer_name):
     num_masks = observ_actv.shape[1]
     with torch.no_grad():
         for i in range(num_masks):
-            masks = observ_actv[:,i,...].copy_()    # N x num_f x 14x14
+            masks = observ_actv[:,i,...].clone()    # N x num_f x 14x14
             masks = F.interpolate(masks, size=(h, w), mode='bilinear', align_corners=False) # N x num_f x H x W
 
-            masks = mask.view(bs, -1)
+            masks = masks.view(bs, -1)
             masks_min = masks.min(dim=1)[0]
             masks_max = masks.max(dim=1)[0]
             if masks_min == masks_min:
@@ -213,7 +211,7 @@ def score_cam_rnn (inputs, labels, model, device, layer_name):
 
     return out_masks
 
-def grad_cam (inputs, labels, model, model_name, device, layer_name, norm_vis=True):
+def score_cam (inputs, labels, model, model_name, device, layer_name, norm_vis=True):
     if model_name == 'r2p1d':
         layer_name = ['module', 'model'] + layer_name
         return score_cam_3d(inputs, labels, model, device, layer_name, norm_vis)

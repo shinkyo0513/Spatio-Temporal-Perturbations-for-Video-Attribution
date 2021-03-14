@@ -19,7 +19,7 @@ def gaussian_blur(inputs, sigma):
                                               kernel_size=kernel_size, 
                                               sigma=sigma, 
                                               dim=2
-                                             ).to(device)
+                                             ).to(inputs.device)
     blurred_inputs = batch_gaussian_filter(reshaped_inputs)
     blurred_inputs = torch.stack(blurred_inputs.split(bs, dim=0), dim=2)    # BxCxTxHxW
     return blurred_inputs
@@ -36,7 +36,8 @@ def blur_integrated_grad (inputs, labels, model, device, steps,
     inputs = inputs.to(device)
     labels = labels.to(dtype=torch.long)
 
-    backward_signals = torch.zeros_like(baseline_out, device=device)
+    outputs = model(inputs)
+    backward_signals = torch.zeros_like(outputs, device=device)
     for bidx in range(bs):
         backward_signals[bidx, labels[bidx].cpu().item()] = 1.0
 
@@ -49,9 +50,10 @@ def blur_integrated_grad (inputs, labels, model, device, steps,
     intg_grads = 0
     for i in range(steps):
         # Process inputs
+        inputs.requires_grad = True
         scaled_inputs = gaussian_blur(inputs, sigmas[i])
-        scaled_inputs.requires_grad = True
-        gaussian_gradient = (gaussian_blur(inputs, sigmas[i] + grad_step) - scaled_inputs) / grad_step
+        # scaled_inputs.requires_grad = True
+        scaled_inputs.retain_grad() 
 
         # Forward
         outputs = model(scaled_inputs)
@@ -61,7 +63,9 @@ def blur_integrated_grad (inputs, labels, model, device, steps,
         outputs.backward(backward_signals)
 
         # Integrate Grads
-        intg_grads += step_vector_diff[i] * gaussian_gradient * scaled_inputs.grad.cpu()
+        gaussian_gradient = (gaussian_blur(
+            inputs, sigmas[i] + grad_step) - scaled_inputs) / grad_step
+        intg_grads += step_vector_diff[i] * gaussian_gradient * scaled_inputs.grad
 
     # intg_grads *= -1.0
 
@@ -74,7 +78,7 @@ def blur_integrated_grad (inputs, labels, model, device, steps,
         grads = -1.0 * torch.clamp(intg_grads, max=0.0)
     grads = grads.mean(dim=1, keepdim=True)  # convert to gray, Nx1xTxHxW
 
-    grads_np = grads.cpu().numpy()
+    grads_np = grads.cpu().detach().numpy()
     grads_np = np.reshape(grads_np, (bs, -1))
     vmax = np.percentile(grads_np, 99.9, axis=1, keepdims=True)
     vmin = np.min(grads_np, axis=1, keepdims=True)

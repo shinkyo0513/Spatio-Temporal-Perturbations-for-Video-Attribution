@@ -28,15 +28,14 @@ class GaussianSmoothing(nn.Module):
         # gaussian function of each dimension.
         kernel = 1
         meshgrids = torch.meshgrid(
-            [
-                torch.arange(size, dtype=torch.float32)
-                for size in kernel_size
-            ]
+            [torch.arange(size, dtype=torch.float32) for size in kernel_size]
         )
+        self.pad_size = []
         for size, std, mgrid in zip(kernel_size, sigma, meshgrids):
             mean = (size - 1) / 2
             kernel *= 1 / (std * math.sqrt(2 * math.pi)) * \
                       torch.exp((-((mgrid - mean) / std) ** 2) / 2)
+            self.pad_size = [int(math.floor(size / 2))] * 2 + self.pad_size
 
         # Make sure sum of values in gaussian kernel equals 1.
         kernel = kernel / torch.sum(kernel)
@@ -60,7 +59,7 @@ class GaussianSmoothing(nn.Module):
                 'Only 1, 2 and 3 dimensions are supported. Received {}.'.format(dim)
             )
 
-    def forward(self, input):
+    def forward(self, input, pad=True):
         """
         Apply gaussian filter to input.
         Arguments:
@@ -68,7 +67,11 @@ class GaussianSmoothing(nn.Module):
         Returns:
             filtered (torch.Tensor): Filtered output.
         """
-        return self.conv(input, weight=self.weight, groups=self.groups)
+        if pad:
+            padded_input = F.pad(input, self.pad_size, mode='reflect')
+            return self.conv(padded_input, weight=self.weight, groups=self.groups)
+        else:
+            return self.conv(input, weight=self.weight, groups=self.groups)
 
 if __name__ == "__main__":
     smoothing = GaussianSmoothing(3, 5, 1)
