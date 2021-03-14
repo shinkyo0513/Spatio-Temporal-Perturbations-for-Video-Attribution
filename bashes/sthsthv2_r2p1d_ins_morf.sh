@@ -21,8 +21,8 @@
 # CUDA_VISIBLE_DEVICES=2 python evaluation/main_causal_metric.py --dataset sthsthv2 --model r2p1d --vis_method perturb --mode ins --order most_first --num_step 128 --batch_size 30 --new_size 16
 # CUDA_VISIBLE_DEVICES=2 python evaluation/main_causal_metric.py --dataset sthsthv2 --model r2p1d --vis_method perturb --mode ins --order most_first --num_step 128 --batch_size 30 --new_size 16 --extra_label _core5 --only_test
 # CUDA_VISIBLE_DEVICES=2 python evaluation/main_causal_metric.py --dataset sthsthv2 --model r2p1d --vis_method perturb --mode ins --order most_first --num_step 128 --batch_size 30 --new_size 16 --extra_label _core8 --only_test
-# CUDA_VISIBLE_DEVICES=2 python evaluation/main_causal_metric.py --dataset sthsthv2 --model r2p1d --vis_method perturb --mode ins --order most_first --num_step 128 --batch_size 30 --new_size 16 --extra_label _core11 --only_test
-CUDA_VISIBLE_DEVICES=2 python evaluation/main_causal_metric.py --dataset sthsthv2 --model r2p1d --vis_method eb --mode ins --order most_first --num_step 128 --batch_size 30 --new_size 16 --only_test
+CUDA_VISIBLE_DEVICES=2 python evaluation/main_causal_metric.py --dataset sthsthv2 --model r2p1d --vis_method perturb --mode ins --order most_first --num_step 128 --batch_size 30 --new_size 16 --extra_label _core11 --only_test
+# CUDA_VISIBLE_DEVICES=2 python evaluation/main_causal_metric.py --dataset sthsthv2 --model r2p1d --vis_method eb --mode ins --order most_first --num_step 128 --batch_size 30 --new_size 16 --only_test
 # CUDA_VISIBLE_DEVICES=2 python evaluation/main_causal_metric.py --dataset sthsthv2 --model r2p1d --vis_method la --mode ins --order most_first --num_step 128 --batch_size 30 --new_size 16
 # CUDA_VISIBLE_DEVICES=2 python evaluation/main_causal_metric.py --dataset sthsthv2 --model r2p1d --vis_method gbp --mode ins --order most_first --num_step 128 --batch_size 30 --new_size 16
 

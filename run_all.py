@@ -135,7 +135,7 @@ def main_worker(gpu, args):
                     res = video_perturbation(
                         model_ft, x, lowest_labels, areas=args.areas, sigma=sigma, 
                         max_iter=args.perturb_niter, variant="preserve",
-                        gpu_id=gpu, print_iter=200, perturb_type="blur",
+                        gpu_id=gpu, print_iter=200, perturb_type=args.perturb_type,
                         with_core=args.perturb_withcore, 
                         core_num_keyframe=args.perturb_num_keyframe,
                         core_spatial_size=args.perturb_spatial_size,
@@ -144,7 +144,7 @@ def main_worker(gpu, args):
                     res = video_perturbation(
                             model_ft, x, labels, areas=args.areas, sigma=sigma, 
                             max_iter=args.perturb_niter, variant="preserve",
-                            gpu_id=gpu, print_iter=200, perturb_type="blur",
+                            gpu_id=gpu, print_iter=200, perturb_type=args.perturb_type,
                             with_core=args.perturb_withcore, 
                             core_num_keyframe=args.perturb_num_keyframe,
                             core_spatial_size=args.perturb_spatial_size,
@@ -208,6 +208,7 @@ if __name__ == "__main__":
 
     parser.add_argument("--perturb_niter", type=int, default=1000)
     parser.add_argument("--perturb_withcore", action='store_true')
+    parser.add_argument("--perturb_type", type=str, default='blur')
     parser.add_argument("--perturb_num_keyframe", type=int, default=5)
     parser.add_argument("--perturb_core_shape", type=str, default='ellipsoid', choices=["ellipsoid", "cylinder"])
     parser.add_argument("--perturb_spatial_size", type=int, default=11)
@@ -237,6 +238,8 @@ if __name__ == "__main__":
         save_label = save_label + "_lowest"
     if args.perturb_withcore:
         save_label = save_label + "_core" + f"{args.perturb_num_keyframe}"
+    if args.perturb_type == 'fade':
+        save_label = save_label + "_fade"
     if args.perturb_core_shape == 'cylinder':
         save_label = save_label + "_cylinder"
     if args.extra_label != "":

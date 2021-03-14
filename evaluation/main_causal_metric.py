@@ -151,6 +151,7 @@ for sample_idx, samples in enumerate(dataloader):
 
     if args.dataset == 'sthsthv2':
         class_names = samples[4]
+        print(video_names, class_ids, class_names)
 
     if args.vis_method != 'random':
         mask_batch = [video_mask_dic[video_name.split("/")[-1]] for video_name in video_names]
