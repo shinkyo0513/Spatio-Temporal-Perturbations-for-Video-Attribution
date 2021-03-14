@@ -11,9 +11,11 @@ from utils.ReadingDataset import load_model_and_dataset, getTagScore, loadTags
 from process_perturb_res import vis_perturb_res
 
 from visual_meth.integrated_grad import integrated_grad
+from visual_meth.blur_integrated_grad import blur_integrated_grad
 from visual_meth.gradients import gradients
 from visual_meth.perturbation_area import video_perturbation
 from visual_meth.grad_cam import grad_cam
+from visual_meth.score_cam import score_cam
 from visual_meth.smooth_grad import smooth_grad
 from visual_meth.excitation_backprop import excitation_bp
 from visual_meth.guided_backprop import guided_bp
@@ -87,41 +89,35 @@ def main_worker(gpu, args):
 
             device = x.device
 
-            if args.vis_method == 'g':
-                res = gradients(x, labels, model_ft, device, multiply_input=False, polarity='both')
-                heatmaps_np = res.numpy()   # Nx1xTxHxW
-            elif args.vis_method == 'ig':
-                res = integrated_grad(x, labels, model_ft, device, steps=25, polarity='both')
+            if args.vis_method in ['g', 'ig', 'blur_ig']:
+                if args.vis_method == 'g':
+                    res = gradients(x, labels, model_ft, device, multiply_input=False, polarity='both')
+                elif args.vis_method == 'ig':
+                    res = integrated_grad(x, labels, model_ft, device, steps=25, polarity='both')
+                elif args.vis_method == 'blur_ig':
+                    res = blur_integrated_grad(x, labels, model_ft, device, steps=25, polarity='both')
                 heatmaps_np = res.numpy()   # Nx1xTxHxW
             elif args.vis_method in ['sg', 'sg2', 'sg_var']:
                 variant_dict = {'sg': None, 'sg2': 'square', 'sg_var': 'variance'}
                 variant = variant_dict[args.vis_method]
                 res = smooth_grad(x, labels, model_ft, device, nsamples=25, variant=variant)
                 heatmaps_np = res.numpy()   # Nx1xTxHxW
-            elif args.vis_method == 'grad_cam':
+            elif args.vis_method in ['grad_cam', 'eb', 'score_cam']:
                 if args.model == 'r2p1d':
-                    # layer_name = ['layer4']
-                    layer_name = ['layer3']
+                    layer_name = ['layer4']
+                    # layer_name = ['layer3']
                 elif args.model == 'v16l':
                     layer_name = ['pool5']
                 elif args.model == 'r50l':
                     layer_name = ['6']
                 elif args.model == 'tsm':
                     layer_name = ['layer4']
-                res = grad_cam(x, labels, model_ft, args.model, device, layer_name=layer_name, norm_vis=True)
-                # print(res.shape)
-                heatmaps_np = res.numpy()   # Nx1xTxHxW
-                # heatmaps_np = 1 - (1 - heatmaps_np ** 2.0) ** 2.4
-            elif args.vis_method == 'eb':   # Cannot support RNN
-                if args.model == 'r2p1d':
-                    layer_name = ['layer4']
-                elif args.model == 'r50l':
-                    layer_name = ['6']
-                elif args.model == 'tsm':
-                    layer_name = ['layer4']
-                else:
-                    raise Exception(f"Excitation BP supports only R(2+1)D now. Given {args.model}.")
-                res = excitation_bp(x, labels, model_ft, args.model, device, layer_name=layer_name, norm_vis=True)
+                if args.vis_method == 'grad_cam':
+                    res = grad_cam(x, labels, model_ft, args.model, device, layer_name=layer_name, norm_vis=True)
+                elif args.vis_method == 'eb':
+                    res = excitation_bp(x, labels, model_ft, args.model, device, layer_name=layer_name, norm_vis=True)
+                elif args.vis_method == 'score_cam':
+                    res = score_cam(x, labels, model_ft, args.model, device, layer_name=layer_name, norm_vis=True)
                 heatmaps_np = res.numpy()   # Nx1xTxHxW
             elif args.vis_method == 'gbp':
                 res = guided_bp(x, labels, model_ft)
@@ -173,7 +169,7 @@ def main_worker(gpu, args):
                                                         heatmaps_np[bidx], frame_index=fidxs, white_bg=False)
                         Image.fromarray(merged_fig).save(os.path.join(args.plot_save_path, plot_save_name))
                     else:
-                        if args.vis_method == 'grad_cam' or args.vis_method == 'eb':
+                        if args.vis_method == 'grad_cam' or args.vis_method == 'eb' or args.vis_method == 'score_cam':
                             heatmap_np = overlap_maps_on_voxel_np(inp_np, heatmaps_np[bidx,0])
                         else:
                             heatmap_np = heatmaps_np[bidx].repeat(3, axis=0)      # 3 x num_f x 224 224
@@ -196,7 +192,8 @@ if __name__ == "__main__":
     parser.add_argument("--dataset", type=str, choices=['epic', 'ucf101', 'cat_ucf', 'sthsthv2'])
     parser.add_argument("--model", type=str, choices=['r2p1d', 'v16l', 'r50l', 'tsm'])
     parser.add_argument("--vis_method", type=str, 
-                        choices=['g', 'ig', 'sg', 'sg2', 'grad_cam', 'perturb', 'eb', 'gbp', 'la'])
+                        choices=['g', 'ig', 'sg', 'sg2', 'grad_cam', 'perturb', 'eb', 
+                                 'gbp', 'la', 'blur_ig', 'score_cam'])
     parser.add_argument("--only_test", action="store_true")
     parser.add_argument("--only_train", action="store_true")
     parser.add_argument("--num_gpu", type=int, default=-1)
