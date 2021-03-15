@@ -3,7 +3,7 @@
 #$ -N epic_r50l
 #$ -l rt_F=1
 #$ -l h_rt=10:00:00
-#$ -o outs_epic/r50l_ins_morf_perturb_core5_cylinder.txt
+#$ -o outs_epic/r50l_ins_morf_perturb_core8_fade.txt
 #$ -j y
 #$ -cwd
 source /etc/profile.d/modules.sh
@@ -11,9 +11,9 @@ source /etc/profile.d/modules.sh
 source ${HOME}/.bashrc
 conda activate pytorch1.1
 
-# python evaluation/main_causal_metric.py --dataset epic --model r50l \
-# --vis_method perturb --mode ins --order most_first --num_step 128 --batch_size 48 \
-# --multi_gpu --new_size 16 --extra_label _core8
+python evaluation/main_causal_metric.py --dataset epic --model r50l \
+--vis_method perturb --mode ins --order most_first --num_step 128 --batch_size 48 \
+--multi_gpu --new_size 16 --extra_label _core8_fade --only_test 
 
 # python evaluation/main_superpixel_causal_metric.py --dataset epic --model r50l \
 # --vis_method perturb --mode ins --order most_first --num_step 128 --parallel_size 48 \
@@ -35,13 +35,13 @@ conda activate pytorch1.1
 # --vis_method perturb --mode ins --order most_first --num_step 128 --parallel_size 48 \
 # --multi_gpu --num_superpixel 256
 
-python evaluation/main_causal_metric.py --dataset epic --model r50l \
---vis_method perturb --mode ins --order most_first --num_step 128 --batch_size 48 \
---multi_gpu --new_size 16 --extra_label _core5_cylinder
+# python evaluation/main_causal_metric.py --dataset epic --model r50l \
+# --vis_method perturb --mode ins --order most_first --num_step 128 --batch_size 48 \
+# --multi_gpu --new_size 16 --extra_label _core5_cylinder
 
-python evaluation/main_superpixel_causal_metric.py --dataset epic --model r50l \
---vis_method perturb --mode ins --order most_first --num_step 128 --parallel_size 48 \
---multi_gpu --num_superpixel 256 --extra_label _core5_cylinder
+# python evaluation/main_superpixel_causal_metric.py --dataset epic --model r50l \
+# --vis_method perturb --mode ins --order most_first --num_step 128 --parallel_size 48 \
+# --multi_gpu --num_superpixel 256 --extra_label _core5_cylinder
 
 # EPIC-R50L
 # Insertion + MoRF
