@@ -341,8 +341,6 @@ def video_perturbation(model,
     device = input.device
     torch.cuda.set_device(gpu_id)
 
-    regul_weight_last = max(regul_weight / 2, 1)
-
     # input shape: NxCxTxHxW (1x3x16x112x112)
     batch_size = input.shape[0] # N
     num_frame = input.shape[2]  # T=16
@@ -483,7 +481,7 @@ def video_perturbation(model,
 
         regul_weight *= 1.0008668     #1.00069^800=2
         # regul_weight *= 1.001734
-        if t == 100:
+        if t == 100:  # Original
             core_weight = 300
 
         sum_time += time.time() - end_time

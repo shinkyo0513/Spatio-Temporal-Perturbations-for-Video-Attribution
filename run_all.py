@@ -206,7 +206,7 @@ if __name__ == "__main__":
     parser.add_argument("--perturb_niter", type=int, default=1000)
     parser.add_argument("--perturb_withcore", action='store_true')
     parser.add_argument("--perturb_type", type=str, default='blur')
-    parser.add_argument("--perturb_num_keyframe", type=int, default=5)
+    parser.add_argument("--perturb_num_keyframe", type=int, default=8)
     parser.add_argument("--perturb_core_shape", type=str, default='ellipsoid', choices=["ellipsoid", "cylinder"])
     parser.add_argument("--perturb_spatial_size", type=int, default=11)
 
@@ -257,6 +257,8 @@ if __name__ == "__main__":
         args.areas = [0.05, 0.1, 0.15, 0.5]
         if args.dataset == 'cat_ucf':
             args.areas = [0.02, 0.05, 0.1]
+        if args.dataset == 'sthsthv2' and args.model == 'tsm':
+            args.areas = [0.05, 0.1, 0.15, 0.2, 0.3, 0.4]
 
     multi_gpu = True
     if args.num_gpu == -1:

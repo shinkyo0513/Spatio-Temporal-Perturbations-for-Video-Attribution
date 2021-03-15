@@ -24,9 +24,9 @@ def grad_cam_2d (inputs, labels, model, device, layer_name, norm_vis=True):
     # print(observ_layer)
 
     observ_grad_ = []
-    observ_layer.register_backward_hook(backward_hook(observ_grad_))
+    bh = observ_layer.register_backward_hook(backward_hook(observ_grad_))
     observ_actv_ = []
-    observ_layer.register_forward_hook(forward_hook(observ_actv_))
+    fh = observ_layer.register_forward_hook(forward_hook(observ_actv_))
 
     inputs = inputs.to(device)
     labels = labels.to(dtype=torch.long)
@@ -54,6 +54,9 @@ def grad_cam_2d (inputs, labels, model, device, layer_name, norm_vis=True):
     out_masks = torch.stack(torch.split(out_masks, nt, dim=0), dim=0).transpose(1,2) # N x 1 x numf x 14x14
     out_masks = out_masks.detach().cpu()
     # print('out_masks:', out_masks.shape)
+
+    fh.remove()
+    bh.remove()
 
     if norm_vis:
         normed_masks = out_masks.view(bs, -1)
@@ -85,9 +88,9 @@ def grad_cam_3d (inputs, labels, model, device, layer_name, norm_vis=True):
     # print(observ_layer)
 
     observ_grad_ = []
-    observ_layer.register_backward_hook(backward_hook(observ_grad_))
+    bh = observ_layer.register_backward_hook(backward_hook(observ_grad_))
     observ_actv_ = []
-    observ_layer.register_forward_hook(forward_hook(observ_actv_))
+    fh = observ_layer.register_forward_hook(forward_hook(observ_actv_))
 
     inputs = inputs.to(device)
     labels = labels.to(dtype=torch.long)
@@ -113,6 +116,9 @@ def grad_cam_3d (inputs, labels, model, device, layer_name, norm_vis=True):
     observ_grad_w = observ_grad.mean(dim=4, keepdim=True).mean(dim=3, keepdim=True) # N x 512 x num_f x 1x1
     out_masks = F.relu( (observ_grad_w*observ_actv).sum(dim=1, keepdim=True) ) # N x 1 x num_f x 14x14
     out_masks = out_masks.detach().cpu()
+
+    fh.remove()
+    bh.remove()
 
     if norm_vis:
         normed_masks = out_masks.view(bs, -1)
