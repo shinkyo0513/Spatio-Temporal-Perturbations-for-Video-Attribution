@@ -3,7 +3,7 @@
 #$ -N ucf_r2p1d
 #$ -l rt_F=1
 #$ -l h_rt=10:00:00
-#$ -o outs_ucf101/r2p1d_ins_morf_perturb_core5_cylinder.txt
+#$ -o outs_ucf101/r2p1d_ins_morf_perturb_core8_fade.txt
 #$ -j y
 #$ -cwd
 # source /etc/profile.d/modules.sh
@@ -11,9 +11,9 @@
 # source ${HOME}/.bashrc
 # conda activate pytorch1.1
 
-# python evaluation/main_causal_metric.py --dataset ucf101 --model r2p1d \
-# --vis_method perturb --mode ins --order most_first --num_step 128 --batch_size 48 \
-# --multi_gpu --new_size 16 --extra_label _core14
+python evaluation/main_causal_metric.py --dataset ucf101 --model r2p1d \
+--vis_method perturb --mode ins --order most_first --num_step 128 --batch_size 48 \
+--multi_gpu --new_size 16 --extra_label _core8_fade --only_test
 
 # python evaluation/main_superpixel_causal_metric.py --dataset ucf101 --model r2p1d \
 # --vis_method perturb --mode ins --order most_first --num_step 128 --parallel_size 48 \
