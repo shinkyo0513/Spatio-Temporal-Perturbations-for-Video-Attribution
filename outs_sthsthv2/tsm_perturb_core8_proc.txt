@@ -1,0 +1,160 @@
+['val']
+sthsthv2_tsm_perturb_full_core8
+Use 4 GPUs.
+
+    Initializing TSN with base model: resnet50.
+    TSN Configurations:
+        input_modality:     RGB
+        num_segments:       16
+        new_length:         1
+        consensus_module:   avg
+        dropout_ratio:      0.8
+        img_feature_dim:    256
+            
+=> base model: resnet50
+Adding temporal shift...
+=> n_segment per stage: [16, 16, 16, 16]
+=> Processing stage with 3 blocks residual
+=> Using fold div: 8
+=> Using fold div: 8
+=> Using fold div: 8
+=> Processing stage with 4 blocks residual
+=> Using fold div: 8
+=> Using fold div: 8
+=> Using fold div: 8
+=> Using fold div: 8
+=> Processing stage with 6 blocks residual
+=> Using fold div: 8
+=> Using fold div: 8
+=> Using fold div: 8
+=> Using fold div: 8
+=> Using fold div: 8
+=> Using fold div: 8
+=> Processing stage with 3 blocks residual
+=> Using fold div: 8
+=> Using fold div: 8
+=> Using fold div: 8
+
+    Initializing TSN with base model: resnet50.
+    TSN Configurations:
+        input_modality:     RGB
+        num_segments:       16
+        new_length:         1
+        consensus_module:   avg
+        dropout_ratio:      0.8
+        img_feature_dim:    256
+            
+=> base model: resnet50
+Adding temporal shift...
+=> n_segment per stage: [16, 16, 16, 16]
+=> Processing stage with 3 blocks residual
+=> Using fold div: 8
+=> Using fold div: 8
+=> Using fold div: 8
+=> Processing stage with 4 blocks residual
+=> Using fold div: 8
+=> Using fold div: 8
+=> Using fold div: 8
+=> Using fold div: 8
+=> Processing stage with 6 blocks residual
+=> Using fold div: 8
+=> Using fold div: 8
+=> Using fold div: 8
+=> Using fold div: 8
+=> Using fold div: 8
+=> Using fold div: 8
+=> Processing stage with 3 blocks residual
+=> Using fold div: 8
+=> Using fold div: 8
+=> Using fold div: 8
+
+    Initializing TSN with base model: resnet50.
+    TSN Configurations:
+        input_modality:     RGB
+        num_segments:       16
+        new_length:         1
+        consensus_module:   avg
+        dropout_ratio:      0.8
+        img_feature_dim:    256
+            
+=> base model: resnet50
+Adding temporal shift...
+=> n_segment per stage: [16, 16, 16, 16]
+=> Processing stage with 3 blocks residual
+=> Using fold div: 8
+=> Using fold div: 8
+=> Using fold div: 8
+=> Processing stage with 4 blocks residual
+=> Using fold div: 8
+=> Using fold div: 8
+=> Using fold div: 8
+=> Using fold div: 8
+=> Processing stage with 6 blocks residual
+=> Using fold div: 8
+=> Using fold div: 8
+=> Using fold div: 8
+=> Using fold div: 8
+=> Using fold div: 8
+=> Using fold div: 8
+=> Processing stage with 3 blocks residual
+=> Using fold div: 8
+=> Using fold div: 8
+=> Using fold div: 8
+
+    Initializing TSN with base model: resnet50.
+    TSN Configurations:
+        input_modality:     RGB
+        num_segments:       16
+        new_length:         1
+        consensus_module:   avg
+        dropout_ratio:      0.8
+        img_feature_dim:    256
+            
+=> base model: resnet50
+Adding temporal shift...
+=> n_segment per stage: [16, 16, 16, 16]
+=> Processing stage with 3 blocks residual
+=> Using fold div: 8
+=> Using fold div: 8
+=> Using fold div: 8
+=> Processing stage with 4 blocks residual
+=> Using fold div: 8
+=> Using fold div: 8
+=> Using fold div: 8
+=> Using fold div: 8
+=> Processing stage with 6 blocks residual
+=> Using fold div: 8
+=> Using fold div: 8
+=> Using fold div: 8
+=> Using fold div: 8
+=> Using fold div: 8
+=> Using fold div: 8
+=> Processing stage with 3 blocks residual
+=> Using fold div: 8
+=> Using fold div: 8
+=> Using fold div: 8
+Traceback (most recent call last):
+  File "run_all.py", line 277, in <module>
+    mp.spawn(main_worker, nprocs=num_devices, args=(args,))
+  File "/home/acb11711tx/miniconda3/envs/pytorch1.1/lib/python3.6/site-packages/torch/multiprocessing/spawn.py", line 200, in spawn
+    return start_processes(fn, args, nprocs, join, daemon, start_method='spawn')
+  File "/home/acb11711tx/miniconda3/envs/pytorch1.1/lib/python3.6/site-packages/torch/multiprocessing/spawn.py", line 158, in start_processes
+    while not context.join():
+  File "/home/acb11711tx/miniconda3/envs/pytorch1.1/lib/python3.6/site-packages/torch/multiprocessing/spawn.py", line 119, in join
+    raise Exception(msg)
+Exception: 
+
+-- Process 2 terminated with the following error:
+Traceback (most recent call last):
+  File "/home/acb11711tx/miniconda3/envs/pytorch1.1/lib/python3.6/site-packages/torch/multiprocessing/spawn.py", line 20, in _wrap
+    fn(i, *args)
+  File "/home/acb11711tx/lzq/ExpEval/run_all.py", line 57, in main_worker
+    model_ft, video_datasets = load_model_and_dataset(args.dataset, args.model, args.phase_set)
+  File "/home/acb11711tx/lzq/ExpEval/utils/ReadingDataset.py", line 248, in load_model_and_dataset
+    x=='train', testlist_idx=testlist_idx, labels_set=labels_set) for x in phase}
+  File "/home/acb11711tx/lzq/ExpEval/utils/ReadingDataset.py", line 248, in <dictcomp>
+    x=='train', testlist_idx=testlist_idx, labels_set=labels_set) for x in phase}
+  File "/home/acb11711tx/lzq/ExpEval/datasets/sthsthv2_dataset_new.py", line 150, in __init__
+    with open(labels_index_path) as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/home/acb11711tx/lzq/dataset/something_something_v2/annotations/something-something-v2-labels.json'
+

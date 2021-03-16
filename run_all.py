@@ -258,7 +258,7 @@ if __name__ == "__main__":
         if args.dataset == 'cat_ucf':
             args.areas = [0.02, 0.05, 0.1]
         if args.dataset == 'sthsthv2' and args.model == 'tsm':
-            args.areas = [0.05, 0.1, 0.15, 0.2, 0.3, 0.4]
+            args.areas = [0.05, 0.1, 0.15, 0.2, 0.3]
 
     multi_gpu = True
     if args.num_gpu == -1:
