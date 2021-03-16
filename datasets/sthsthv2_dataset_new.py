@@ -128,13 +128,16 @@ class SampledVideoClips (object):
 class SthSthV2_Dataset (Dataset):
     def __init__ (self, root_dir, frames_per_clip, sample_mode, 
                   num_clips, frame_rate=1, train=True, 
-                  testlist_idx=2, labels_set='full'):
+                  testlist_idx=2, labels_set='full', train_set='7000'):
         self.root_dir = root_dir
         self.rgb_dir = join(root_dir, '20bn-something-something-v2-frames')
         
         self.train = train
         if self.train:
-            self.annot_file = join(proj_root, 'my_sthsthv2_annot', 'train_7000.json')
+            if train_set == '7000':
+                self.annot_file = join(proj_root, 'my_sthsthv2_annot', 'train_7000.json')
+            elif train_set == '10000':
+                self.annot_file = join(proj_root, 'my_sthsthv2_annot', 'train_10000.json')
         else:
             if testlist_idx == 1:
                 self.annot_file = join(proj_root, 'my_sthsthv2_annot', 'val_1000.json')

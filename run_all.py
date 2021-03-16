@@ -88,6 +88,7 @@ def main_worker(gpu, args):
             lowest_probs, lowest_labels = torch.min(y, dim=1)
 
             device = x.device
+            print(seg_names)
 
             if args.vis_method in ['g', 'ig', 'blur_ig']:
                 if args.vis_method == 'g':
