@@ -199,15 +199,17 @@ def load_model_and_dataset (dataset_name, model_name, phase='val', testlist_idx=
     elif dataset_name == "sthsthv2":
         ds_path = os.path.join(ds_root, 'something_something_v2')
         if model_name == "tsm":
-            num_classes = 174
+            num_classes = 25
             from datasets.sthsthv2_dataset_new import SthSthV2_Dataset as dataset
             from model_def.tsm import tsm as model
             model_ft = model(num_classes=num_classes, segment_count=16, pretrained=dataset_name, with_softmax=True)
+            model_wgts_dir = f"{proj_root}/model_param/sthsthv2_tsm_16_Full_LongRange.pt"
+            model_ft.load_weights(model_wgts_dir)
         elif model_name == "r2p1d":
             num_classes = 25 
             from datasets.sthsthv2_dataset_new import SthSthV2_Dataset as dataset
             from model_def.r2plus1d import r2plus1d as model
-            model_wgts_dir = f"{proj_root}/model_param/sthsthv2_r2p1d_16_Full_LongRange.pt"
+            model_wgts_dir = f"{proj_root}/model_param/sthsthv2_r2p1d_16_Full_LongRange_10000.pt"
             model_ft = model(num_classes=num_classes, with_softmax=True)
             model_ft.load_weights(model_wgts_dir)
 
@@ -239,10 +241,11 @@ def load_model_and_dataset (dataset_name, model_name, phase='val', testlist_idx=
     elif dataset_name == "sthsthv2":
         sample_mode = 'long_range_last'
         num_frame = 16
-        if model_name == 'tsm':
-            labels_set = 'full'
-        else:
-            labels_set = 'top25'
+        # if model_name == 'tsm':
+        #     labels_set = 'full'
+        # else:
+        #     labels_set = 'top25'
+        labels_set = 'top25'
         if isinstance(phase, list):
             video_datasets = {x: dataset(ds_path, num_frame, sample_mode, 1, 2, \
                                 x=='train', testlist_idx=testlist_idx, labels_set=labels_set) for x in phase}

@@ -17,11 +17,8 @@ from skimage.filters import gaussian
 from utils.CalAcc import process_activations
 from utils.ImageShow import *
 from utils.ReadingDataset import get_frames
+from utils.TensorSmooth import imsmooth
 
-# HW = 112 * 112 # image area
-# THW = 112*112*16
-# n_classes = 80
-# blur = lambda x: nn.functional.conv2d(x, kern, padding=klen//2)
 def gaussian_blur(x, ksig=5, klen=11, device=torch.device('cpu')):
     bs, nc, nt, h, w = x.shape
     kern = gkern(ksig, klen, nc)
@@ -144,7 +141,10 @@ class CausalMetric():
         if remove_method == "fade":
             base = torch.zeros_like(clip_tensor).to(self.device)    # N x C x T x H x W
         elif remove_method == "blur":
-            base = gaussian_blur(clip_tensor, klen=11, ksig=5, device=self.device)    # N x C x T x H x W
+            # base = gaussian_blur(clip_tensor, klen=11, ksig=5, device=self.device)    # N x C x T x H x W
+            reshaped_clip_tensor = torch.cat(torch.unbind(clip_tensor, dim=2), dim=0)   # T*N x C x H x W
+            base = imsmooth(reshaped_clip_tensor, sigma=20)    # T*N x C x H x W
+            base = torch.stack(base.split(bs, dim=0), dim=2)   # N x C x T x H x W
 
         if new_size == None or new_size == nrow:
             small_exp_tensor = exp_tensor.transpose(1,2).contiguous()

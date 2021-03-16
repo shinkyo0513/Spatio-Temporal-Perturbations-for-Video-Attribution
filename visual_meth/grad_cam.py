@@ -116,6 +116,7 @@ def grad_cam_3d (inputs, labels, model, device, layer_name, norm_vis=True):
     observ_grad_w = observ_grad.mean(dim=4, keepdim=True).mean(dim=3, keepdim=True) # N x 512 x num_f x 1x1
     out_masks = F.relu( (observ_grad_w*observ_actv).sum(dim=1, keepdim=True) ) # N x 1 x num_f x 14x14
     out_masks = out_masks.detach().cpu()
+    # print(out_masks.shape)
 
     fh.remove()
     bh.remove()

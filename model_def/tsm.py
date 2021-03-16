@@ -6,6 +6,11 @@ import sys
 sys.path.append(".")
 sys.path.append("..")
 
+import time
+import copy
+from tqdm import tqdm
+import numpy as np
+
 from utils.CalAcc import AverageMeter, accuracy
 from utils.CalAcc import process_activations
 from utils.TSN import TSN
@@ -62,7 +67,19 @@ class tsm (nn.Module):
                 if k in base_dict:
                     base_dict[v] = base_dict.pop(k)
 
+            num_ftrs = self.model.new_fc.in_features
+            self.model.new_fc = nn.Linear(num_ftrs, 174)
             self.model.load_state_dict(base_dict)
+            self.model.new_fc = nn.Linear(num_ftrs, num_classes)
+
+    def load_weights(self, weights_dir):
+        model_wts = torch.load(weights_dir, map_location=torch.device('cpu'))
+        # parallel_wts = ("module" in list(model_wts.keys())[0])
+        # if self.parallel==True and parallel_wts!=True:
+        #     model_wts = {"module."+name: model_wts[name] for name in model_wts.keys()}
+        # if self.parallel!=True and parallel_wts==True:
+        #     model_wts = {name[7:]: model_wts[name] for name in model_wts.keys()}
+        self.model.load_state_dict(model_wts)
 
     def forward (self, inp):
         bs, ch, nt, h, w = inp.shape
@@ -91,6 +108,86 @@ class tsm (nn.Module):
     def to_device(self, device):
         self.device = device
         self.model.to(device)
+
+    def train_model(self, dataloaders, criterion, optimizer, checkpoint_name, num_epochs, scheduler=None):
+        since = time.time()
+
+        val_acc_history = []
+
+        best_model_wts = copy.deepcopy(self.model.state_dict())
+        best_acc = 0.0
+
+        for epoch in range(num_epochs):
+            print('Epoch {}/{}'.format(epoch, num_epochs - 1))
+            print('-' * 10)
+
+            # Each epoch has a training and validation phase
+            for phase in ['train', 'val']:
+                if phase == 'train':
+                    self.model.train()  # Set model to training mode
+                else:
+                    self.model.eval()   # Set model to evaluate mode
+
+                running_loss = 0.0
+                running_corrects = 0
+
+                # Iterate over data.
+                for samples in tqdm(dataloaders[phase]):
+                # for samples in dataloaders[phase]:
+                    inputs = samples[0].to(self.device)
+                    labels = samples[1].to(self.device, dtype=torch.long)
+                    # print(labels)
+
+                    # zero the parameter gradients
+                    optimizer.zero_grad()
+
+                    # forward
+                    # track history if only in train
+                    with torch.set_grad_enabled(phase == 'train'):
+                        # with amp.autocast(enabled=use_amp):
+                        # Get model outputs and calculate loss
+                        outputs = self.forward(inputs)    # assume outputs are softmax activations
+                        if self.with_softmax:
+                            loss = criterion(torch.log(outputs), labels)    # Using NLLLoss
+                        else:
+                            loss = criterion(outputs, labels)
+
+                        _, preds = torch.max(outputs, 1)
+
+                        # backward + optimize only if in training phase
+                        if phase == 'train':
+                            loss.backward()
+                            optimizer.step()
+
+                    # statistics
+                    running_loss += loss.item() * inputs.size(0)
+                    running_corrects += torch.sum(preds == labels.data)
+
+                epoch_loss = running_loss / len(dataloaders[phase].dataset)
+                epoch_acc = running_corrects.double() / len(dataloaders[phase].dataset)
+
+                print('{} Loss: {:.4f} Acc: {:.4f}'.format(phase, epoch_loss, epoch_acc))
+
+                # deep copy the model
+                if phase == 'val' and epoch_acc > best_acc:
+                    best_acc = epoch_acc
+                    best_model_wts = copy.deepcopy(self.model.state_dict())
+                if phase == 'val':
+                    val_acc_history.append(epoch_acc)
+
+            if scheduler != None:
+                scheduler.step()
+            print()
+
+        time_elapsed = time.time() - since
+        print('Training complete in {:.0f}m {:.0f}s'.format(time_elapsed // 60, time_elapsed % 60))
+        print('Best val Acc: {:4f}'.format(best_acc))
+
+        # load best model weights
+        self.model.load_state_dict(best_model_wts)
+        torch.save(best_model_wts, checkpoint_name)
+        print(f"Saved the weights of the best epoch in {checkpoint_name}")
+        return val_acc_history
 
     def val_model (self, dataloader, checkpoint_name=None):
         # load best model weights

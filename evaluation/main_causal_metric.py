@@ -121,6 +121,9 @@ if args.vis_method != 'random':
         res_buf = res_buf.replace('.pt', '_summed.pt')
     res_dic_lst = torch.load(res_buf)['val']
     video_mask_dic = {res_dic["video_name"].split("/")[-1]: res_dic["mask"].astype(np.float32) for res_dic in res_dic_lst}
+
+    # if args.vis_method == 'perturb':
+    #     video_mask_dic = {k: v[2] for k, v in video_mask_dic.items()}
 print(f"Loaded {res_buf}")
 
 num_devices = torch.cuda.device_count()
@@ -137,7 +140,7 @@ if args.multi_gpu:
 
 # video_dataset = dataset(ds_path, 16, 'long_range_last', 1, 6, False, bbox_gt=False, testlist_idx=1)
 
-dataloader = DataLoader(video_dataset, batch_size=args.batch_size, shuffle=args.shuffle_dataset, num_workers=128)
+dataloader = DataLoader(video_dataset, batch_size=args.batch_size, shuffle=args.shuffle_dataset, num_workers=0)
 cm_calculator = CausalMetric(model_tf, device)
 
 if args.mode == "ins" or args.mode == "del":

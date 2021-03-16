@@ -88,6 +88,7 @@ def main_worker(gpu, args):
             lowest_probs, lowest_labels = torch.min(y, dim=1)
 
             device = x.device
+            print(seg_names)
 
             if args.vis_method in ['g', 'ig', 'blur_ig']:
                 if args.vis_method == 'g':
@@ -258,7 +259,7 @@ if __name__ == "__main__":
         if args.dataset == 'cat_ucf':
             args.areas = [0.02, 0.05, 0.1]
         if args.dataset == 'sthsthv2' and args.model == 'tsm':
-            args.areas = [0.05, 0.1, 0.15, 0.2, 0.3, 0.4]
+            args.areas = [0.05, 0.1, 0.15, 0.2, 0.3]
 
     multi_gpu = True
     if args.num_gpu == -1:

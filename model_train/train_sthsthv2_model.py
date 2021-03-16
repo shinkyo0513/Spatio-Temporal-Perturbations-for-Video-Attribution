@@ -15,6 +15,7 @@ import numpy as np
 import pandas as pd
 import csv
 import json
+import time
 
 import matplotlib
 matplotlib.use("Agg")
@@ -48,17 +49,17 @@ parser.add_argument("--only_test", action='store_true')
 parser.add_argument("--multi_gpu", action='store_true')
 parser.add_argument("--retrain_type", type=str, default="Full")
 parser.add_argument("--extra_label", type=str, default="")
+parser.add_argument("--train_set", type=str, default="7000")
+parser.add_argument("--labels_set", type=str, default="top25")
 args = parser.parse_args()
 
 if args.model == "r2p1d":
     from model_def.r2plus1d import r2plus1d as model
-    from datasets.sthsthv2_dataset_new import SthSthV2_Dataset
 elif args.model == "r50l":
     from model_def.r50lstm import r50lstm as model
-    from datasets.sthsthv2_dataset_new import SthSthV2_Dataset
 elif args.model == "tsm":
     from model_def.tsm import tsm as model
-    from datasets.sthsthv2_dataset_new import SthSthV2_Dataset
+from datasets.sthsthv2_dataset_new import SthSthV2_Dataset
 
 ds_name = "sthsthv2"
 ds_path = os.path.join(ds_root, 'something_something_v2')
@@ -77,18 +78,17 @@ multi_gpu = args.multi_gpu
 num_devices = torch.cuda.device_count()
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-if args.model == 'tsm':
+if args.labels_set == 'top25':
+    num_classes = 25
+elif args.labels_set == 'full':
     num_classes = 174
-    labels_set = 'full'
+
+if args.model == 'tsm':
     model_ft = model(num_classes=num_classes, segment_count=16, pretrained='sthsthv2')
+    params_to_update = model_ft.parameters()
     model_ft.to_device(device)
 else:
-    num_classes = 25
-    labels_set = 'top25'
     model_ft = model(num_classes=num_classes, pretrained=True)
-    # if args.load_pretrain:
-    #     model_ft.load_weights(pt_save_dir)
-    #     print(f'Loaded pretrained parameters from {pt_save_dir}.')
     model_ft.set_parameter_requires_grad(args.retrain_type)
     params_to_update = model_ft.get_parameter_to_update(debug=False)
     model_ft.to_device(device)
@@ -96,23 +96,15 @@ else:
         model_ft.parallel_model(device_ids=list(range(num_devices)))
 
 if not args.only_test:
-    #================== Train & Evaluate (for EPIC) ===================#
-    # OPtimizer and Loss fn
-    # if args.model == "r50l":
-    #     optimizer_ft = torch.optim.SGD(params_to_update, lr=0.01, momentum=0.9)
-    #     scheduler = torch.optim.lr_scheduler.StepLR(optimizer_ft, 6, gamma=0.1)
-    # elif args.model == "r2p1d":
-    #     optimizer_ft = torch.optim.SGD(params_to_update, lr=0.01, momentum=0.9)
-    #     scheduler = torch.optim.lr_scheduler.StepLR(optimizer_ft, 6, gamma=0.1)
-    # else:
-    #     optimizer_ft = torch.optim.SGD(params_to_update, lr=0.001, momentum=0.9)
-    #     scheduler = None
+    #================== Train & Evaluate ===================#
     optimizer_ft = torch.optim.SGD(params_to_update, lr=args.learning_rate, momentum=0.9)
     scheduler = torch.optim.lr_scheduler.StepLR(optimizer_ft, args.schedule_step, gamma=0.1)
     # criterion = nn.NLLLoss()
     if args.model == 'r2p1d':
         criterion = nn.CrossEntropyLoss()
     elif args.model == 'r50l':
+        criterion = nn.CrossEntropyLoss()
+    elif args.model == 'tsm':
         criterion = nn.CrossEntropyLoss()
 
     # Dataset and dataloader
@@ -128,7 +120,7 @@ if not args.only_test:
             frame_rate = 2
         video_datasets[x] = SthSthV2_Dataset(ds_path, args.num_f, sample_mode, num_clips, 
                                             frame_rate, x=='train', testlist_idx=args.testlist_idx, 
-                                            labels_set=labels_set)
+                                            labels_set=args.labels_set, train_set=args.train_set)
     print({x: 'Num of clips:{}'.format(len(video_datasets[x])) for x in ['train', 'val']})
     dataloaders = {x: DataLoader(video_datasets[x], batch_size=args.batch_size, shuffle=True, 
                         num_workers=128) for x in ['train', 'val']}
@@ -138,7 +130,7 @@ if not args.only_test:
 #========================== Only validate =========================#
 sample_mode = 'long_range_last' if args.long_range else "fixed"
 val_dataset = SthSthV2_Dataset(ds_path, args.num_f, sample_mode, 1, 2, train=False, 
-                               testlist_idx=args.testlist_idx, labels_set=labels_set)
+                               testlist_idx=args.testlist_idx, labels_set=args.labels_set)
 print('Num of clips:{}'.format(len(val_dataset)))
 val_dataloader = DataLoader(val_dataset, batch_size=args.batch_size, shuffle=True, 
                     num_workers=128)
