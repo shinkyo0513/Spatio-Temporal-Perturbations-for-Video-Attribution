@@ -1,0 +1,16 @@
+  File "run_all.py", line 71
+    plot_save_path = f"{proj_root}/visual_res/{args.save_label}"
+                                                               ^
+SyntaxError: invalid syntax
+  File "process_perturb_res.py", line 150
+    area_line = cv2.putText(area_line, f'Area: {real_areas[a_idx]:.2f}; Prob: {prob[a_idx]:.3f}', 
+                                                                                               ^
+SyntaxError: invalid syntax
+  File "run_all.py", line 71
+    plot_save_path = f"{proj_root}/visual_res/{args.save_label}"
+                                                               ^
+SyntaxError: invalid syntax
+  File "process_perturb_res.py", line 150
+    area_line = cv2.putText(area_line, f'Area: {real_areas[a_idx]:.2f}; Prob: {prob[a_idx]:.3f}', 
+                                                                                               ^
+SyntaxError: invalid syntax

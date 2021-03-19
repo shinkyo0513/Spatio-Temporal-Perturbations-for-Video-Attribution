@@ -3,7 +3,6 @@ import numpy as np
 from torchray.attribution.excitation_backprop import excitation_backprop, update_resnet
 from torchray.attribution.excitation_backprop import ExcitationBackpropContext
 
-
 def excitation_bp_2d (inputs, labels, model, device, layer_name, norm_vis=True):
     model.eval()   # Set model to evaluate mode
     # print(model)

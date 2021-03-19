@@ -12,11 +12,9 @@ source ${HOME}/.bashrc
 conda activate pytorch1.1
 
 python run_all.py --dataset sthsthv2 --model tsm --only_test --vis_method perturb \
---perturb_niter 1200 --perturb_withcore --perturb_num_keyframe 8 --perturb_spatial_size 23 \
+--perturb_niter 1200 --perturb_withcore --perturb_num_keyframe 8 \
 --batch_size 4
 
-# python run_all.py --dataset sthsthv2 --model tsm --only_test --vis_method perturb \
-# --perturb_niter 1200 --perturb_withcore --perturb_num_keyframe 5 --perturb_spatial_size 23 \
-# --batch_size 4
-
+python process_perturb_res.py --dataset sthsthv2 --model tsm --vis_method perturb \
+--only_test --extra_label _core8
 

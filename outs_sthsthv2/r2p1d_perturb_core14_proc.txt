@@ -1,0 +1,3 @@
+['val']
+sthsthv2_r2p1d_perturb_full_core14
+Use 4 GPUs.
