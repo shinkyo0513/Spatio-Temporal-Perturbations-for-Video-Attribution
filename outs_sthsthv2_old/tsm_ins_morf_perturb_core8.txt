@@ -1,0 +1,1136 @@
+Loaded /home/lzq/ExpEval/exe_res/sthsthv2_tsm_perturb_full_core8_test_summed.pt
+
+    Initializing TSN with base model: resnet50.
+    TSN Configurations:
+        input_modality:     RGB
+        num_segments:       16
+        new_length:         1
+        consensus_module:   avg
+        dropout_ratio:      0.8
+        img_feature_dim:    256
+            
+=> base model: resnet50
+Adding temporal shift...
+=> n_segment per stage: [16, 16, 16, 16]
+=> Processing stage with 3 blocks residual
+=> Using fold div: 8
+=> Using fold div: 8
+=> Using fold div: 8
+=> Processing stage with 4 blocks residual
+=> Using fold div: 8
+=> Using fold div: 8
+=> Using fold div: 8
+=> Using fold div: 8
+=> Processing stage with 6 blocks residual
+=> Using fold div: 8
+=> Using fold div: 8
+=> Using fold div: 8
+=> Using fold div: 8
+=> Using fold div: 8
+=> Using fold div: 8
+=> Processing stage with 3 blocks residual
+=> Using fold div: 8
+=> Using fold div: 8
+=> Using fold div: 8
+('139242', '208136', '77933', '60678', '125118', '133738', '104179', '141930', '58849', '9116', '18518', '208019', '59701', '160867', '120824', '19680', '206826', '79321', '89328', '117570', '170391', '70174', '182726', '215032', '52914', '130003', '62316', '118582', '75836', '31938') tensor([ 99,  59,  29,  45, 171,  45,  45,  37, 109, 129,   6,  45,  37, 128,
+        129, 114,  45,  46,  46,  43, 109, 145, 143,   6,  46, 114, 149,  14,
+        129, 164]) ('Pushing something so that it falls off the table', 'Pouring something into something', 'Lifting something with something on it', 'Moving something up', 'Uncovering something', 'Moving something up', 'Moving something up', 'Moving something and something closer to each other', 'Putting something on a surface', 'Showing that something is empty', 'Covering something with something', 'Moving something up', 'Moving something and something closer to each other', 'Showing something to the camera', 'Showing that something is empty', 'Putting something similar to other things that are already on the table', 'Moving something up', 'Opening something', 'Opening something', 'Moving something down', 'Putting something on a surface', 'Stuffing something into something', 'Squeezing something', 'Covering something with something', 'Opening something', 'Putting something similar to other things that are already on the table', 'Tearing something into two pieces', 'Folding something', 'Showing that something is empty', 'Turning something upside down')
+139242: 0.0022536420037795324
+208136: 0.0007599819073220715
+77933: 0.4703969203364977
+60678: 0.0002781869846009144
+125118: 0.008419474012043793
+133738: 0.03939741817157483
+104179: 0.004704619463154813
+141930: 0.00021533321492483992
+58849: 0.00014061937554288306
+9116: 0.00029088282275324673
+18518: 0.004548389984847745
+208019: 0.003071980689128395
+59701: 0.01761844797511003
+160867: 2.9212629669927992e-05
+120824: 0.0355879203953009
+19680: 0.3460758444198291
+206826: 0.0036891197305521928
+79321: 0.03370971828371694
+89328: 0.001525431891423068
+117570: 0.0113084411714226
+170391: 8.725431858636057e-05
+70174: 0.05488674195112253
+182726: 0.18026255971199134
+215032: 0.0033630343841650756
+52914: 0.010088036497108988
+130003: 6.767807713847773e-05
+62316: 0.8690721215364192
+118582: 0.4440632396754154
+75836: 0.17867070511420025
+31938: 0.5671621226356365
+('13332', '25472', '87638', '148093', '201342', '113500', '121337', '199113', '67174', '63822', '88299', '47054', '113521', '61572', '49072', '185945', '186837', '12229', '2417', '23262', '89019', '87604', '32140', '34102', '12384', '43126', '99563', '209593', '131967', '60661') tensor([ 49, 114, 100, 114, 109, 164,  49, 106, 150,  49, 164, 129, 114, 114,
+         29, 146,  29, 100,  59, 106, 149, 149,   6, 150,   6, 129, 149, 114,
+        143, 100]) ('Plugging something into something', 'Putting something similar to other things that are already on the table', 'Pushing something so that it slightly moves', 'Putting something similar to other things that are already on the table', 'Putting something on a surface', 'Turning something upside down', 'Plugging something into something', 'Putting something into something', 'Tearing something just a little bit', 'Plugging something into something', 'Turning something upside down', 'Showing that something is empty', 'Putting something similar to other things that are already on the table', 'Putting something similar to other things that are already on the table', 'Lifting something with something on it', 'Taking one of many similar things on the table', 'Lifting something with something on it', 'Pushing something so that it slightly moves', 'Pouring something into something', 'Putting something into something', 'Tearing something into two pieces', 'Tearing something into two pieces', 'Covering something with something', 'Tearing something just a little bit', 'Covering something with something', 'Showing that something is empty', 'Tearing something into two pieces', 'Putting something similar to other things that are already on the table', 'Squeezing something', 'Pushing something so that it slightly moves')
+13332: 0.0006024176545906812
+25472: 6.630083041471099e-05
+87638: 0.008978050898804213
+148093: 0.013435818655125331
+201342: 3.8693580117906204e-05
+113500: 0.0037090006797287356
+121337: 0.04387994165881537
+199113: 0.0001326162851000845
+67174: 0.14737349885399453
+63822: 0.002136530940333614
+88299: 0.0011047914740629494
+47054: 7.990567605520305e-05
+113521: 5.94940811424749e-05
+61572: 0.04142354608484311
+49072: 0.2956693042979168
+185945: 0.0001731606371322414
+186837: 0.08573139020764486
+12229: 0.0001753591641318053
+2417: 0.000989955414237187
+23262: 0.00017938209214207745
+89019: 0.7094176491336839
+87604: 0.694885095286736
+32140: 0.4311881335834187
+34102: 0.05066347142565064
+12384: 0.00044669778515626923
+43126: 0.26378409197059227
+99563: 0.4837839385108964
+209593: 0.002269497541419696
+131967: 4.592671738697474e-05
+60661: 0.0002785720171232242
+('108981', '23892', '216042', '131932', '33321', '123713', '106189', '161541', '41066', '143962', '211702', '69496', '120137', '146838', '139484', '80618', '171217', '194058', '89503', '28135', '17011', '216098', '10928', '200339', '166206', '33257', '133827', '142266', '149237', '172312') tensor([ 99, 150, 164, 143,  59,   6,  49,  49, 135,   6, 129,  99,  59, 129,
+        114,   6, 100, 135, 114,  43, 109,  59,  59, 150, 150, 149,  29,  43,
+        149,  14]) ('Pushing something so that it falls off the table', 'Tearing something just a little bit', 'Turning something upside down', 'Squeezing something', 'Pouring something into something', 'Covering something with something', 'Plugging something into something', 'Plugging something into something', 'Something falling like a rock', 'Covering something with something', 'Showing that something is empty', 'Pushing something so that it falls off the table', 'Pouring something into something', 'Showing that something is empty', 'Putting something similar to other things that are already on the table', 'Covering something with something', 'Pushing something so that it slightly moves', 'Something falling like a rock', 'Putting something similar to other things that are already on the table', 'Moving something down', 'Putting something on a surface', 'Pouring something into something', 'Pouring something into something', 'Tearing something just a little bit', 'Tearing something just a little bit', 'Tearing something into two pieces', 'Lifting something with something on it', 'Moving something down', 'Tearing something into two pieces', 'Folding something')
+108981: 0.0005875564968249591
+23892: 0.009474858146859333
+216042: 0.0004650386797493411
+131932: 4.447912189621355e-05
+33321: 6.019668531711316e-05
+123713: 0.07279748869223113
+106189: 0.008298380154883489
+161541: 0.27346217035665177
+41066: 0.0018724468391155824
+143962: 0.0001124163825636515
+211702: 0.0903865909713204
+69496: 0.000822229227196658
+120137: 0.004119607197935693
+146838: 0.06734562650490261
+139484: 0.409789941906638
+80618: 0.013393929732046672
+171217: 0.03990691890066955
+194058: 0.0027992781397188082
+89503: 0.03125353570067091
+28135: 0.00011754756021410185
+17011: 4.235537016938906e-05
+216098: 0.0004898848274024203
+10928: 0.012240409196238033
+200339: 0.03621969252708368
+166206: 0.004034879508253653
+33257: 0.6975076661001367
+133827: 0.0007677803114347626
+142266: 0.004447532119229436
+149237: 0.838495672269346
+172312: 0.48320575879461103
+('133644', '104742', '40297', '200020', '100087', '43819', '77468', '13147', '88931', '152557', '32811', '19952', '173875', '60672', '53345', '75123', '64506', '190624', '76109', '52261', '179142', '184118', '4820', '111036', '106612', '174184', '24705', '6036', '144159', '135962') tensor([145,  99, 164, 145,  37, 106, 106, 128, 129, 164, 146,  49, 134, 164,
+          6,  14, 146, 171,  59,  29, 135, 149, 149, 145, 150,  49,  46,  49,
+        149,  14]) ('Stuffing something into something', 'Pushing something so that it falls off the table', 'Turning something upside down', 'Stuffing something into something', 'Moving something and something closer to each other', 'Putting something into something', 'Putting something into something', 'Showing something to the camera', 'Showing that something is empty', 'Turning something upside down', 'Taking one of many similar things on the table', 'Plugging something into something', 'Something falling like a feather or paper', 'Turning something upside down', 'Covering something with something', 'Folding something', 'Taking one of many similar things on the table', 'Uncovering something', 'Pouring something into something', 'Lifting something with something on it', 'Something falling like a rock', 'Tearing something into two pieces', 'Tearing something into two pieces', 'Stuffing something into something', 'Tearing something just a little bit', 'Plugging something into something', 'Opening something', 'Plugging something into something', 'Tearing something into two pieces', 'Folding something')
+133644: 0.0009790124898927388
+104742: 0.00012569598092504464
+40297: 0.004144673048358527
+200020: 0.007134978394333302
+100087: 0.0006382027171554228
+43819: 0.16627883234286855
+77468: 9.433642867406888e-05
+13147: 2.946073254857e-05
+88931: 0.0003831340068245481
+152557: 5.184653487333435e-05
+32811: 0.0011999898524663877
+19952: 0.00525983951138187
+173875: 0.3410708566007088
+60672: 0.05336788494280656
+53345: 0.023738448167932802
+75123: 0.05384349165524327
+64506: 0.08516095250524813
+190624: 0.3621471097212634
+76109: 0.0004957324563292786
+52261: 0.0003262104710302083
+179142: 0.0004470740881004076
+184118: 0.9081798955412523
+4820: 0.7708654839625524
+111036: 0.018339389274842688
+106612: 0.0013391410757321864
+174184: 0.09642259296379052
+24705: 0.005722895168219111
+6036: 0.003751907363380269
+144159: 0.5653511724049167
+135962: 0.27541826473589026
+('22001', '182789', '8542', '120231', '120106', '150146', '35052', '215270', '210804', '114154', '144885', '26495', '12679', '136579', '166038', '120224', '117478', '2645', '102701', '65522', '104759', '185472', '52343', '63061', '69266', '15065', '164385', '214198', '141825', '79237') tensor([171, 150, 135,  46, 149, 145,  59, 164, 114, 114, 114, 143,  43,  49,
+         49, 135,  45, 145, 106, 145, 145, 150,  14,  99, 128, 149, 109, 106,
+        109, 150]) ('Uncovering something', 'Tearing something just a little bit', 'Something falling like a rock', 'Opening something', 'Tearing something into two pieces', 'Stuffing something into something', 'Pouring something into something', 'Turning something upside down', 'Putting something similar to other things that are already on the table', 'Putting something similar to other things that are already on the table', 'Putting something similar to other things that are already on the table', 'Squeezing something', 'Moving something down', 'Plugging something into something', 'Plugging something into something', 'Something falling like a rock', 'Moving something up', 'Stuffing something into something', 'Putting something into something', 'Stuffing something into something', 'Stuffing something into something', 'Tearing something just a little bit', 'Folding something', 'Pushing something so that it falls off the table', 'Showing something to the camera', 'Tearing something into two pieces', 'Putting something on a surface', 'Putting something into something', 'Putting something on a surface', 'Tearing something just a little bit')
+22001: 0.06584303467388963
+182789: 0.11044052240322344
+8542: 0.0011042216647183523
+120231: 0.0014306434204449658
+120106: 0.6660992508368508
+150146: 0.34187123695483024
+35052: 0.007019818906144337
+215270: 0.0156212875735946
+210804: 0.11436832643084927
+114154: 0.0012135798788222019
+144885: 0.00020980772911194379
+26495: 0.00016083110307363313
+12679: 0.07884522364474833
+136579: 0.14626590217812918
+166038: 0.07372511582798325
+120224: 0.0037227389257168397
+117478: 0.07119843191321706
+2645: 0.24573275805778394
+102701: 0.09147481525542389
+65522: 0.01272121104739199
+104759: 0.24644915763383324
+185472: 0.0030263796106737573
+52343: 0.00745515310245537
+63061: 0.00010868816850972962
+69266: 0.0027095383466075873
+15065: 0.526667275453292
+164385: 0.001144509980804287
+214198: 0.03611382817143749
+141825: 0.00010975597453288799
+79237: 0.21699613097007386
+('98360', '190983', '215561', '112088', '185634', '105526', '142963', '99639', '170439', '104561', '36308', '205405', '46363', '25859', '136695', '106474', '67433', '40719', '133807', '72232', '199158', '18154', '139430', '12055', '150588', '166796', '16836', '91959', '74732', '92505') tensor([ 49,  46, 146,  46, 164,  46,   6,  49, 143, 135, 145, 146, 109, 149,
+         43,  49, 171, 149, 143, 146,  46, 100,  14, 149, 171,  99, 114, 129,
+        100,  46]) ('Plugging something into something', 'Opening something', 'Taking one of many similar things on the table', 'Opening something', 'Turning something upside down', 'Opening something', 'Covering something with something', 'Plugging something into something', 'Squeezing something', 'Something falling like a rock', 'Stuffing something into something', 'Taking one of many similar things on the table', 'Putting something on a surface', 'Tearing something into two pieces', 'Moving something down', 'Plugging something into something', 'Uncovering something', 'Tearing something into two pieces', 'Squeezing something', 'Taking one of many similar things on the table', 'Opening something', 'Pushing something so that it slightly moves', 'Folding something', 'Tearing something into two pieces', 'Uncovering something', 'Pushing something so that it falls off the table', 'Putting something similar to other things that are already on the table', 'Showing that something is empty', 'Pushing something so that it slightly moves', 'Opening something')
+98360: 0.011285609672633257
+190983: 2.4872207519344158e-05
+215561: 0.03845264946721727
+112088: 0.10606697704315593
+185634: 0.0014720633917022496
+105526: 0.018099318162057898
+142963: 0.0010766115179791716
+99639: 0.015052897128043696
+170439: 5.920418701221841e-05
+104561: 0.0005718271548857956
+36308: 0.030853074431433924
+205405: 0.32820800852641696
+46363: 0.00010933054181805346
+25859: 0.6977198139611573
+136695: 0.039971110643818974
+106474: 0.17574204443371855
+67433: 0.019021631589566823
+40719: 0.9170724237883405
+133807: 0.00016374238111893646
+72232: 0.06286245745286578
+199158: 2.8194273050896612e-05
+18154: 0.00016715226092856028
+139430: 0.38408106280530774
+12055: 0.8163807045748399
+150588: 0.03835782236274099
+166796: 0.0007341734490182716
+16836: 0.007714378123949928
+91959: 0.01289750355549657
+74732: 0.0014915101855876856
+92505: 2.0308398120505444e-05
+('85694', '42068', '74665', '138967', '215853', '174854', '125224', '79045', '91210', '145719', '146631', '63163', '202581', '33079', '162835', '45213', '893', '101217', '68709', '160220', '193490', '206028', '171527', '95431', '95949', '220461', '200057', '97085', '47610', '181793') tensor([  6, 149,  49, 164, 171,  46, 164, 128,  49,  59, 150, 145, 146, 135,
+        128, 150, 106,  45,  43, 149, 145, 106,  59, 106, 129,  49, 146,  29,
+          6, 164]) ('Covering something with something', 'Tearing something into two pieces', 'Plugging something into something', 'Turning something upside down', 'Uncovering something', 'Opening something', 'Turning something upside down', 'Showing something to the camera', 'Plugging something into something', 'Pouring something into something', 'Tearing something just a little bit', 'Stuffing something into something', 'Taking one of many similar things on the table', 'Something falling like a rock', 'Showing something to the camera', 'Tearing something just a little bit', 'Putting something into something', 'Moving something up', 'Moving something down', 'Tearing something into two pieces', 'Stuffing something into something', 'Putting something into something', 'Pouring something into something', 'Putting something into something', 'Showing that something is empty', 'Plugging something into something', 'Taking one of many similar things on the table', 'Lifting something with something on it', 'Covering something with something', 'Turning something upside down')
+85694: 2.229918511886808e-05
+42068: 0.6276911461700365
+74665: 0.06834794473252259
+138967: 0.31946153548778966
+215853: 0.00014272752368071906
+174854: 7.554473813797813e-05
+125224: 0.017784085881430656
+79045: 0.0014510276178043569
+91210: 0.0001899268972920254
+145719: 7.837379386899102e-05
+146631: 0.3047585736203473
+63163: 2.8993304463082945e-05
+202581: 0.2351675203317427
+33079: 0.029786538550979458
+162835: 0.00011957911118543052
+45213: 0.00022882560854498024
+893: 0.003934454747162121
+101217: 0.00012088900833351346
+68709: 0.00010316589942580695
+160220: 0.29498212689551195
+193490: 0.000676398289018304
+206028: 4.7213782046066737e-05
+171527: 0.10614314912527334
+95431: 0.0006972676910663722
+95949: 0.0006506436404087879
+220461: 0.0015486262855120003
+200057: 0.0016516046811005936
+97085: 0.16625470807412057
+47610: 0.0003401534332283518
+181793: 0.00012764163230372105
+('123709', '73565', '151270', '129592', '128494', '145958', '164659', '198342', '24023', '5532', '191418', '207874', '190482', '47613', '142506', '111318', '114264', '192597', '78062', '132708', '112723', '206077', '214021', '67692', '176333', '9373', '128081', '8444', '160198', '33525') tensor([145, 150, 171, 145, 149, 128,  99, 109,  46, 114,  46, 100, 171, 129,
+         49,  49, 109, 114,  99, 128,   6, 114,  29, 109, 146, 129, 146,  43,
+        129,  37]) ('Stuffing something into something', 'Tearing something just a little bit', 'Uncovering something', 'Stuffing something into something', 'Tearing something into two pieces', 'Showing something to the camera', 'Pushing something so that it falls off the table', 'Putting something on a surface', 'Opening something', 'Putting something similar to other things that are already on the table', 'Opening something', 'Pushing something so that it slightly moves', 'Uncovering something', 'Showing that something is empty', 'Plugging something into something', 'Plugging something into something', 'Putting something on a surface', 'Putting something similar to other things that are already on the table', 'Pushing something so that it falls off the table', 'Showing something to the camera', 'Covering something with something', 'Putting something similar to other things that are already on the table', 'Lifting something with something on it', 'Putting something on a surface', 'Taking one of many similar things on the table', 'Showing that something is empty', 'Taking one of many similar things on the table', 'Moving something down', 'Showing that something is empty', 'Moving something and something closer to each other')
+123709: 0.045638533347300836
+73565: 0.006989834102569148
+151270: 0.006547389674324222
+129592: 0.0885493366895389
+128494: 0.4769695709073858
+145958: 0.00017823322014010046
+164659: 4.7530888094199364e-05
+198342: 0.0015304537810152397
+24023: 5.624719415209256e-05
+5532: 0.005061308555013966
+191418: 0.0020672923328675097
+207874: 0.016624374911771156
+190482: 0.08530360474105692
+47613: 0.0001319363695984066
+142506: 0.001204199594212696
+111318: 0.021909219882218167
+114264: 5.3388235430773534e-05
+192597: 0.37445090518303914
+78062: 0.0009008438100863714
+132708: 0.00035223172562837135
+112723: 0.005831511263750144
+206077: 0.0029312082842807285
+214021: 0.00012730410840300355
+67692: 4.0367207499964614e-05
+176333: 0.053454021785000805
+9373: 0.00022534471816015866
+128081: 0.10511225040251836
+8444: 0.001341767085250467
+160198: 0.5578049312389339
+33525: 0.11595042512271903
+('187807', '24441', '198481', '98916', '114265', '10768', '174741', '115530', '172284', '162876', '8445', '110043', '1694', '54977', '178202', '95108', '212969', '135196', '141975', '17202', '148848', '2060', '188919', '22357', '64089', '68883', '179063', '214793', '631', '131466') tensor([143, 146, 134, 164,  29,  49, 100,  37,  49,  45,  59, 128,  59,  43,
+         14, 149, 150,  59,  99, 109,  49, 100, 135, 150, 146, 128, 171,  49,
+        146, 134]) ('Squeezing something', 'Taking one of many similar things on the table', 'Something falling like a feather or paper', 'Turning something upside down', 'Lifting something with something on it', 'Plugging something into something', 'Pushing something so that it slightly moves', 'Moving something and something closer to each other', 'Plugging something into something', 'Moving something up', 'Pouring something into something', 'Showing something to the camera', 'Pouring something into something', 'Moving something down', 'Folding something', 'Tearing something into two pieces', 'Tearing something just a little bit', 'Pouring something into something', 'Pushing something so that it falls off the table', 'Putting something on a surface', 'Plugging something into something', 'Pushing something so that it slightly moves', 'Something falling like a rock', 'Tearing something just a little bit', 'Taking one of many similar things on the table', 'Showing something to the camera', 'Uncovering something', 'Plugging something into something', 'Taking one of many similar things on the table', 'Something falling like a feather or paper')
+187807: 0.016130489566421602
+24441: 0.4096564603751176
+198481: 0.6306322757100133
+98916: 0.0010242490970995277
+114265: 0.05409144685791034
+10768: 7.13594625665337e-05
+174741: 0.005779047627584077
+115530: 0.22984192796502612
+172284: 0.0332281811570283
+162876: 0.0820567744303844
+8445: 0.09592978311411571
+110043: 0.0008450059482729519
+1694: 0.25149085353768896
+54977: 0.02209839830175042
+178202: 0.06380071318108094
+95108: 0.48884543678650516
+212969: 0.6773739140189718
+135196: 6.764324538335279e-05
+141975: 0.053577712202240946
+17202: 4.7042342885106336e-05
+148848: 0.047293368339211383
+2060: 0.0043653346510836855
+188919: 0.004214180851704441
+22357: 0.22391550007159822
+64089: 0.10707237720635021
+68883: 0.0011858470843435498
+179063: 0.03612679695652332
+214793: 0.45165302985697053
+631: 0.0026647101403796114
+131466: 0.6729090246662963
+('185267', '67512', '64031', '101323', '139224', '206775', '55758', '178806', '38951', '111220', '47357', '139250', '177197', '175664', '33679', '6357', '205364', '199597', '195930', '27300', '13187', '111324', '128292', '171019', '41263', '116055', '185504', '204813', '113076', '108618') tensor([135, 171, 150, 109, 171, 171, 150, 128, 171,  49,  45,  46, 135,  14,
+        135,  99,  49, 146, 129, 145,   6,  14, 164, 135, 109,  99, 149,  99,
+        146, 100]) ('Something falling like a rock', 'Uncovering something', 'Tearing something just a little bit', 'Putting something on a surface', 'Uncovering something', 'Uncovering something', 'Tearing something just a little bit', 'Showing something to the camera', 'Uncovering something', 'Plugging something into something', 'Moving something up', 'Opening something', 'Something falling like a rock', 'Folding something', 'Something falling like a rock', 'Pushing something so that it falls off the table', 'Plugging something into something', 'Taking one of many similar things on the table', 'Showing that something is empty', 'Stuffing something into something', 'Covering something with something', 'Folding something', 'Turning something upside down', 'Something falling like a rock', 'Putting something on a surface', 'Pushing something so that it falls off the table', 'Tearing something into two pieces', 'Pushing something so that it falls off the table', 'Taking one of many similar things on the table', 'Pushing something so that it slightly moves')
+185267: 0.013366561659495346
+67512: 0.00930091295595048
+64031: 0.21172126170131378
+101323: 7.937704504001886e-05
+139224: 0.10808865368073839
+206775: 6.821941616408367e-05
+55758: 0.0017772031678759959
+178806: 0.0014116282018221682
+38951: 0.006914938467120468
+111220: 0.10757956994348206
+47357: 0.003511311508191284
+139250: 9.051476945387549e-05
+177197: 0.00047654309673816897
+175664: 0.39360945154021465
+33679: 0.00021992102051626716
+6357: 0.0072819745873857755
+205364: 0.5474190223903861
+199597: 0.0991800523463553
+195930: 0.04422913802409312
+27300: 0.0207827946087491
+13187: 0.21215650117119367
+111324: 0.004758278201734356
+128292: 0.024629852210637182
+171019: 0.00046030636367255795
+41263: 0.0081891947920667
+116055: 5.777376605387019e-05
+185504: 0.4534952219655679
+204813: 0.00011060768449772747
+113076: 0.48494922693498665
+108618: 0.0003975052777605015
+('33231', '214974', '110371', '118694', '4949', '148805', '86201', '16369', '85207', '59063', '108589', '140464', '63757', '126522', '103941', '202780', '42455', '11747', '130929', '94196', '62715', '151963', '47092', '188772', '143509', '142966', '196208', '32036', '83546', '163062') tensor([149,  37, 164, 164,  14, 114, 134, 149,  43, 128, 164,  99,  45, 100,
+        106,  43, 150,  14,  14, 129, 150,  43, 128, 150,  59,  45, 109, 129,
+        106, 114]) ('Tearing something into two pieces', 'Moving something and something closer to each other', 'Turning something upside down', 'Turning something upside down', 'Folding something', 'Putting something similar to other things that are already on the table', 'Something falling like a feather or paper', 'Tearing something into two pieces', 'Moving something down', 'Showing something to the camera', 'Turning something upside down', 'Pushing something so that it falls off the table', 'Moving something up', 'Pushing something so that it slightly moves', 'Putting something into something', 'Moving something down', 'Tearing something just a little bit', 'Folding something', 'Folding something', 'Showing that something is empty', 'Tearing something just a little bit', 'Moving something down', 'Showing something to the camera', 'Tearing something just a little bit', 'Pouring something into something', 'Moving something up', 'Putting something on a surface', 'Showing that something is empty', 'Putting something into something', 'Putting something similar to other things that are already on the table')
+33231: 0.6328166132407205
+214974: 0.08314578022327623
+110371: 0.03265988716157153
+118694: 0.16052637418033555
+4949: 0.49196012079755747
+148805: 0.0002062527496953237
+86201: 0.885301891277777
+16369: 0.7025726093525009
+85207: 0.010058528976514935
+59063: 0.00032822593675518874
+108589: 0.3555226431344636
+140464: 0.0008047584306041244
+63757: 0.014546861544658896
+126522: 0.00035183074237465917
+103941: 0.00027434071444076835
+202780: 0.010190412049395303
+42455: 0.0030975887184467865
+11747: 0.0012851393276687162
+130929: 0.5446811150204667
+94196: 0.3860887159171398
+62715: 0.09702935951645486
+151963: 0.0067037735134363174
+47092: 0.0032839909313508997
+188772: 0.0016546646929782582
+143509: 0.02856054091535043
+142966: 0.011589617140998598
+196208: 4.937966787110781e-05
+32036: 0.009404630407576775
+83546: 0.06988309904227208
+163062: 5.0361140441879115e-05
+('102714', '209669', '3160', '219137', '192999', '189956', '214386', '181779', '80543', '142613', '16243', '158456', '39615', '143141', '76070', '55254', '213844', '15422', '108505', '150230', '51847', '37985', '65595', '1027', '5880', '142521', '146053', '193859', '39506', '1425') tensor([ 46, 114, 134, 100,  46,  29,  37,  49,  43, 100,  99,  43, 143, 149,
+        150,  45, 134, 134, 146, 135,  45, 106, 143, 106,  43, 109, 109, 171,
+        150,   6]) ('Opening something', 'Putting something similar to other things that are already on the table', 'Something falling like a feather or paper', 'Pushing something so that it slightly moves', 'Opening something', 'Lifting something with something on it', 'Moving something and something closer to each other', 'Plugging something into something', 'Moving something down', 'Pushing something so that it slightly moves', 'Pushing something so that it falls off the table', 'Moving something down', 'Squeezing something', 'Tearing something into two pieces', 'Tearing something just a little bit', 'Moving something up', 'Something falling like a feather or paper', 'Something falling like a feather or paper', 'Taking one of many similar things on the table', 'Something falling like a rock', 'Moving something up', 'Putting something into something', 'Squeezing something', 'Putting something into something', 'Moving something down', 'Putting something on a surface', 'Putting something on a surface', 'Uncovering something', 'Tearing something just a little bit', 'Covering something with something')
+102714: 0.012262016354725347
+209669: 0.04941896531818202
+3160: 0.5851299297355581
+219137: 0.00019534268446363967
+192999: 0.003535862217177055
+189956: 2.720404509113299e-05
+214386: 2.6508126529378728e-05
+181779: 0.10898539013578556
+80543: 0.0030406596488319337
+142613: 0.01613458748033736
+16243: 4.2847994336560956e-05
+158456: 0.012721866136416793
+39615: 0.004019321560917888
+143141: 0.8084874637970643
+76070: 0.022166585986269638
+55254: 0.011206499904801603
+213844: 0.2562803619366605
+15422: 0.5010801633179653
+108505: 0.31750482062489027
+150230: 0.00040012819908952224
+51847: 0.0016437390804640017
+37985: 3.1489993483287536e-05
+65595: 0.007973126288561616
+1027: 0.001305472716616407
+5880: 0.0005003678816137835
+142521: 0.003615158566390164
+146053: 0.002570563927292824
+193859: 0.00018101861761255812
+39506: 0.015144774195505306
+1425: 0.001521082516774186
+('116233', '89783', '166887', '152367', '163353', '207003', '5690', '27809', '6010', '108987', '135839', '8318', '31255', '78843', '205927', '180173', '156041', '110857', '219973', '5903', '189608', '92150', '39793', '172789', '89166', '114672', '26625', '102091', '103776', '134471') tensor([145,  45, 146, 149,  45, 171,  59, 171, 171, 129, 145, 109,  49, 114,
+        129, 114, 149, 128,  45,  49, 150,  43, 100,  14, 149, 106, 109,  45,
+        150, 149]) ('Stuffing something into something', 'Moving something up', 'Taking one of many similar things on the table', 'Tearing something into two pieces', 'Moving something up', 'Uncovering something', 'Pouring something into something', 'Uncovering something', 'Uncovering something', 'Showing that something is empty', 'Stuffing something into something', 'Putting something on a surface', 'Plugging something into something', 'Putting something similar to other things that are already on the table', 'Showing that something is empty', 'Putting something similar to other things that are already on the table', 'Tearing something into two pieces', 'Showing something to the camera', 'Moving something up', 'Plugging something into something', 'Tearing something just a little bit', 'Moving something down', 'Pushing something so that it slightly moves', 'Folding something', 'Tearing something into two pieces', 'Putting something into something', 'Putting something on a surface', 'Moving something up', 'Tearing something just a little bit', 'Tearing something into two pieces')
+116233: 0.03678639089014655
+89783: 0.00012753045237001714
+166887: 0.01537493312252991
+152367: 0.5392459044778661
+163353: 0.004025754191388842
+207003: 0.12003793394978857
+5690: 0.024931617590482347
+27809: 0.08326885251881322
+6010: 0.1089228863347671
+108987: 0.004002507405336253
+135839: 0.35837451544102805
+8318: 4.6493465980290694e-05
+31255: 0.17324224053299986
+78843: 0.03287001413264079
+205927: 0.37688940465886844
+180173: 0.00037144176167203113
+156041: 0.3500061783088313
+110857: 0.0008321178424353093
+219973: 0.00020694242574492705
+5903: 0.010595847328659147
+189608: 0.5796876302629244
+92150: 0.004069146234542131
+39793: 0.00022855443421576638
+172789: 0.0002490949592705294
+89166: 0.7846017657393531
+114672: 0.08971711269805382
+26625: 0.00011655351147510373
+102091: 0.08983166250254726
+103776: 0.14800112388911657
+134471: 0.27723342232018594
+('110477', '151631', '127957', '190947', '148396', '26002', '198536', '53648', '184038', '173361', '63680', '32897', '22286', '91162', '70771', '191175', '54357', '101585', '202198', '48204', '135321', '25192', '178515', '132074', '76426', '136491', '170213', '166599', '127611', '206857') tensor([106,   6,  59,  29, 114,  49,  59,  29,  43,  59, 109,  49, 128, 106,
+        150, 129,  45,  37, 129, 145,  43,  99,  46, 134, 106, 135, 135, 106,
+        149, 134]) ('Putting something into something', 'Covering something with something', 'Pouring something into something', 'Lifting something with something on it', 'Putting something similar to other things that are already on the table', 'Plugging something into something', 'Pouring something into something', 'Lifting something with something on it', 'Moving something down', 'Pouring something into something', 'Putting something on a surface', 'Plugging something into something', 'Showing something to the camera', 'Putting something into something', 'Tearing something just a little bit', 'Showing that something is empty', 'Moving something up', 'Moving something and something closer to each other', 'Showing that something is empty', 'Stuffing something into something', 'Moving something down', 'Pushing something so that it falls off the table', 'Opening something', 'Something falling like a feather or paper', 'Putting something into something', 'Something falling like a rock', 'Something falling like a rock', 'Putting something into something', 'Tearing something into two pieces', 'Something falling like a feather or paper')
+110477: 0.0017444145218936669
+151631: 0.0011309742337653195
+127957: 0.022283164711552672
+190947: 0.00029688882774769887
+148396: 0.0001432911249139579
+26002: 0.26892484523705207
+198536: 4.841763050933423e-05
+53648: 0.026771693486807635
+184038: 0.0007020117755018873
+173361: 0.0002928321062896089
+63680: 7.737484727599053e-05
+32897: 0.03481942218149925
+22286: 0.06356276518647519
+91162: 2.9364885872236392e-05
+70771: 0.0022387678354789387
+191175: 8.028291868413147e-05
+54357: 0.007233283387904521
+101585: 0.05495419815633795
+202198: 0.044952406133234035
+48204: 0.00029816843971275375
+135321: 0.12378299818374217
+25192: 5.163954472209298e-05
+178515: 0.02944644414492359
+132074: 0.40494489451521076
+76426: 0.06645706503877591
+136491: 0.010219854753813706
+170213: 0.000323826581677622
+166599: 0.0006530766353307627
+127611: 0.304145910306417
+206857: 0.3014681637578178
+('192169', '200689', '152453', '100646', '63548', '119171', '101335', '101885', '123574', '120180', '54100', '109978', '17491', '113132', '46296', '26004', '161551', '92938', '64934', '21639', '78475', '108951', '119055', '44412', '202336', '48861', '169306', '64726', '165103', '65914') tensor([ 49, 128,  46,  29,  49,  43,  49, 164, 114, 109, 145,  45,  49, 109,
+         45, 149, 143,  45,  46,  37,   6, 171,  43, 143, 150,  45, 145, 164,
+        143, 143]) ('Plugging something into something', 'Showing something to the camera', 'Opening something', 'Lifting something with something on it', 'Plugging something into something', 'Moving something down', 'Plugging something into something', 'Turning something upside down', 'Putting something similar to other things that are already on the table', 'Putting something on a surface', 'Stuffing something into something', 'Moving something up', 'Plugging something into something', 'Putting something on a surface', 'Moving something up', 'Tearing something into two pieces', 'Squeezing something', 'Moving something up', 'Opening something', 'Moving something and something closer to each other', 'Covering something with something', 'Uncovering something', 'Moving something down', 'Squeezing something', 'Tearing something just a little bit', 'Moving something up', 'Stuffing something into something', 'Turning something upside down', 'Squeezing something', 'Squeezing something')
+192169: 0.08374365986674093
+200689: 0.004039510113191369
+152453: 1.8712136068188556e-05
+100646: 0.3682952029594162
+63548: 0.0010226573276668205
+119171: 0.0027900825862161582
+101335: 0.011325860483339056
+101885: 0.05976426164852455
+123574: 4.990644489150271e-05
+120180: 5.616927046503406e-05
+54100: 7.05401091636304e-05
+109978: 0.00045198564454551615
+17491: 0.022039804462110624
+113132: 6.991111751752932e-05
+46296: 0.0010454009970999323
+26004: 0.8876280584918277
+161551: 0.0018280391013831832
+92938: 0.04094313582027098
+64934: 0.0014256241027510441
+21639: 0.049326371834467864
+78475: 4.529555189947132e-05
+108951: 0.023190393250843044
+119055: 0.00016517010526470588
+44412: 0.08350970634637633
+202336: 0.12748494229163043
+48861: 0.00014192530091702849
+169306: 0.02181303174663107
+64726: 0.04775149218039587
+165103: 0.0023507868970682466
+65914: 0.0002512583552061187
+('86235', '114147', '184963', '81572', '98700', '26724', '2137', '35908', '45726', '151326', '67800', '113305', '15941', '115924', '3003', '131120', '139497', '167308', '210275', '20943', '135982', '11360', '216434', '57704', '98035', '149505', '112080', '75918', '156566', '208322') tensor([ 37,  43,  46,  29, 164, 114, 129, 134,  43, 134,   6,  59, 143, 164,
+        106, 114, 135,  14, 146, 164, 149, 129, 149, 145,  43,  43,  59, 146,
+        164, 150]) ('Moving something and something closer to each other', 'Moving something down', 'Opening something', 'Lifting something with something on it', 'Turning something upside down', 'Putting something similar to other things that are already on the table', 'Showing that something is empty', 'Something falling like a feather or paper', 'Moving something down', 'Something falling like a feather or paper', 'Covering something with something', 'Pouring something into something', 'Squeezing something', 'Turning something upside down', 'Putting something into something', 'Putting something similar to other things that are already on the table', 'Something falling like a rock', 'Folding something', 'Taking one of many similar things on the table', 'Turning something upside down', 'Tearing something into two pieces', 'Showing that something is empty', 'Tearing something into two pieces', 'Stuffing something into something', 'Moving something down', 'Moving something down', 'Pouring something into something', 'Taking one of many similar things on the table', 'Turning something upside down', 'Tearing something just a little bit')
+86235: 3.826004231632235e-05
+114147: 0.00399170583114028
+184963: 0.00011747166773190543
+81572: 0.0009777364430192392
+98700: 0.22065195889445022
+26724: 0.0013370524836353237
+2137: 0.04933157137566013
+35908: 0.48079698890069267
+45726: 0.0011502108536660671
+151326: 0.2669132696755696
+67800: 4.0730570844971226e-05
+113305: 0.019623086132924072
+15941: 0.015302841718948912
+115924: 0.0016421782202087343
+3003: 0.021172229184230673
+131120: 0.011242888290453834
+139497: 0.005207790600252338
+167308: 0.009526410783109895
+210275: 0.15912982982263202
+20943: 0.055542608781252056
+135982: 0.750137985272886
+11360: 0.3272111677142675
+216434: 0.6914737294973747
+57704: 0.005462291223011562
+98035: 0.0001722672895139685
+149505: 0.004630980780348182
+112080: 0.011348902515718517
+75918: 0.4033569656094187
+156566: 0.0026753736310638487
+208322: 0.0019491595739964396
+('157810', '198617', '109239', '135785', '387', '205794', '114030', '36585', '198804', '161450', '4270', '54595', '87900', '213902', '208891', '214847', '126013', '19766', '211776', '215515', '136901', '131012', '21979', '43636', '168639', '147947', '64823', '102853', '64910', '71433') tensor([149, 143,  14,  29,  59, 109, 164, 134, 129,  14,   6,  45,   6,  46,
+        146, 114, 134, 150,  45, 143,  49,  37, 164, 164, 129, 100, 128,  37,
+        149,  14]) ('Tearing something into two pieces', 'Squeezing something', 'Folding something', 'Lifting something with something on it', 'Pouring something into something', 'Putting something on a surface', 'Turning something upside down', 'Something falling like a feather or paper', 'Showing that something is empty', 'Folding something', 'Covering something with something', 'Moving something up', 'Covering something with something', 'Opening something', 'Taking one of many similar things on the table', 'Putting something similar to other things that are already on the table', 'Something falling like a feather or paper', 'Tearing something just a little bit', 'Moving something up', 'Squeezing something', 'Plugging something into something', 'Moving something and something closer to each other', 'Turning something upside down', 'Turning something upside down', 'Showing that something is empty', 'Pushing something so that it slightly moves', 'Showing something to the camera', 'Moving something and something closer to each other', 'Tearing something into two pieces', 'Folding something')
+157810: 0.733286171740474
+198617: 0.021745621350419242
+109239: 0.22934389087220097
+135785: 0.052638182143709855
+387: 0.030913781651179306
+205794: 0.003048135622520931
+114030: 0.28861857746960595
+36585: 0.09901196108171462
+198804: 0.08145042041682138
+161450: 0.6601721306242325
+4270: 0.0001718543589959154
+54595: 0.2805493070263765
+87900: 0.006488512832675042
+213902: 2.7712893142961548e-05
+208891: 5.137436342916857e-05
+214847: 0.16340779390156968
+126013: 0.6900139669596683
+19766: 0.007430056467910617
+211776: 0.0006665063774562441
+215515: 0.0003501765122564393
+136901: 0.028665884950896725
+131012: 0.00525785327408812
+21979: 0.0003220200862870115
+43636: 0.01100563511135988
+168639: 0.09402160444733454
+147947: 0.00031585989927407354
+64823: 0.0005511951694643358
+102853: 0.05784769585807226
+64910: 0.731719006140338
+71433: 0.00010536205356714845
+('84145', '174205', '122269', '181337', '122018', '130900', '174056', '14314', '161938', '157723', '79521', '76782', '28803', '107092', '115694', '102120', '9668', '28005', '2970', '206935', '69952', '160396', '80240', '9254', '156862', '126799', '98251', '90413', '127410', '32472') tensor([ 49, 149, 114, 145, 145, 150,  59, 143, 143,  37, 149,  43, 106,  99,
+          6, 109, 145, 135,   6,   6, 164, 171,  43,  49, 106,  43, 149, 129,
+        150, 109]) ('Plugging something into something', 'Tearing something into two pieces', 'Putting something similar to other things that are already on the table', 'Stuffing something into something', 'Stuffing something into something', 'Tearing something just a little bit', 'Pouring something into something', 'Squeezing something', 'Squeezing something', 'Moving something and something closer to each other', 'Tearing something into two pieces', 'Moving something down', 'Putting something into something', 'Pushing something so that it falls off the table', 'Covering something with something', 'Putting something on a surface', 'Stuffing something into something', 'Something falling like a rock', 'Covering something with something', 'Covering something with something', 'Turning something upside down', 'Uncovering something', 'Moving something down', 'Plugging something into something', 'Putting something into something', 'Moving something down', 'Tearing something into two pieces', 'Showing that something is empty', 'Tearing something just a little bit', 'Putting something on a surface')
+84145: 0.028801604494219646
+174205: 0.6996135791378038
+122269: 0.0007828713165087819
+181337: 0.0009358787855564543
+122018: 0.01682511348371918
+130900: 0.04050359484972432
+174056: 0.017771071594324894
+14314: 4.4244562285911115e-05
+161938: 0.00026776850427268073
+157723: 0.00019981502370500226
+79521: 0.7482105168419366
+76782: 0.0004085684777237475
+28803: 0.0002450129454416583
+107092: 0.005077074220253053
+115694: 0.0639367851345014
+102120: 0.00041405980300623924
+9668: 0.00023608067747799124
+28005: 0.0014520235563395545
+2970: 0.0005022893634532011
+206935: 0.17195787028504128
+69952: 0.03287944303242085
+160396: 0.010852446976059582
+80240: 0.10070177004672587
+9254: 0.05897648094105534
+156862: 3.354703151448035e-05
+126799: 0.009334134869277477
+98251: 0.6286695233429782
+90413: 0.0005678849052946355
+127410: 0.5404791487089824
+32472: 0.00031976272293832153
+('93316', '31139', '34688', '182466', '206480', '109488', '206039', '154208', '136037', '42148', '107976', '19088', '56440', '62609', '88011', '8233', '145547', '131243', '213998', '209962', '70366', '216476', '621', '3043', '90590', '216515', '81964', '154473', '209868', '161387') tensor([ 45,  29,  49, 129, 150, 129, 114,  43,  49,  59,  43,  43, 109, 164,
+        171,  29,  43, 149,  46, 146,  45, 171, 134, 129, 114, 135,  49,  46,
+        134, 171]) ('Moving something up', 'Lifting something with something on it', 'Plugging something into something', 'Showing that something is empty', 'Tearing something just a little bit', 'Showing that something is empty', 'Putting something similar to other things that are already on the table', 'Moving something down', 'Plugging something into something', 'Pouring something into something', 'Moving something down', 'Moving something down', 'Putting something on a surface', 'Turning something upside down', 'Uncovering something', 'Lifting something with something on it', 'Moving something down', 'Tearing something into two pieces', 'Opening something', 'Taking one of many similar things on the table', 'Moving something up', 'Uncovering something', 'Something falling like a feather or paper', 'Showing that something is empty', 'Putting something similar to other things that are already on the table', 'Something falling like a rock', 'Plugging something into something', 'Opening something', 'Something falling like a feather or paper', 'Uncovering something')
+93316: 0.0002630295059713461
+31139: 0.0070011074385547545
+34688: 0.0838462992978748
+182466: 0.041363776683283504
+206480: 0.0726492635149043
+109488: 0.0003272814615229436
+206039: 0.0037595677508761582
+154208: 0.0628203705418855
+136037: 0.036342304869322106
+42148: 0.023628453229321167
+107976: 0.00011845130787766097
+19088: 0.004221426090225577
+56440: 6.724750342357311e-05
+62609: 0.035947906075832765
+88011: 0.03178584871056955
+8233: 0.005407432905485621
+145547: 0.00010690907495813917
+131243: 0.7603172069029824
+213998: 1.4410277444198982e-05
+209962: 0.007653073338588001
+70366: 0.07568908170651412
+216476: 0.008142937760545976
+621: 0.5584109777410049
+3043: 0.26292723305959953
+90590: 7.656908746866975e-05
+216515: 0.012997301804716699
+81964: 0.013517273968318477
+154473: 0.00019715487580995728
+209868: 0.4927984327368904
+161387: 0.33837693431269145
+('15069', '30116', '61086', '74711', '197927', '82480', '175539', '190654', '46199', '104293', '15037', '40642', '219692', '133571', '72239', '15646', '138354', '183275', '184282', '102318', '44822', '21912', '194603', '113764', '79414', '211101', '156528', '193535', '13823', '68496') tensor([143, 171, 143, 149, 171, 164,   6,  14, 134,  37, 145,   6, 100,  29,
+        114, 145,  49, 135,   6, 128, 129, 106, 146,  14, 164, 146, 128,  14,
+         59, 171]) ('Squeezing something', 'Uncovering something', 'Squeezing something', 'Tearing something into two pieces', 'Uncovering something', 'Turning something upside down', 'Covering something with something', 'Folding something', 'Something falling like a feather or paper', 'Moving something and something closer to each other', 'Stuffing something into something', 'Covering something with something', 'Pushing something so that it slightly moves', 'Lifting something with something on it', 'Putting something similar to other things that are already on the table', 'Stuffing something into something', 'Plugging something into something', 'Something falling like a rock', 'Covering something with something', 'Showing something to the camera', 'Showing that something is empty', 'Putting something into something', 'Taking one of many similar things on the table', 'Folding something', 'Turning something upside down', 'Taking one of many similar things on the table', 'Showing something to the camera', 'Folding something', 'Pouring something into something', 'Uncovering something')
+15069: 0.000268884097749833
+30116: 0.14508045501861488
+61086: 0.0016276715105050243
+74711: 0.36682719847522094
+197927: 0.007631119013240095
+82480: 0.0043336268863640726
+175539: 0.048218463627890173
+190654: 0.4522433916308728
+46199: 0.94843964582833
+104293: 0.0015397120114357676
+15037: 0.12915780189541692
+40642: 0.0016377704832848394
+219692: 0.0001644627000389415
+133571: 0.00010873462957761149
+72239: 0.00018755342259907382
+15646: 0.0019478766789688962
+138354: 0.00013344870239961892
+183275: 0.009940446805558167
+184282: 0.00024494913395756157
+102318: 0.006956776199302128
+44822: 0.5880145766350324
+21912: 0.0002220334899880605
+194603: 0.5261008287561708
+113764: 0.561366743585495
+79414: 0.00011105113099880992
+211101: 0.0005618729155685287
+156528: 0.00029680769694095943
+193535: 0.10136469680855953
+13823: 0.03732021390169393
+68496: 0.5582135870572529
+('25701', '80510', '37956', '192357', '32312', '73312', '133366', '94262', '169820', '118021', '82433', '30636', '33816', '14747', '96214', '133202', '172967', '133777', '144230', '219091', '65987', '139431', '105671', '73115', '56568', '154513', '22348', '220644', '14898', '137786') tensor([135, 109,  29,  29, 150, 171, 134,  29,  99,  45,   6, 146, 114, 114,
+        164,  46,  45,  59, 146, 143,  14,  46, 146,  99,  46,  46, 135, 145,
+         29, 106]) ('Something falling like a rock', 'Putting something on a surface', 'Lifting something with something on it', 'Lifting something with something on it', 'Tearing something just a little bit', 'Uncovering something', 'Something falling like a feather or paper', 'Lifting something with something on it', 'Pushing something so that it falls off the table', 'Moving something up', 'Covering something with something', 'Taking one of many similar things on the table', 'Putting something similar to other things that are already on the table', 'Putting something similar to other things that are already on the table', 'Turning something upside down', 'Opening something', 'Moving something up', 'Pouring something into something', 'Taking one of many similar things on the table', 'Squeezing something', 'Folding something', 'Opening something', 'Taking one of many similar things on the table', 'Pushing something so that it falls off the table', 'Opening something', 'Opening something', 'Something falling like a rock', 'Stuffing something into something', 'Lifting something with something on it', 'Putting something into something')
+25701: 0.00024471266905834455
+80510: 3.926332850667791e-05
+37956: 3.1395590355032255e-05
+192357: 1.9462026917965725e-05
+32312: 0.04089517562533729
+73312: 0.6665310213793418
+133366: 0.7150955829129089
+94262: 4.484544751903741e-05
+169820: 0.007279950668817037
+118021: 0.02335613374452805
+82433: 0.02260486900176062
+30636: 0.00912083136063302
+33816: 0.04043715626903577
+14747: 0.005559361809069685
+96214: 0.003614709770772606
+133202: 0.00393876889393141
+172967: 0.0001845526944634912
+133777: 0.006350104507873766
+144230: 0.00024209016021359275
+219091: 0.00011566429282083845
+65987: 0.0003340999956122914
+139431: 0.008335569544215105
+105671: 0.2463264598409296
+73115: 7.009240619026968e-05
+56568: 0.0004005242772109341
+154513: 5.1696773482490244e-05
+22348: 0.0004543705795185815
+220644: 0.07324208462705428
+14898: 0.5434260298461595
+137786: 0.1036095421131904
+('195811', '77709', '16429', '109224', '153031', '74717', '46326', '10108', '103665', '113093', '214483', '179463', '115323', '218178', '144486', '114099', '211484', '117770', '219866', '136583', '91152', '72127', '87330', '163401', '129246', '70330', '99362', '201763', '180544', '174303') tensor([171, 164, 114, 150, 135, 106,  29, 164,  99, 134, 100, 109, 143, 143,
+        143, 149, 109, 143, 114,  99, 143, 134, 100,  59, 171,  29,  99, 106,
+        171, 149]) ('Uncovering something', 'Turning something upside down', 'Putting something similar to other things that are already on the table', 'Tearing something just a little bit', 'Something falling like a rock', 'Putting something into something', 'Lifting something with something on it', 'Turning something upside down', 'Pushing something so that it falls off the table', 'Something falling like a feather or paper', 'Pushing something so that it slightly moves', 'Putting something on a surface', 'Squeezing something', 'Squeezing something', 'Squeezing something', 'Tearing something into two pieces', 'Putting something on a surface', 'Squeezing something', 'Putting something similar to other things that are already on the table', 'Pushing something so that it falls off the table', 'Squeezing something', 'Something falling like a feather or paper', 'Pushing something so that it slightly moves', 'Pouring something into something', 'Uncovering something', 'Lifting something with something on it', 'Pushing something so that it falls off the table', 'Putting something into something', 'Uncovering something', 'Tearing something into two pieces')
+195811: 0.10918531775951124
+77709: 0.0015851964007254082
+16429: 0.023631143318198156
+109224: 0.0369537241931539
+153031: 0.018743339853244834
+74717: 0.013879751544664032
+46326: 0.2472981157783869
+10108: 0.005771676560819117
+103665: 5.2107074546334405e-05
+113093: 0.23928017714933958
+214483: 0.00406503387785051
+179463: 4.398711905650998e-05
+115323: 0.40277405796950916
+218178: 0.050772049762599636
+144486: 0.21114005908748368
+114099: 0.6458115224631911
+211484: 3.921238099735547e-05
+117770: 0.006866002433525864
+219866: 0.00013537152653952944
+136583: 4.8727099965617526e-05
+91152: 0.005579363009019289
+72127: 0.35009143574279733
+87330: 0.00026115890068467706
+163401: 0.0031231146276695654
+129246: 0.0011519181643961929
+70330: 0.051890416183596244
+99362: 0.00012653272642637603
+201763: 0.012096528180336463
+180544: 5.282548069354687e-05
+174303: 0.5348213916258828
+('23234', '154348', '169687', '21859', '124127', '104101', '69096', '23209', '175751', '67666', '34480', '18022', '34190', '197983', '83014', '217361', '63033', '217275', '94488', '138482', '151981', '50271', '154023', '15156', '4441', '62548', '11164', '107584', '71742', '442') tensor([171, 145, 106, 143, 106,   6, 129, 149, 171, 143, 106,  29, 134, 164,
+        135, 171, 106, 143, 164, 146, 146, 145, 135,  29, 145,   6, 134, 128,
+        128, 145]) ('Uncovering something', 'Stuffing something into something', 'Putting something into something', 'Squeezing something', 'Putting something into something', 'Covering something with something', 'Showing that something is empty', 'Tearing something into two pieces', 'Uncovering something', 'Squeezing something', 'Putting something into something', 'Lifting something with something on it', 'Something falling like a feather or paper', 'Turning something upside down', 'Something falling like a rock', 'Uncovering something', 'Putting something into something', 'Squeezing something', 'Turning something upside down', 'Taking one of many similar things on the table', 'Taking one of many similar things on the table', 'Stuffing something into something', 'Something falling like a rock', 'Lifting something with something on it', 'Stuffing something into something', 'Covering something with something', 'Something falling like a feather or paper', 'Showing something to the camera', 'Showing something to the camera', 'Stuffing something into something')
+23234: 0.6813686621826491
+154348: 0.00411160955016765
+169687: 3.8080290664765926e-05
+21859: 0.0027661935091600753
+124127: 0.0018472510182618862
+104101: 0.0017574159955984214
+69096: 0.1884315440474893
+23209: 0.5107686098745035
+175751: 0.276094720715264
+67666: 0.48890443138225237
+34480: 0.0019682239924350142
+18022: 0.27589313685530215
+34190: 0.606692207074957
+197983: 0.41307663993211463
+83014: 0.0005091229418621168
+217361: 0.030381940210645553
+63033: 0.1278992104180361
+217275: 0.006929465722350869
+94488: 0.22698267275700346
+138482: 0.018973125355842058
+151981: 0.3063829496750259
+50271: 0.38989083660453616
+154023: 0.0022362882553892405
+15156: 2.2399281971565224e-05
+4441: 0.0006237588619576591
+62548: 0.0008017493037186796
+11164: 0.48166280754899793
+107584: 6.569572724401951e-05
+71742: 0.000159490552960051
+442: 0.25847509762206755
+('182807', '180728', '7168', '121865', '153700', '203910', '93623', '30725', '18846', '5207', '19993', '83822', '26164', '154372', '56648', '45340', '115880', '145254', '22759', '190342', '85534', '127667', '195911', '190267', '202258', '76365', '55373', '55733', '37952', '99490') tensor([114, 106, 100,  45, 171, 106, 143, 143,  45, 135,   6,  43,  46, 106,
+        150, 135, 171, 143, 143, 134,  59, 150, 146, 114, 164, 171, 150, 150,
+        145,  46]) ('Putting something similar to other things that are already on the table', 'Putting something into something', 'Pushing something so that it slightly moves', 'Moving something up', 'Uncovering something', 'Putting something into something', 'Squeezing something', 'Squeezing something', 'Moving something up', 'Something falling like a rock', 'Covering something with something', 'Moving something down', 'Opening something', 'Putting something into something', 'Tearing something just a little bit', 'Something falling like a rock', 'Uncovering something', 'Squeezing something', 'Squeezing something', 'Something falling like a feather or paper', 'Pouring something into something', 'Tearing something just a little bit', 'Taking one of many similar things on the table', 'Putting something similar to other things that are already on the table', 'Turning something upside down', 'Uncovering something', 'Tearing something just a little bit', 'Tearing something just a little bit', 'Stuffing something into something', 'Opening something')
+182807: 0.09557024544483284
+180728: 0.02265268446171831
+7168: 0.000910129994736053
+121865: 0.017039488673617598
+153700: 0.009205459755321499
+203910: 0.04299929573426198
+93623: 0.00020760148618137464
+30725: 0.0743931335346133
+18846: 0.004169884276052471
+5207: 0.002807809374644421
+19993: 4.402466583997011e-05
+83822: 0.0039372139144688845
+26164: 6.46530854737648e-05
+154372: 0.00020220759743594385
+56648: 0.0025256195771902884
+45340: 0.039064621305442415
+115880: 0.03929924513067817
+145254: 0.0011619186261668801
+22759: 0.0003992150814156048
+190342: 0.3682739588257391
+85534: 0.0006852997248643078
+127667: 0.0025910097903221185
+195911: 0.12494459932349855
+190267: 0.062477772757119965
+202258: 0.01346198545070365
+76365: 0.048506371668622705
+55373: 0.016202359431190416
+55733: 0.4652745546482038
+37952: 0.024871099662050256
+99490: 3.1280679650080856e-05
+('207898', '189156', '158643', '33400', '110861', '168741', '137162', '27026', '126202', '159740', '190860', '113048', '29155', '196274', '87192', '108021', '25377', '8220', '78887', '12511', '186888', '65315', '24107', '16984', '15038', '62082', '115190', '128653', '146367', '82961') tensor([100, 145, 145,  45, 143, 128,  14, 171, 146,  46, 135, 135, 164, 129,
+         43,  45, 134,  46,  99, 129, 150, 135,  99, 135, 171, 150, 145, 150,
+        150,  37]) ('Pushing something so that it slightly moves', 'Stuffing something into something', 'Stuffing something into something', 'Moving something up', 'Squeezing something', 'Showing something to the camera', 'Folding something', 'Uncovering something', 'Taking one of many similar things on the table', 'Opening something', 'Something falling like a rock', 'Something falling like a rock', 'Turning something upside down', 'Showing that something is empty', 'Moving something down', 'Moving something up', 'Something falling like a feather or paper', 'Opening something', 'Pushing something so that it falls off the table', 'Showing that something is empty', 'Tearing something just a little bit', 'Something falling like a rock', 'Pushing something so that it falls off the table', 'Something falling like a rock', 'Uncovering something', 'Tearing something just a little bit', 'Stuffing something into something', 'Tearing something just a little bit', 'Tearing something just a little bit', 'Moving something and something closer to each other')
+207898: 0.00017024638077600684
+189156: 0.007592033065680681
+158643: 0.005342428377844044
+33400: 0.08484863224293804
+110861: 0.4253559444696293
+168741: 0.00038185106859600637
+137162: 0.73890772363211
+27026: 4.729250986201805e-05
+126202: 0.054521003040118865
+159740: 2.7772426619723653e-05
+190860: 0.0023623761761544237
+113048: 0.0009040110526257195
+29155: 0.039509140711743385
+196274: 0.0011543699438334443
+87192: 0.07333024428226054
+108021: 0.00013529038022852546
+25377: 0.9650126672640909
+8220: 0.012796995599273941
+78887: 7.081608469405865e-05
+12511: 0.03887183847109554
+186888: 0.015627404864062555
+65315: 0.00019346754545779277
+24107: 0.008239067090471508
+16984: 0.00017340176191282808
+15038: 0.003668034121801611
+62082: 0.0027919221529373317
+115190: 0.08072676305391724
+128653: 0.0007221424968975043
+146367: 0.24034717350150459
+82961: 9.554899133945582e-05
+('43853', '22383', '187004', '209640', '108361', '149791', '2403', '175728', '175300', '109310', '36015', '218395', '176519', '134378', '139854', '31875', '89241', '162638', '205413', '233', '161965', '214289', '25820', '132103', '24760', '111689', '107735', '5570', '164364', '60290') tensor([146,  45, 135, 145,  43,  37, 143, 100, 164,  29, 145,   6,  14, 145,
+        106,  43, 114,   6,  29,  99, 129, 109,  14, 134,  37, 106,  14, 134,
+        134, 109]) ('Taking one of many similar things on the table', 'Moving something up', 'Something falling like a rock', 'Stuffing something into something', 'Moving something down', 'Moving something and something closer to each other', 'Squeezing something', 'Pushing something so that it slightly moves', 'Turning something upside down', 'Lifting something with something on it', 'Stuffing something into something', 'Covering something with something', 'Folding something', 'Stuffing something into something', 'Putting something into something', 'Moving something down', 'Putting something similar to other things that are already on the table', 'Covering something with something', 'Lifting something with something on it', 'Pushing something so that it falls off the table', 'Showing that something is empty', 'Putting something on a surface', 'Folding something', 'Something falling like a feather or paper', 'Moving something and something closer to each other', 'Putting something into something', 'Folding something', 'Something falling like a feather or paper', 'Something falling like a feather or paper', 'Putting something on a surface')
+43853: 0.21453383769767242
+22383: 0.03339320644590771
+187004: 0.0003672167651984637
+209640: 0.18794361878281052
+108361: 0.09737697173841298
+149791: 0.04717569917193032
+2403: 0.0001882419359162668
+175728: 0.013591212817118503
+175300: 0.0003190437168489879
+109310: 0.025323964651761344
+36015: 0.01551743423078733
+218395: 4.250932805049956e-05
+176519: 0.1252885822641474
+134378: 0.011503682724651298
+139854: 0.00955371830605145
+31875: 0.00011926184993171773
+89241: 0.007133218408853281
+162638: 0.00182144407335727
+205413: 0.010133163883438101
+233: 0.0034019655322481412
+161965: 0.029756198688119184
+214289: 0.00015782702394062653
+25820: 0.030590225886953704
+132103: 0.7740540937811602
+24760: 0.000290242322080303
+111689: 3.41554497023111e-05
+107735: 0.584678372545568
+5570: 0.38940186225710605
+164364: 0.3292580019624438
+60290: 7.743516107439063e-05
+('144706', '207555', '114673', '76825', '89811', '4372', '52930', '209457', '18492', '118858', '185520', '3020', '45088', '166000', '8643', '171666', '105033', '216074', '107629', '159862', '100917', '94286', '45193', '27595', '83332', '61892', '70679', '89640', '215140', '192997') tensor([164,  46,  14, 146, 100,  46,  37, 145,   6, 128, 171, 164,  99, 114,
+        143,  99, 106,  37,  45, 128,  99,   6, 146,  43, 143, 106, 129,  14,
+        114,  59]) ('Turning something upside down', 'Opening something', 'Folding something', 'Taking one of many similar things on the table', 'Pushing something so that it slightly moves', 'Opening something', 'Moving something and something closer to each other', 'Stuffing something into something', 'Covering something with something', 'Showing something to the camera', 'Uncovering something', 'Turning something upside down', 'Pushing something so that it falls off the table', 'Putting something similar to other things that are already on the table', 'Squeezing something', 'Pushing something so that it falls off the table', 'Putting something into something', 'Moving something and something closer to each other', 'Moving something up', 'Showing something to the camera', 'Pushing something so that it falls off the table', 'Covering something with something', 'Taking one of many similar things on the table', 'Moving something down', 'Squeezing something', 'Putting something into something', 'Showing that something is empty', 'Folding something', 'Putting something similar to other things that are already on the table', 'Pouring something into something')
+144706: 0.0016256627950497204
+207555: 2.8222751666362456e-05
+114673: 0.5985554549288281
+76825: 0.6239626416718238
+89811: 0.003712022109539248
+4372: 0.09173877830289712
+52930: 0.003435167915874615
+209457: 0.007121069249478751
+18492: 0.0008826948474733864
+118858: 2.2703110516886227e-05
+185520: 0.07473768726777053
+3020: 0.018701818131376058
+45088: 0.0021661665123247076
+166000: 0.004653874952055048
+8643: 0.0005602471137535758
+171666: 0.0005360576215025503
+105033: 0.0005421323614740459
+216074: 0.49797884045619867
+107629: 0.03564651138003683
+159862: 0.005188602366615669
+100917: 6.412052061932627e-05
+94286: 0.08123284279463405
+45193: 0.27542376480050734
+27595: 0.005102833500131965
+83332: 6.426637310141814e-05
+61892: 0.0001539475688332459
+70679: 0.23046624584094388
+89640: 0.8684104913290867
+215140: 0.002052374904451426
+192997: 0.025703300299937837
+('85790', '142742', '197873', '161313', '151187', '67155', '77129', '195652', '137210', '69033', '65141', '96935', '98601', '88138', '183695', '62631', '15130', '127476', '210861', '72569', '117774', '172962', '65326', '209204', '177434', '120309', '70601', '72143', '95559', '163013') tensor([ 45,  14, 106,  46, 146,  43,  14, 146,  45,  59, 134,  46,  29, 129,
+        135,  43, 171,  14, 145, 100,   6, 143, 146, 128, 134,  14,   6,   6,
+         45, 143]) ('Moving something up', 'Folding something', 'Putting something into something', 'Opening something', 'Taking one of many similar things on the table', 'Moving something down', 'Folding something', 'Taking one of many similar things on the table', 'Moving something up', 'Pouring something into something', 'Something falling like a feather or paper', 'Opening something', 'Lifting something with something on it', 'Showing that something is empty', 'Something falling like a rock', 'Moving something down', 'Uncovering something', 'Folding something', 'Stuffing something into something', 'Pushing something so that it slightly moves', 'Covering something with something', 'Squeezing something', 'Taking one of many similar things on the table', 'Showing something to the camera', 'Something falling like a feather or paper', 'Folding something', 'Covering something with something', 'Covering something with something', 'Moving something up', 'Squeezing something')
+85790: 0.0009208875344484113
+142742: 0.4930846732486316
+197873: 8.544255902620534e-05
+161313: 0.0006607138111576205
+151187: 0.0023886475028120913
+67155: 0.0041927259881049395
+77129: 0.2603971852831819
+195652: 0.021539350324019324
+137210: 0.0002922169088037663
+69033: 0.0021101540166945654
+65141: 0.0387084617104847
+96935: 5.6952431502721446e-05
+98601: 0.125023914497433
+88138: 0.000389871263008601
+183695: 0.015349762325058691
+62631: 0.04536937945522368
+15130: 0.3732360849608085
+127476: 8.170321523787161e-05
+210861: 0.4014654800212156
+72569: 0.009127513869316317
+117774: 4.964929394191131e-05
+172962: 0.006770175103156362
+65326: 0.6567984195207828
+209204: 0.0019438542772149958
+177434: 0.5762354956628997
+120309: 0.19145683845545136
+70601: 0.3341413231482875
+72143: 0.06914640664217586
+95559: 0.004035327954625245
+163013: 6.470343562270386e-05
+('176988', '132594', '154707', '57188', '158303', '217331', '212382', '197612', '101804', '49546', '195639', '49358', '49163', '87265', '18943', '56679', '83296', '181944', '66960', '82744', '88126', '190946', '94733', '201098', '144614', '65448', '156112', '123758', '91948', '10037') tensor([106,   6,  45,  43, 100, 146, 129, 135,  43,  43, 145,  14,  45, 100,
+         14, 109,  99,  45, 109,  14,  59, 134, 171, 134, 106,   6, 129,  29,
+        128,  99]) ('Putting something into something', 'Covering something with something', 'Moving something up', 'Moving something down', 'Pushing something so that it slightly moves', 'Taking one of many similar things on the table', 'Showing that something is empty', 'Something falling like a rock', 'Moving something down', 'Moving something down', 'Stuffing something into something', 'Folding something', 'Moving something up', 'Pushing something so that it slightly moves', 'Folding something', 'Putting something on a surface', 'Pushing something so that it falls off the table', 'Moving something up', 'Putting something on a surface', 'Folding something', 'Pouring something into something', 'Something falling like a feather or paper', 'Uncovering something', 'Something falling like a feather or paper', 'Putting something into something', 'Covering something with something', 'Showing that something is empty', 'Lifting something with something on it', 'Showing something to the camera', 'Pushing something so that it falls off the table')
+176988: 0.01958851380732085
+132594: 0.004233406894854852
+154707: 0.0004548450472499563
+57188: 0.0001291757453145692
+158303: 0.00019930673079215921
+217331: 0.012026322085148422
+212382: 0.17344351979409112
+197612: 0.006822293376899324
+101804: 0.004653010284528136
+49546: 0.00032106414437294006
+195639: 0.016707282435163506
+49358: 3.505697387140572e-05
+49163: 0.02476526484679198
+87265: 0.00015548838996437553
+18943: 0.13331761671270215
+56679: 4.5214843112262315e-05
+83296: 0.015867208760028007
+181944: 0.008886359304597136
+66960: 0.00010797971481224522
+82744: 0.24538048048543715
+88126: 0.0001109242305119551
+190946: 0.39964119062642567
+94733: 0.028313452283327933
+201098: 0.5258075054443907
+144614: 0.001851584485393687
+65448: 0.03960525457841868
+156112: 0.032818744708492886
+123758: 0.18857132442281
+91948: 4.6575346464905465e-05
+10037: 4.634752622223106e-05
+('129824', '121328', '4943', '79967', '186266', '29554', '153427', '125413', '156782', '166247', '166326', '128300', '14426', '165442', '31654', '1780', '112347', '188681', '75719', '3506', '55259', '37195', '145109', '140315', '59338', '133223', '56496', '96898', '28353', '180944') tensor([143, 106,  29,   6,  59,  46,  14,  99, 114,   6, 129,  59, 109, 134,
+         14, 135, 109,  29,  29,  14, 134, 128, 146, 135,  37,  14, 128,  59,
+         99, 134]) ('Squeezing something', 'Putting something into something', 'Lifting something with something on it', 'Covering something with something', 'Pouring something into something', 'Opening something', 'Folding something', 'Pushing something so that it falls off the table', 'Putting something similar to other things that are already on the table', 'Covering something with something', 'Showing that something is empty', 'Pouring something into something', 'Putting something on a surface', 'Something falling like a feather or paper', 'Folding something', 'Something falling like a rock', 'Putting something on a surface', 'Lifting something with something on it', 'Lifting something with something on it', 'Folding something', 'Something falling like a feather or paper', 'Showing something to the camera', 'Taking one of many similar things on the table', 'Something falling like a rock', 'Moving something and something closer to each other', 'Folding something', 'Showing something to the camera', 'Pouring something into something', 'Pushing something so that it falls off the table', 'Something falling like a feather or paper')
+129824: 0.014114859404799063
+121328: 0.007251875458678114
+4943: 0.0297348086319289
+79967: 0.29852510131058807
+186266: 0.015280472420272417
+29554: 0.10126194231816044
+153427: 0.09277870873029315
+125413: 7.195903708634432e-05
+156782: 0.00019403542682994157
+166247: 0.0016335315394826466
+166326: 0.056672599639568944
+128300: 0.0053187514349701814
+14426: 6.022519119142089e-05
+165442: 0.4367801002517808
+31654: 0.006273023728681437
+1780: 0.020106306285015307
+112347: 0.0032246741029666737
+188681: 0.00022963737050092983
+75719: 0.5579847763256112
+3506: 0.0011011335327566485
+55259: 0.5022232509509195
+37195: 0.00014318383784939215
+145109: 0.11943266422167653
+140315: 0.00023312921371143602
+59338: 0.3665297112565895
+133223: 0.008087098988653452
+56496: 0.0022965819016462774
+96898: 0.02215142203203868
+28353: 0.10887635143080843
+180944: 0.9961402393237222
+('169346', '94171', '5182', '108781', '14195', '12301', '170558', '211881', '173351', '204955', '136827', '149435', '204551', '124256', '175926', '159992', '181866', '70598', '193751', '29861', '165093', '80488', '129064', '131621', '80963', '4946', '121692', '68397', '215794', '157845') tensor([ 29,  37,  59,  29,  99,  46,  59, 100, 128, 134, 134, 146,  29, 129,
+        146, 134, 109,  14, 129,  14, 134, 134, 109, 100,  46, 109,  59, 128,
+         59,  59]) ('Lifting something with something on it', 'Moving something and something closer to each other', 'Pouring something into something', 'Lifting something with something on it', 'Pushing something so that it falls off the table', 'Opening something', 'Pouring something into something', 'Pushing something so that it slightly moves', 'Showing something to the camera', 'Something falling like a feather or paper', 'Something falling like a feather or paper', 'Taking one of many similar things on the table', 'Lifting something with something on it', 'Showing that something is empty', 'Taking one of many similar things on the table', 'Something falling like a feather or paper', 'Putting something on a surface', 'Folding something', 'Showing that something is empty', 'Folding something', 'Something falling like a feather or paper', 'Something falling like a feather or paper', 'Putting something on a surface', 'Pushing something so that it slightly moves', 'Opening something', 'Putting something on a surface', 'Pouring something into something', 'Showing something to the camera', 'Pouring something into something', 'Pouring something into something')
+169346: 0.030071621436036367
+94171: 0.012611411828402197
+5182: 7.978044556126995e-05
+108781: 0.00019894530339570338
+14195: 4.50434842598213e-05
+12301: 0.0017282611934206216
+170558: 0.0018334057731408393
+211881: 0.01868113958335016
+173351: 0.00021512853891181294
+204955: 0.6416460364416707
+136827: 0.191917934716912
+149435: 0.0075968601073554964
+204551: 0.00591789975806023
+124256: 0.03320003878394573
+175926: 0.004701597361417953
+159992: 0.6469945160479256
+181866: 3.906226118743916e-05
+70598: 0.00035056030992564047
+193751: 0.0698156591897714
+29861: 0.21104002831543767
+165093: 0.7891448259179015
+80488: 0.4001333690539468
+129064: 0.011431302857090486
+131621: 0.003997239415184595
+80963: 0.11754787820063939
+4946: 0.00048815097397891805
+121692: 0.08539303233555984
+68397: 4.2894836951745674e-05
+215794: 0.03305446233753173
+157845: 0.027733946495573036
+('78066', '25058', '104855', '91758', '68421', '28718', '153776', '48203', '151323', '217892', '85124', '164504', '166476', '214308', '210400', '186388', '157520', '171871', '95730', '86955', '59218', '210183', '47297', '120787', '144261', '209867', '214697', '72734', '62430', '180698') tensor([ 46, 128,  46,  59, 109, 128, 135, 100, 128,  29, 128, 100,  99, 135,
+        134, 109,  29, 109, 128,  37, 135,  59, 100, 134,  99,  99,  37, 100,
+         37,  37]) ('Opening something', 'Showing something to the camera', 'Opening something', 'Pouring something into something', 'Putting something on a surface', 'Showing something to the camera', 'Something falling like a rock', 'Pushing something so that it slightly moves', 'Showing something to the camera', 'Lifting something with something on it', 'Showing something to the camera', 'Pushing something so that it slightly moves', 'Pushing something so that it falls off the table', 'Something falling like a rock', 'Something falling like a feather or paper', 'Putting something on a surface', 'Lifting something with something on it', 'Putting something on a surface', 'Showing something to the camera', 'Moving something and something closer to each other', 'Something falling like a rock', 'Pouring something into something', 'Pushing something so that it slightly moves', 'Something falling like a feather or paper', 'Pushing something so that it falls off the table', 'Pushing something so that it falls off the table', 'Moving something and something closer to each other', 'Pushing something so that it slightly moves', 'Moving something and something closer to each other', 'Moving something and something closer to each other')
+78066: 0.00024824703541526105
+25058: 3.543501760396853e-05
+104855: 9.272094575862866e-05
+91758: 0.009284294557687645
+68421: 0.00025501681193418335
+28718: 0.000258461472185445
+153776: 0.002729416599322576
+48203: 0.0002035613401858427
+151323: 0.00023490042622142937
+217892: 0.0007048257175505668
+85124: 0.0002817083241097862
+164504: 0.00022256819647736847
+166476: 0.00014398564599105157
+214308: 0.00032395154266851023
+210400: 0.9221198479935993
+186388: 5.401159037887737e-05
+157520: 2.8726523396471748e-05
+171871: 0.00010099371547767078
+95730: 0.0007083358186719124
+86955: 0.0026844083004107233
+59218: 0.0010450723784742877
+210183: 0.09235596218786668
+47297: 0.00015029944111688565
+120787: 0.6049862765066791
+144261: 0.021507552522962214
+209867: 0.002824599785526516
+214697: 0.016782677001174306
+72734: 0.0005215872223134242
+62430: 0.0005556416851337787
+180698: 0.03259048584368429
+('4026', '36868', '64099', '192232', '114795', '39505', '149797', '116747', '48465', '45429', '145090', '183973', '42367', '69126', '75125', '52775', '205873', '115644', '190527', '56553', '168990', '62225', '153507', '186952', '184917', '134946', '141757', '170749', '96676', '127755') tensor([128, 128,  99, 100, 128, 128,  99, 135,  29,  37,  29, 135, 100, 128,
+         29,  37, 100, 128,  99,  37,  37,  99,  99,  37,  37,  37,  37, 100,
+        100,  37]) ('Showing something to the camera', 'Showing something to the camera', 'Pushing something so that it falls off the table', 'Pushing something so that it slightly moves', 'Showing something to the camera', 'Showing something to the camera', 'Pushing something so that it falls off the table', 'Something falling like a rock', 'Lifting something with something on it', 'Moving something and something closer to each other', 'Lifting something with something on it', 'Something falling like a rock', 'Pushing something so that it slightly moves', 'Showing something to the camera', 'Lifting something with something on it', 'Moving something and something closer to each other', 'Pushing something so that it slightly moves', 'Showing something to the camera', 'Pushing something so that it falls off the table', 'Moving something and something closer to each other', 'Moving something and something closer to each other', 'Pushing something so that it falls off the table', 'Pushing something so that it falls off the table', 'Moving something and something closer to each other', 'Moving something and something closer to each other', 'Moving something and something closer to each other', 'Moving something and something closer to each other', 'Pushing something so that it slightly moves', 'Pushing something so that it slightly moves', 'Moving something and something closer to each other')
+4026: 0.0012554252516565612
+36868: 0.0003793749874603236
+64099: 0.02314037077667308
+192232: 0.00020851799490628764
+114795: 0.0010655811166202511
+39505: 0.0011315261526760878
+149797: 0.024227623292972567
+116747: 0.0031397650015918543
+48465: 0.05792133812428801
+45429: 0.23760694727752707
+145090: 3.753591599320316e-05
+183973: 0.0009435298052267171
+42367: 0.000162736211993586
+69126: 1.4347946551890312e-05
+75125: 0.34538403525584727
+52775: 0.0010876184969674796
+205873: 0.00019959370547439903
+115644: 1.42902184553928e-05
+190527: 0.030163748586346628
+56553: 0.2435289416134765
+168990: 0.12712675033526466
+62225: 4.9522990568928726e-05
+153507: 0.08833771168792737
+186952: 0.4514011670507898
+184917: 0.05858049002927146
+134946: 0.06817280032191775
+141757: 0.16086347048621974
+170749: 0.0002060876831819769
+96676: 0.00015720667215646245
+127755: 0.0007127133394533303
+('194192', '205758', '44551', '90056', '155132', '55232', '164740', '62941', '37797', '167549') tensor([ 37, 100,  37,  37,  37, 100,  37, 100,  37, 100]) ('Moving something and something closer to each other', 'Pushing something so that it slightly moves', 'Moving something and something closer to each other', 'Moving something and something closer to each other', 'Moving something and something closer to each other', 'Pushing something so that it slightly moves', 'Moving something and something closer to each other', 'Pushing something so that it slightly moves', 'Moving something and something closer to each other', 'Pushing something so that it slightly moves')
+194192: 0.44164915938381455
+205758: 0.00019188694290401837
+44551: 0.18435067889731727
+90056: 0.020977947129722452
+155132: 1.9937937883796053e-05
+55232: 0.0002107211075781379
+164740: 1.543720502755752e-05
+62941: 0.005653200620145071
+37797: 0.08502448323633871
+167549: 0.0018949798686662689
+Finished: cm_16, ins, most_first, sthsthv2, tsm, perturb, #Step=128
+Average: 0.10390403946323472

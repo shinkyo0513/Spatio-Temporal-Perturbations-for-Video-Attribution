@@ -198,18 +198,21 @@ def load_model_and_dataset (dataset_name, model_name, phase='val', testlist_idx=
 
     elif dataset_name == "sthsthv2":
         ds_path = os.path.join(ds_root, 'something_something_v2')
+        num_classes = 25
+        from datasets.sthsthv2_dataset_new import SthSthV2_Dataset as dataset
         if model_name == "tsm":
-            num_classes = 25
-            from datasets.sthsthv2_dataset_new import SthSthV2_Dataset as dataset
             from model_def.tsm import tsm as model
             model_ft = model(num_classes=num_classes, segment_count=16, with_softmax=True)
             model_wgts_dir = f"{proj_root}/model_param/sthsthv2_tsm_16_Full_LongRange.pt"
             model_ft.load_weights(model_wgts_dir)
         elif model_name == "r2p1d":
-            num_classes = 25 
-            from datasets.sthsthv2_dataset_new import SthSthV2_Dataset as dataset
             from model_def.r2plus1d import r2plus1d as model
             model_wgts_dir = f"{proj_root}/model_param/sthsthv2_r2p1d_16_Full_LongRange_10000.pt"
+            model_ft = model(num_classes=num_classes, with_softmax=True)
+            model_ft.load_weights(model_wgts_dir)
+        elif model_name == "r50l":
+            from model_def.r50lstm import r50lstm as model
+            model_wgts_dir = f"{proj_root}/model_param/sthsthv2_r50l_16_Full_LongRange.pt"
             model_ft = model(num_classes=num_classes, with_softmax=True)
             model_ft.load_weights(model_wgts_dir)
 

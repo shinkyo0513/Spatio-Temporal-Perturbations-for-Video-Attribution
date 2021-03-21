@@ -49,7 +49,7 @@ parser.add_argument("--only_test", action='store_true')
 parser.add_argument("--multi_gpu", action='store_true')
 parser.add_argument("--retrain_type", type=str, default="Full")
 parser.add_argument("--extra_label", type=str, default="")
-parser.add_argument("--train_set", type=str, default="7000")
+parser.add_argument("--train_set", type=str, default="10000")
 parser.add_argument("--labels_set", type=str, default="top25")
 args = parser.parse_args()
 
@@ -85,6 +85,20 @@ elif args.labels_set == 'full':
 
 if args.model == 'tsm':
     model_ft = model(num_classes=num_classes, segment_count=16, pretrained='sthsthv2')
+    params_to_update = model_ft.parameters()
+    model_ft.to_device(device)
+elif args.model == 'r50l':
+    model_ft = model(num_classes=num_classes, pretrained=True, drop_rate=0, 
+                     num_mid_fc=2, fc_precede_mean=True, resnet_feat_type='layer4')
+    # wgts = torch.load(os.path.join(proj_root, 'model_param/ucf101_24_r50l_16_Full_LongRange.pt'))
+    # model_params = dict(model_ft.state_dict())
+    # for k, v in model_params.items():
+    #     regu_k = k[6:]
+    #     if v.shape == wgts[regu_k].shape:
+    #         model_params[k] = wgts[regu_k]
+    #     else:
+    #         print(f'{k} has no pre-trained parameter.')
+    # model_ft.load_state_dict(model_params)
     params_to_update = model_ft.parameters()
     model_ft.to_device(device)
 else:
