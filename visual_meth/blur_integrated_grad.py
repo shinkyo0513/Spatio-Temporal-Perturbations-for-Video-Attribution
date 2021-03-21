@@ -6,6 +6,7 @@ from scipy.ndimage import gaussian_filter
 import sys
 sys.path.append("..")
 from utils.GaussianSmoothing import GaussianSmoothing
+from utils.TensorSmooth import imsmooth
 
 def gaussian_blur(inputs, sigma):
     if sigma == 0:
@@ -14,13 +15,14 @@ def gaussian_blur(inputs, sigma):
     bs, ch, nt, h, w = inputs.shape
     reshaped_inputs = torch.cat(inputs.unbind(dim=2), dim=0)
 
-    kernel_size = 11
-    batch_gaussian_filter = GaussianSmoothing(channels=3, 
-                                              kernel_size=kernel_size, 
-                                              sigma=sigma, 
-                                              dim=2
-                                             ).to(inputs.device)
-    blurred_inputs = batch_gaussian_filter(reshaped_inputs)
+    # kernel_size = 11
+    # batch_gaussian_filter = GaussianSmoothing(channels=3, 
+    #                                           kernel_size=kernel_size, 
+    #                                           sigma=sigma, 
+    #                                           dim=2
+    #                                          ).to(inputs.device)
+    # blurred_inputs = batch_gaussian_filter(reshaped_inputs)
+    blurred_inputs = imsmooth(reshaped_inputs, sigma)
     blurred_inputs = torch.stack(blurred_inputs.split(bs, dim=0), dim=2)    # BxCxTxHxW
     return blurred_inputs
 
