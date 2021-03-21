@@ -16,9 +16,9 @@ from utils.CalAcc import process_activations
 from utils.TSN import TSN
 
 class tsm (nn.Module):
-    def __init__ (self, num_classes, segment_count, pretrained, with_softmax=False):
+    def __init__ (self, num_classes, segment_count, with_softmax=False):
         super(tsm, self).__init__()
-        self.pretrained = pretrained
+        # self.pretrained = pretrained
         self.with_softmax = with_softmax
         # self.repo = 'epic-kitchens/action-models'
         # if 'epic-kitchens' in self.pretrained:
@@ -55,22 +55,22 @@ class tsm (nn.Module):
                         is_shift=True, shift_div=8, shift_place='blockres',
                         non_local=False)
 
-        if 'sthsthv2' in self.pretrained:
-            checkpoint_path = f'model_param/TSM_somethingv2_RGB_resnet50_shift8_blockres_avg_segment{segment_count}_e45.pth'
-            checkpoint = torch.load(checkpoint_path)
-            checkpoint = checkpoint['state_dict']
+        # if 'sthsthv2' in self.pretrained:
+        #     checkpoint_path = f'model_param/TSM_somethingv2_RGB_resnet50_shift8_blockres_avg_segment{segment_count}_e45.pth'
+        #     checkpoint = torch.load(checkpoint_path)
+        #     checkpoint = checkpoint['state_dict']
 
-            base_dict = {'.'.join(k.split('.')[1:]): v for k, v in list(checkpoint.items())}
-            replace_dict = {'base_model.classifier.weight': 'new_fc.weight',
-                            'base_model.classifier.bias': 'new_fc.bias'}
-            for k, v in replace_dict.items():
-                if k in base_dict:
-                    base_dict[v] = base_dict.pop(k)
+        #     base_dict = {'.'.join(k.split('.')[1:]): v for k, v in list(checkpoint.items())}
+        #     replace_dict = {'base_model.classifier.weight': 'new_fc.weight',
+        #                     'base_model.classifier.bias': 'new_fc.bias'}
+        #     for k, v in replace_dict.items():
+        #         if k in base_dict:
+        #             base_dict[v] = base_dict.pop(k)
 
-            num_ftrs = self.model.new_fc.in_features
-            self.model.new_fc = nn.Linear(num_ftrs, 174)
-            self.model.load_state_dict(base_dict)
-            self.model.new_fc = nn.Linear(num_ftrs, num_classes)
+        #     num_ftrs = self.model.new_fc.in_features
+        #     self.model.new_fc = nn.Linear(num_ftrs, 174)
+        #     self.model.load_state_dict(base_dict)
+        #     self.model.new_fc = nn.Linear(num_ftrs, num_classes)
 
     def load_weights(self, weights_dir):
         model_wts = torch.load(weights_dir, map_location=torch.device('cpu'))
@@ -81,23 +81,28 @@ class tsm (nn.Module):
         #     model_wts = {name[7:]: model_wts[name] for name in model_wts.keys()}
         self.model.load_state_dict(model_wts)
 
+    def parallel_model(self, device_ids):
+        print('Use', len(device_ids), 'GPUs!')
+        self.model = nn.DataParallel(self.model, device_ids=device_ids)
+        self.parallel = True
+
     def forward (self, inp):
         bs, ch, nt, h, w = inp.shape
         # reshaped_inp = inp.transpose(1,2).reshape(bs, -1, h, w)
-        if 'epic-kitchens' in self.pretrained:
-            feat = self.model.features(inp)
-            verb_logits, noun_logits = self.model.logits(feat)
-            if 'noun' in self.pretrained:
-                logits = noun_logits
-            elif 'verb' in self.pretrained:
-                logits = verb_logits
-        elif 'kinetics' in self.pretrained:
-            logits = self.model(inp)
-        elif 'sthsthv2' in self.pretrained:
-            data_in = inp.transpose(1,2).contiguous()   # NxTxCxHxW
-            # data_in = inp
-            logits = self.model(data_in)
-            # print(logits.shape)
+        # if 'epic-kitchens' in self.pretrained:
+        #     feat = self.model.features(inp)
+        #     verb_logits, noun_logits = self.model.logits(feat)
+        #     if 'noun' in self.pretrained:
+        #         logits = noun_logits
+        #     elif 'verb' in self.pretrained:
+        #         logits = verb_logits
+        # elif 'kinetics' in self.pretrained:
+        #     logits = self.model(inp)
+        # elif 'sthsthv2' in self.pretrained:
+        data_in = inp.transpose(1,2).contiguous()   # NxTxCxHxW
+        # data_in = inp
+        logits = self.model(data_in)
+        # print(logits.shape)
 
         if self.with_softmax:
             probs = nn.functional.softmax(logits, dim=1)
