@@ -6,10 +6,10 @@
 #$ -o outs_sthsthv2/tsm_perturb_proc.txt
 #$ -j y
 #$ -cwd
-# source /etc/profile.d/modules.sh
+source /etc/profile.d/modules.sh
 
-# source ${HOME}/.bashrc
-# conda activate pytorch1.1
+source ${HOME}/.bashrc
+conda activate pytorch1.1
 
 python run_all.py --dataset sthsthv2 --model tsm --only_test --vis_method perturb \
 --batch_size 4

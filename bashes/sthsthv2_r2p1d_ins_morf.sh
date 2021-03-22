@@ -3,7 +3,7 @@
 #$ -N sthsthv2_r2p1d
 #$ -l rt_F=1
 #$ -l h_rt=10:00:00
-#$ -o outs_sthsthv2/r2p1d_ins_morf_baseline.txt
+#$ -o outs_sthsthv2/r2p1d_ins_morf_perturb2.txt
 #$ -j y
 #$ -cwd
 
@@ -36,29 +36,35 @@ conda activate pytorch1.1
 # --vis_method perturb --mode ins --order most_first --num_step 128 --batch_size 48 \
 # --multi_gpu --new_size 16 --extra_label _core11 --only_test
 
-python evaluation/main_causal_metric.py --dataset sthsthv2 --model r2p1d \
---vis_method g --mode ins --order most_first --num_step 128 --batch_size 48 \
---multi_gpu --new_size 16 --only_test
+python process_perturb_res.py --dataset sthsthv2 --model r2p1d --only_test --extra_label _core14
 
 python evaluation/main_causal_metric.py --dataset sthsthv2 --model r2p1d \
---vis_method ig --mode ins --order most_first --num_step 128 --batch_size 48 \
---multi_gpu --new_size 16 --only_test
+--vis_method perturb --mode ins --order most_first --num_step 128 --batch_size 48 \
+--multi_gpu --new_size 16 --extra_label _core14 --only_test
 
-python evaluation/main_causal_metric.py --dataset sthsthv2 --model r2p1d \
---vis_method sg --mode ins --order most_first --num_step 128 --batch_size 48 \
---multi_gpu --new_size 16 --only_test
+# python evaluation/main_causal_metric.py --dataset sthsthv2 --model r2p1d \
+# --vis_method g --mode ins --order most_first --num_step 128 --batch_size 48 \
+# --multi_gpu --new_size 16 --only_test
 
-python evaluation/main_causal_metric.py --dataset sthsthv2 --model r2p1d \
---vis_method la --mode ins --order most_first --num_step 128 --batch_size 48 \
---multi_gpu --new_size 16 --only_test
+# python evaluation/main_causal_metric.py --dataset sthsthv2 --model r2p1d \
+# --vis_method ig --mode ins --order most_first --num_step 128 --batch_size 48 \
+# --multi_gpu --new_size 16 --only_test
 
-python evaluation/main_causal_metric.py --dataset sthsthv2 --model r2p1d \
---vis_method grad_cam --mode ins --order most_first --num_step 128 --batch_size 48 \
---multi_gpu --new_size 16 --only_test
+# python evaluation/main_causal_metric.py --dataset sthsthv2 --model r2p1d \
+# --vis_method sg --mode ins --order most_first --num_step 128 --batch_size 48 \
+# --multi_gpu --new_size 16 --only_test
 
-python evaluation/main_causal_metric.py --dataset sthsthv2 --model r2p1d \
---vis_method eb --mode ins --order most_first --num_step 128 --batch_size 48 \
---multi_gpu --new_size 16 --only_test
+# python evaluation/main_causal_metric.py --dataset sthsthv2 --model r2p1d \
+# --vis_method la --mode ins --order most_first --num_step 128 --batch_size 48 \
+# --multi_gpu --new_size 16 --only_test
+
+# python evaluation/main_causal_metric.py --dataset sthsthv2 --model r2p1d \
+# --vis_method grad_cam --mode ins --order most_first --num_step 128 --batch_size 48 \
+# --multi_gpu --new_size 16 --only_test
+
+# python evaluation/main_causal_metric.py --dataset sthsthv2 --model r2p1d \
+# --vis_method eb --mode ins --order most_first --num_step 128 --batch_size 48 \
+# --multi_gpu --new_size 16 --only_test
 
 # SthSthV2-R(2+1)D
 # Insertion + MoRF
