@@ -20,6 +20,7 @@ from visual_meth.smooth_grad import smooth_grad
 from visual_meth.excitation_backprop import excitation_bp
 from visual_meth.guided_backprop import guided_bp
 from visual_meth.linear_approximation import linear_appr
+from visual_meth.xrai import xrai
 
 import torch
 import torch.multiprocessing as mp
@@ -126,6 +127,9 @@ def main_worker(gpu, args):
             elif args.vis_method == 'la':
                 res = linear_appr(x, labels, model_ft)
                 heatmaps_np = res.numpy()
+            elif args.vis_method == 'xrai':
+                res = xrai(x, labels, model_ft, device)
+                heatmaps_np = res.numpy()
             elif args.vis_method == 'perturb':
                 sigma = 11 if x.shape[-1] == 112 else 23
                 if args.lowest_label:
@@ -194,7 +198,7 @@ if __name__ == "__main__":
     parser.add_argument("--model", type=str, choices=['r2p1d', 'v16l', 'r50l', 'tsm'])
     parser.add_argument("--vis_method", type=str, 
                         choices=['g', 'ig', 'sg', 'sg2', 'grad_cam', 'perturb', 'eb', 
-                                 'gbp', 'la', 'blur_ig', 'score_cam'])
+                                 'gbp', 'la', 'blur_ig', 'score_cam', 'xrai'])
     parser.add_argument("--only_test", action="store_true")
     parser.add_argument("--only_train", action="store_true")
     parser.add_argument("--num_gpu", type=int, default=-1)

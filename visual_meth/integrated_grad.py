@@ -27,7 +27,7 @@ def integrated_grad_show (grads, polarity):
     return normed_grads, grad_show
 
 def integrated_grad (inputs, labels, model, device, steps, 
-                        polarity='both'):
+                     polarity='both', baseline=None):
     model.eval()   # Set model to evaluate mode
 
     bs, ch, nt, h, w = inputs.shape
@@ -38,10 +38,13 @@ def integrated_grad (inputs, labels, model, device, steps,
     # labels = labels.to(device)
     labels = labels.to(dtype=torch.long)
 
-    baseline = torch.zeros_like(inputs, device=device)
-    baseline[:, 0, ...] = -1.8952
-    baseline[:, 1, ...] = -1.7822
-    baseline[:, 2, ...] = -1.7349
+    if baseline == None:
+        baseline = torch.zeros_like(inputs, device=device)
+        baseline[:, 0, ...] = -1.8952
+        baseline[:, 1, ...] = -1.7822
+        baseline[:, 2, ...] = -1.7349
+    else:
+        baseline = baseline.to(device)
     baseline_out = model(baseline)
 
     backward_signals = torch.zeros_like(baseline_out, device=device)
