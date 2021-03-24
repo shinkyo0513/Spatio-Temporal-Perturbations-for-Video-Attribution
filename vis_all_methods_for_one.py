@@ -32,7 +32,7 @@ perturb_areas = [0.05, 0.1, 0.15, 0.5]
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument("--dataset", type=str, default='ucf101', choices=['epic', 'ucf101', 'cat_ucf'])
+    parser.add_argument("--dataset", type=str, default='ucf101', choices=['epic', 'ucf101', 'cat_ucf', 'sthsthv2'])
     parser.add_argument("--model", type=str, default='r2p1d', choices=['v16l', 'r2p1d', 'r50l'])
     parser.add_argument('--white_bg', action='store_true')
     parser.add_argument('--with_prob', action='store_true')
@@ -43,14 +43,15 @@ if __name__ == "__main__":
     os.makedirs(vis_save_dir, exist_ok=True)
 
     # all_methods_list = ['g', 'ig', 'sg', 'la', 'grad_cam', 'eb', 'perturb', 'core5', 'core11']
-    all_methods_list = ['perturb', 'core5', 'core11']
-    vis_classes_list = ['plate']#, 'pan', 'glass', 'spatula', 'bottle', 'cloth']
+    # all_methods_list = ['xrai', 'sg2', 'grad_cam', 'core8', 'eb']
+    all_methods_list = ['core5', 'core14']
+    vis_classes_list = ['199113', '217361']#, 'pan', 'glass', 'spatula', 'bottle', 'cloth']
 
-    model_ft, video_dataset = load_model_and_dataset(args.dataset, args.model, testlist_idx=2)
+    model_ft, video_dataset = load_model_and_dataset(args.dataset, args.model, testlist_idx=1)
     dataloader = DataLoader(video_dataset, batch_size=1, shuffle=False, num_workers=128)
     video_dataset_dict = {}
     for sample in dataloader:
-        x, label, video_name, fidx_tensors = sample
+        x, label, video_name, fidx_tensors = sample[:4]
         video_name = video_name[0].split('/')[-1]
         video_dataset_dict[video_name] = (x[0], label[0], fidx_tensors[0])
 
@@ -91,7 +92,13 @@ if __name__ == "__main__":
         # if 'perturb' in exe_res_label:
         #     exe_res_label = exe_res_label.replace('.pt', '_summed.pt')
 
-        exe_res = torch.load(os.path.join(exe_res_dir, exe_res_label))['val']
+        exe_res_path = os.path.join(exe_res_dir, exe_res_label)
+        if not os.path.isfile(exe_res_path):
+            exe_res_path = exe_res_path.replace('.pt', '_test.pt')
+            if not os.path.isfile(exe_res_path):
+                raise Exception(f'{exe_res_path} does not exist.')
+
+        exe_res = torch.load(exe_res_path)['val']
         heatmaps_dict = {res['video_name'].split('/')[-1]: res['mask'] for res in exe_res}
 
         if 'perturb' in exe_res_label and args.with_prob:

@@ -2,6 +2,7 @@ import math
 import matplotlib.pyplot as plt
 import numpy as np
 import time
+import csv
 
 import torch
 import torch.nn.functional as F
@@ -407,6 +408,7 @@ def video_perturbation(model,
     hist = torch.zeros((num_area, batch_size, 2, 0))
 
     sum_time = 0
+    energy_record = []
     for t in range(max_iter):
         end_time = time.time()
 
@@ -461,10 +463,12 @@ def video_perturbation(model,
         if with_diff:
             regul += diff_loss(padded_masks) * regul_weight
         if with_core:
-            regul += mask_core.calculate(padded_masks.contiguous()) * core_weight
+            core_regul = mask_core.calculate(padded_masks.contiguous()) * core_weight
+            regul += core_regul
 
         # Energy summary
         energy = (reward + regul).sum() 
+        energy_record.append(energy.item())
 
         # Record energy
         # hist: num_area x batch_size x 2 x num_iter
@@ -516,6 +520,10 @@ def video_perturbation(model,
         area_mask = torch.stack(area_mask, dim=2)   # NxCxTxHxW
         list_mask.append(area_mask)
     masks = torch.stack(list_mask, dim=1).cpu()   # NxAxCxTxHxW
+
+    with open('energy_records.txt', 'w') as f:
+        f.writelines(energy_record)
+        print(f'Wrote energies.')
 
     # masks: AxNxCxTxHxW; hist: AxNx2xmax_iter; perturb_x: 2*A*N x CxTxHxW
     return masks, hist
