@@ -65,8 +65,7 @@ def blur_integrated_grad (inputs, labels, model, device, steps,
         outputs.backward(backward_signals)
 
         # Integrate Grads
-        gaussian_gradient = (gaussian_blur(
-            inputs, sigmas[i] + grad_step) - scaled_inputs) / grad_step
+        gaussian_gradient = (gaussian_blur(inputs, sigmas[i] + grad_step) - scaled_inputs) / grad_step
         intg_grads += step_vector_diff[i] * gaussian_gradient * scaled_inputs.grad
 
     # intg_grads *= -1.0

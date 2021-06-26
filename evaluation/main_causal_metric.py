@@ -30,7 +30,7 @@ parser.add_argument("--dataset", type=str, default="ucf101",
                                     choices=["ucf101", "epic", "sthsthv2"])
 parser.add_argument("--model", type=str, choices=["v16l", "r2p1d", "r50l", "tsm"])
 parser.add_argument("--vis_method", type=str, choices=["g", "ig", "sg", "sg2", "grad_cam", "perturb", "random", 
-                                                       "eb", "la", "gbp", "blur_ig", "score_cam"])  
+                                                       "eb", "la", "gbp", "blur_ig", "score_cam", "xrai"])  
 parser.add_argument("--mode", type=str, default="ins", choices=["ins", "del", "both"])
 parser.add_argument("--order", type=str, default="most_first", choices=["most_first", "least_first"])
 parser.add_argument("--multi_gpu", action='store_true')
@@ -45,6 +45,7 @@ parser.add_argument('--only_test', action='store_true')
 parser.add_argument('--only_train', action='store_true')  
 parser.add_argument('--vis_process', action='store_true')   
 parser.add_argument('--mask_smooth_sigma', type=int, default=0)
+parser.add_argument('--upsample_mode', type=str, default="bilinear")     
 parser.add_argument('--extra_label', type=str, default="")                
 args = parser.parse_args()
 
@@ -162,7 +163,7 @@ for sample_idx, samples in enumerate(dataloader):
         mask_batch = torch.from_numpy(np.stack(mask_batch, axis=0)).squeeze(1)  # bs x nt x 14 x 14
         if mask_batch.shape[-1] != clip_batch.shape[-1]:
             bs, _, nt, nrow, ncol = clip_batch.shape
-            mask_batch = F.interpolate(mask_batch, size=(nrow, ncol), mode="bilinear")
+            mask_batch = F.interpolate(mask_batch, size=(nrow, ncol), mode=args.upsample_mode)
         mask_batch = mask_batch.unsqueeze(1)    # bs x 1 x nt x 14 x 14
     else:
         bs, ch, nt, nrow, ncol = clip_batch.shape

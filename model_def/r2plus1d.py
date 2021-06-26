@@ -14,10 +14,10 @@ from utils.CalAcc import process_activations
 
 
 class r2plus1d (nn.Module):
-    def __init__ (self, num_classes, with_softmax=False, pretrained=True):
+    def __init__(self, num_classes, with_softmax=False, pretrained=True):
         super(r2plus1d, self).__init__()
         self.num_classes = num_classes
-        
+
         self.model = models.video.r2plus1d_18(pretrained)
         num_ftrs = self.model.fc.in_features
         self.model.fc = nn.Linear(num_ftrs, num_classes)
@@ -27,7 +27,7 @@ class r2plus1d (nn.Module):
 
         self.softmax = nn.Softmax(dim=1)
 
-    def forward (self, inp_tensor):
+    def forward(self, inp_tensor):
         pred = self.model(inp_tensor)
         if not self.with_softmax:
             return pred
@@ -41,10 +41,12 @@ class r2plus1d (nn.Module):
     def load_weights(self, weights_dir):
         model_wts = torch.load(weights_dir, map_location=torch.device('cpu'))
         parallel_wts = ("module" in list(model_wts.keys())[0])
-        if self.parallel==True and parallel_wts!=True:
-            model_wts = {"module."+name: model_wts[name] for name in model_wts.keys()}
-        if self.parallel!=True and parallel_wts==True:
-            model_wts = {name[7:]: model_wts[name] for name in model_wts.keys()}
+        if self.parallel == True and parallel_wts != True:
+            model_wts = {"module."+name: model_wts[name]
+                         for name in model_wts.keys()}
+        if self.parallel != True and parallel_wts == True:
+            model_wts = {name[7:]: model_wts[name]
+                         for name in model_wts.keys()}
         self.model.load_state_dict(model_wts)
 
     def to_device(self, device):
@@ -54,7 +56,8 @@ class r2plus1d (nn.Module):
     def save_weights(self, save_dir):
         model_wts = copy.deepcopy(self.model.state_dict())
         if "module" in list(model_wts.keys())[0]:
-            model_wts = {name[7:]: model_wts[name] for name in model_wts.keys()}
+            model_wts = {name[7:]: model_wts[name]
+                         for name in model_wts.keys()}
         torch.save(model_wts, save_dir)
 
     def parallel_model(self, device_ids):
@@ -84,7 +87,7 @@ class r2plus1d (nn.Module):
         else:
             for param in self.model.parameters():
                 param.requires_grad = True
-    
+
     def get_parameter_to_update(self, debug=False):
         if debug:
             print("Params to learn:")
@@ -93,7 +96,7 @@ class r2plus1d (nn.Module):
             if param.requires_grad == True:
                 params_to_update.append(param)
                 if debug:
-                    print("\t",name)
+                    print("\t", name)
         return params_to_update
 
     def train_model(self, dataloaders, criterion, optimizer, checkpoint_name, num_epochs, scheduler=None):
@@ -120,7 +123,7 @@ class r2plus1d (nn.Module):
 
                 # Iterate over data.
                 for samples in tqdm(dataloaders[phase]):
-                # for samples in dataloaders[phase]:
+                    # for samples in dataloaders[phase]:
                     inputs = samples[0].to(self.device)
                     labels = samples[1].to(self.device, dtype=torch.long)
                     # print(labels)
@@ -133,9 +136,11 @@ class r2plus1d (nn.Module):
                     with torch.set_grad_enabled(phase == 'train'):
                         # with amp.autocast(enabled=use_amp):
                         # Get model outputs and calculate loss
-                        outputs = self.forward(inputs)    # assume outputs are softmax activations
+                        # assume outputs are softmax activations
+                        outputs = self.forward(inputs)
                         if self.with_softmax:
-                            loss = criterion(torch.log(outputs), labels)    # Using NLLLoss
+                            # Using NLLLoss
+                            loss = criterion(torch.log(outputs), labels)
                         else:
                             loss = criterion(outputs, labels)
 
@@ -151,9 +156,11 @@ class r2plus1d (nn.Module):
                     running_corrects += torch.sum(preds == labels.data)
 
                 epoch_loss = running_loss / len(dataloaders[phase].dataset)
-                epoch_acc = running_corrects.double() / len(dataloaders[phase].dataset)
+                epoch_acc = running_corrects.double(
+                ) / len(dataloaders[phase].dataset)
 
-                print('{} Loss: {:.4f} Acc: {:.4f}'.format(phase, epoch_loss, epoch_acc))
+                print('{} Loss: {:.4f} Acc: {:.4f}'.format(
+                    phase, epoch_loss, epoch_acc))
 
                 # deep copy the model
                 if phase == 'val' and epoch_acc > best_acc:
@@ -167,16 +174,18 @@ class r2plus1d (nn.Module):
             print()
 
         time_elapsed = time.time() - since
-        print('Training complete in {:.0f}m {:.0f}s'.format(time_elapsed // 60, time_elapsed % 60))
+        print('Training complete in {:.0f}m {:.0f}s'.format(
+            time_elapsed // 60, time_elapsed % 60))
         print('Best val Acc: {:4f}'.format(best_acc))
 
         # load best model weights
         self.model.load_state_dict(best_model_wts)
-        torch.save(best_model_wts, checkpoint_name)
-        print(f"Saved the weights of the best epoch in {checkpoint_name}")
+        if checkpoint_name:
+            torch.save(best_model_wts, checkpoint_name)
+            print(f"Saved the weights of the best epoch in {checkpoint_name}")
         return val_acc_history
 
-    def val_model (self, dataloader, checkpoint_name=None):
+    def val_model(self, dataloader, checkpoint_name=None):
         since = time.time()
 
         # load best model weights
@@ -210,10 +219,10 @@ class r2plus1d (nn.Module):
             y_true.append(labels.data.detach().cpu())
 
             # statistics
-            acc1, acc5 = accuracy(outputs, labels.data, topk=(1,5))
+            acc1, acc5 = accuracy(outputs, labels.data, topk=(1, 5))
             top1.update(acc1[0], inputs.size(0))
             top5.update(acc5[0], inputs.size(0))
-            
+
             bs = inputs.shape[0]
             probs = process_activations(outputs, labels, softmaxed=False)[0]
             for bidx in range(bs):
@@ -222,7 +231,8 @@ class r2plus1d (nn.Module):
                 video_pred_dict[video_name] = probs.detach().cpu()[bidx].item()
                 # print(f"{video_name}: {video_pred_dict[video_name]}")
 
-        video_pred_dict = {name: pred for name, pred in sorted(video_pred_dict.items(), key=lambda item: item[1], reverse=True)}
+        video_pred_dict = {name: pred for name, pred in sorted(
+            video_pred_dict.items(), key=lambda item: item[1], reverse=True)}
         # for video_name, pred in video_pred_dict.items():
         #     print(f"{video_name}: {pred:.3f}")
 
@@ -233,7 +243,7 @@ class r2plus1d (nn.Module):
         # torch.save(video_pred_dict, "epic_verb_r2plus1d_preds.pt")
 
         print(' Val: Acc@1 {top1.avg:.3f} Acc@5 {top5.avg:.3f}'
-                .format(top1=top1, top5=top5))
+              .format(top1=top1, top5=top5))
         print()
 
         y_pred = torch.cat(y_pred, dim=0).numpy()
@@ -241,6 +251,3 @@ class r2plus1d (nn.Module):
 
         time_elapsed = time.time() - since
         return y_pred, y_true
-
-
-    

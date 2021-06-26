@@ -2,6 +2,7 @@ import math
 import matplotlib.pyplot as plt
 import numpy as np
 import time
+import csv
 
 import torch
 import torch.nn.functional as F
@@ -465,10 +466,12 @@ def video_perturbation(model,
         if with_diff:
             regul += diff_loss(padded_masks) * regul_weight
         if with_core:
-            regul += mask_core.calculate(padded_masks.contiguous()) * core_weight
+            core_regul = mask_core.calculate(padded_masks.contiguous()) * core_weight
+            regul += core_regul
 
         # Energy summary
         energy = (reward + regul).sum() 
+        energy_record.append(energy.item())
 
         # Record energy
         # hist: num_area x batch_size x 2 x num_iter

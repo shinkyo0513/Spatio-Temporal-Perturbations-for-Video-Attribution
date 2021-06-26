@@ -26,7 +26,8 @@ parser.add_argument("--dataset", type=str, default="ucf101",
 parser.add_argument("--model", type=str, default="r2p1d", 
                                     choices=["r2p1d", "v16l", "r50l"])   
 parser.add_argument("--merge_masks", action='store_true')   
-parser.add_argument("--vis_method", type=str, choices=["g", "ig", "sg", "sg2", "grad_cam", "perturb", "eb", "la", "gbp"])     
+parser.add_argument("--vis_method", type=str, choices=["g", "ig", "sg", "sg2", "grad_cam", "perturb", "eb", 
+                                                       "la", "gbp", "xrai", "blur_ig"])     
 parser.add_argument('--only_test', action='store_true')
 parser.add_argument('--only_train', action='store_true')         
 parser.add_argument('--extra_label', type=str, default="")   

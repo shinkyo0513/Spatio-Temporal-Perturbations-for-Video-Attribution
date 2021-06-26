@@ -13,6 +13,7 @@ from utils.CausalMetric import CausalMetric, plot_causal_metric_curve
 from utils.CausalMetric import auc as cal_auc
 from utils.ImageShow import *
 from utils.ReadingDataset import get_frames
+from utils.ReadingDataset import load_model_and_dataset
 
 import time
 import torch
@@ -27,9 +28,10 @@ from skimage.segmentation import slic
 import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument("--dataset", type=str, default="ucf101", 
-                                    choices=["ucf101", "epic"])
+                                    choices=["ucf101", "epic", "sthsthv2"])
 parser.add_argument("--model", type=str, choices=["v16l", "r2p1d", "r50l"])
-parser.add_argument("--vis_method", type=str, choices=["g", "ig", "sg", "sg2", "grad_cam", "perturb", "random", "eb", "la", "gbp"])  
+parser.add_argument("--vis_method", type=str, choices=["g", "ig", "sg", "sg2", "grad_cam", "perturb", "random", 
+                                                       "eb", "la", "gbp", "blur_ig", "xrai", "score_cam"])  
 parser.add_argument("--mode", type=str, default="ins", choices=["ins", "del", "both"])
 parser.add_argument("--order", type=str, default="most_first", choices=["most_first", "least_first"])
 parser.add_argument("--multi_gpu", action='store_true')
@@ -120,15 +122,16 @@ print(f"Loaded {res_buf}")
 num_devices = torch.cuda.device_count()
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-model_tf = model(num_classes, with_softmax=True)
-model_tf.load_weights(model_wgts_path)
+model_tf, video_dataset = load_model_and_dataset(args.dataset, args.model, "val")
+
+# model_tf = model(num_classes, with_softmax=True)
+# model_tf.load_weights(model_wgts_path)
 model_tf.eval()
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model_tf.to(device)
 if args.multi_gpu:
     model_tf.parallel_model(device_ids=list(range(num_devices)))
 
-video_dataset = dataset(ds_path, 16, 'long_range_last', 1, 6, False, bbox_gt=False, testlist_idx=1)
+# video_dataset = dataset(ds_path, 16, 'long_range_last', 1, 6, False, bbox_gt=False, testlist_idx=1)
 
 dataloader = DataLoader(video_dataset, batch_size=1, shuffle=args.shuffle_dataset, num_workers=128)
 cm_calculator = CausalMetric(model_tf, device)
@@ -140,7 +143,7 @@ else:
     del_auc_sum = 0
 
 for sample_idx, samples in enumerate(dataloader):
-    clip_batch, class_ids, video_names, fidx_tensors = samples
+    clip_batch, class_ids, video_names, fidx_tensors = samples[:4]
     clip_batch = clip_batch.to(device).requires_grad_(False)
 
     if args.vis_method != 'random':

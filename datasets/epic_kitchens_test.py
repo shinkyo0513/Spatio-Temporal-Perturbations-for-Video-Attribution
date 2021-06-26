@@ -982,6 +982,23 @@ def select_verb_top20_100 (top20_500_annot_dir):
                     ["seg_id", "video_id", "noun", "verb_label", "verb", "start_frame", "stop_frame", "bounding_boxes"])
     test_segs100_df.to_csv(join(annot_path, "Valid_seg_top20_verb_100_val.csv"), index=False)
 
+def static_fps ():
+    samples_df = pd.read_csv(
+        "/home/acb11711tx/lzq/ExpEval/my_epic_annot/Valid_seg_top20_500_val.csv")
+    max_fps = 0
+    min_fps = 10000
+    avg_fps = []
+    for ridx, row in samples_df.iterrows():
+        st_frame = row['start_frame']
+        ed_frame = row['stop_frame']
+        seconds = (ed_frame - st_frame + 1) / 60
+        fps =  16 / seconds
+        max_fps = max(fps, max_fps)
+        min_fps = min(fps, min_fps)
+        avg_fps.append(fps)
+    avg_fps = sum(avg_fps) / len(avg_fps)
+    print(f'Max: {max_fps}; Min: {min_fps}; Avg: {avg_fps}')
+
 # %%
 if __name__ == "__main__":
     print("Start...")
@@ -1037,10 +1054,12 @@ if __name__ == "__main__":
     # annot_dir = "/home/acb11711tx/lzq/VideoPerturb2/my_epic_annot/Valid_seg_top20_100_val.csv"
     # concat_segs(ori_frames_root, annot_dir, new_frames_root)
 
-    ori_frames_root = "/groups1/gcb50205/wyuxi/EPIC_KITCHENS_2018/frames_rgb_flow/rgb/train"
-    new_frames_root = "/groups1/gcb50205/lzq/dataset/epic-kitchens/frames_rgb_flow/rgb/cat_verb_segs"
-    annot_dir = "/home/acb11711tx/lzq/VideoPerturb2/my_epic_annot/Valid_seg_top20_verb_100_val.csv"
-    concat_verb_segs(ori_frames_root, annot_dir, new_frames_root)
+    # ori_frames_root = "/groups1/gcb50205/wyuxi/EPIC_KITCHENS_2018/frames_rgb_flow/rgb/train"
+    # new_frames_root = "/groups1/gcb50205/lzq/dataset/epic-kitchens/frames_rgb_flow/rgb/cat_verb_segs"
+    # annot_dir = "/home/acb11711tx/lzq/VideoPerturb2/my_epic_annot/Valid_seg_top20_verb_100_val.csv"
+    # concat_verb_segs(ori_frames_root, annot_dir, new_frames_root)
+
+    static_fps()
 
 #%%
 

@@ -16,10 +16,5 @@ python run_all.py --dataset sthsthv2 --model r2p1d --only_test --vis_method pert
 
 python process_perturb_res.py --dataset sthsthv2 --model r2p1d --vis_method perturb \
 --only_test --extra_label _core5
-# python run_all.py --dataset sthsthv2 --model r2p1d --only_test --vis_method perturb \
-# --perturb_niter 1200 --perturb_withcore --perturb_num_keyframe 8 --batch_size 4
-
-# python run_all.py --dataset sthsthv2 --model r2p1d --only_test --vis_method perturb \
-# --perturb_niter 1200 --perturb_withcore --perturb_num_keyframe 14 --batch_size 4
 
 

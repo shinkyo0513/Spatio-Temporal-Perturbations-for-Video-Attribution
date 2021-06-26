@@ -101,14 +101,14 @@ df = pd.DataFrame.from_dict(data=video_res_dict, orient='index', columns=column_
 #     print(f'{label_pref} Alpha={alpha:.4f}')
 
 # Calculating inter-rater reliability (by Weighted Ranking Correlation)
-model_name = 'r50l'
+model_name = 'r2p1d'
 metric_types = ['ins_cm', 'del_cm', 'ins_cm_16', 'del_cm_16', 'ins_scm', 'del_scm']
 # metric_types = ['ins_cm']
 for metric_type in metric_types:
     # print('\n')
     label_pref = f'{metric_type}_{dataset_name}_{model_name}'
-    sltd_methods = ['random', 'g', 'ig', 'sg2', 'grad_cam', 'perturb']
-    # sltd_methods = ['random', 'g', 'sg', 'sg2', 'perturb']
+    # sltd_methods = ['random', 'g', 'ig', 'sg', 'sg2', 'grad_cam']
+    sltd_methods = ['random', 'g', 'ig', 'sg2', 'grad_cam']
     sltd_labels = [f'{label_pref}_{method}' for method in sltd_methods]
 
     data = np.array([df[col_label] for col_label in sltd_labels]).transpose(1,0)   # num_inputs (910) x num_methods
