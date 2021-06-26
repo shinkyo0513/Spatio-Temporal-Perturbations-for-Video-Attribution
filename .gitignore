@@ -5,9 +5,9 @@ taskout/
 outs_all/*
 outs_cat_ucf/*
 outs_epic/*
-out_epic_verb/*
+outs_epic_verb/*
 outs_sthsthv2/*
-out_sthsthv2_old/*
+outs_sthsthv2_old/*
 outs_ucf101/*
 
 __pycache__
