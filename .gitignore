@@ -12,6 +12,8 @@ surgery*
 test_data
 *.gif
 *.png
+!Methodology.png
+!Teaser.png
 *.jpg
 *.pdf
 
