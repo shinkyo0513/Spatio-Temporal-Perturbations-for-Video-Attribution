@@ -1,6 +1,6 @@
 visual_res/*
 frames/
-outs_*
+outs_cat_ucf/
 task_out/
 
 __pycache__
