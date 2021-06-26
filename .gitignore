@@ -15,4 +15,4 @@ test_data
 *.jpg
 *.pdf
 
-outs_cat_ucf/proc_r2p1d_perturb.txt
+outs_*
