@@ -407,6 +407,7 @@ def video_perturbation(model,
     hist = torch.zeros((num_area, batch_size, 2, 0))
 
     sum_time = 0
+    energy_record = []
     for t in range(max_iter):
         end_time = time.time()
 
@@ -457,7 +458,10 @@ def video_perturbation(model,
         mask_sorted = mask_sorted[:,:,shuffled_inds]
         mask_sorted = mask_sorted.sort(dim=2)[0]
 
+
         regul = ((mask_sorted - vref)**2).mean(dim=2) * regul_weight # A x N
+        energy_record.append((reward + regul).sum().item())
+        
         if with_diff:
             regul += diff_loss(padded_masks) * regul_weight
         if with_core:
@@ -516,6 +520,10 @@ def video_perturbation(model,
         area_mask = torch.stack(area_mask, dim=2)   # NxCxTxHxW
         list_mask.append(area_mask)
     masks = torch.stack(list_mask, dim=1).cpu()   # NxAxCxTxHxW
+
+    with open('energy_record.txt', 'w') as f:
+        f.writelines([f'{num:.6f}\n' for num in energy_record])
+        print('Wrote')
 
     # masks: AxNxCxTxHxW; hist: AxNx2xmax_iter; perturb_x: 2*A*N x CxTxHxW
     return masks, hist
