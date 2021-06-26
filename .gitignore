@@ -2,8 +2,6 @@ visual_res/*
 frames/
 taskout/
 
-outs_*
-
 __pycache__
 *.pt
 *.pth
@@ -16,3 +14,5 @@ test_data
 *.png
 *.jpg
 *.pdf
+
+outs_*
